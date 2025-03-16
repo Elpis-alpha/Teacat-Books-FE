@@ -9,7 +9,7 @@ const AdminProvider = ({ children }: AdminProviderProps) => {
   const { data: userData } = useAppSelector((state) => state.user);
 
   return (
-    <ClientRender initial={<LoadingPage message="Authenticating..." />}>
+    <ClientRender initial={<LoadingPage message="Authenticating" />}>
       {userData?.isAdmin === true ? (
         <>{children}</>
       ) : (

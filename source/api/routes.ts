@@ -3,11 +3,16 @@ import { backendLocation as BE } from "../config";
 const routes = {
   user: {
     me: `${BE}/user/get-me`,
+    edit: `${BE}/user/edit-user`,
     logout: `${BE}/user/logout`,
     getSigninOtp: `${BE}/user/password-auth`,
     signin: `${BE}/user/otp-auth`,
     getResetOtp: `${BE}/user/forget-password`,
     reset: `${BE}/user/forget-password-otp`,
+    changePassword: `${BE}/user/change-password`,
+
+    uploadAvatar: `${BE}/user/upload-image`,
+    resetAvatar: `${BE}/user/reset-image`,
   },
 
   oauth: {
