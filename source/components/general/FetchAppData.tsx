@@ -16,11 +16,11 @@ const FetchAppData = () => {
   useEffect(() => {
     // start login
     const login = async () => {
+      dispatch(setUserLoading(true));
       try {
         if (!getToken()) return dispatch(removeUserData());
-        dispatch(setUserLoading(true));
 
-        const response = await getApiJson(routes.getUser);
+        const response = await getApiJson(routes.user.me);
         if (response.error) throw new Error(response.error);
         if (!response.user) throw new Error("User not found");
 

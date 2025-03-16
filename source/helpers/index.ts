@@ -1,5 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 import toast from "react-hot-toast";
+import crypto from "crypto";
+import { addMinutes } from "date-fns";
 
 export const randomAmong = (num1: number, num2: number) => {
   return Math.floor(Math.random() * (num2 - num1 + 1)) + num1;
@@ -336,4 +338,19 @@ export const randomNumber = (
     return Math.floor(Math.random() * (max - min + 1)) + min + Math.random();
   }
   return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+export const randomString = (
+  lenfth: number,
+  enc: "hex" | "base64" | "utf8" = "hex"
+) => {
+  return crypto.randomBytes(lenfth).toString(enc);
+};
+
+export const getOauthToken = () => {
+  return (
+    randomString(82, "base64") +
+    ":" +
+    addMinutes(new Date(), 3).getTime().toString()
+  );
 };

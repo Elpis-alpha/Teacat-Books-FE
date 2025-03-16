@@ -19,6 +19,7 @@ import {
 } from "react-icons/fa";
 import { FaShield, FaUserPen } from "react-icons/fa6";
 import { ClipLoader } from "react-spinners";
+import ClientRender from "../reusable/ClientRender";
 
 const NavBar = () => {
   const dispatch = useAppDispatch();
@@ -56,7 +57,7 @@ const NavBar = () => {
   const logoutUser = async () => {
     try {
       dispatch(setUserLoading(true));
-      const res = await postApiJson(routes.logoutUser);
+      const res = await postApiJson(routes.user.logout);
       if (res.error) {
         dispatch(setUserLoading(false));
         console.info("Logout Response: ", res);
@@ -87,43 +88,48 @@ const NavBar = () => {
                 🧋Teacat Books
               </Link>
             </h1>
-            <Link href="/books" className="smm:block hidden hover:text-blue-300">
+            <Link
+              href="/books"
+              className="smm:block hidden hover:text-blue-300"
+            >
               Browse Books
             </Link>
           </div>
-          <div className="not-slg:hidden slg:flex items-center gap-9">
-            {loading ? (
-              <div className="p-2.5 flex">
-                <ClipLoader color="#fff" size={24} />
-              </div>
-            ) : available && userData ? (
-              <>
-                {userData.isAdmin && (
-                  <Link href="/admin" className="p-2.5 hover:text-blue-300">
-                    Admin
+          <ClientRender initial={null}>
+            <div className="not-slg:hidden slg:flex items-center gap-9">
+              {loading ? (
+                <div className="p-2.5 flex">
+                  <ClipLoader color="#fff" size={24} />
+                </div>
+              ) : available && userData ? (
+                <>
+                  {userData.isAdmin && (
+                    <Link href="/admin" className="p-2.5 hover:text-blue-300">
+                      Admin
+                    </Link>
+                  )}
+                  {userData.author.status === "approved" && (
+                    <Link href="/author" className="p-2.5 hover:text-blue-300">
+                      Author
+                    </Link>
+                  )}
+                  <Link href="/profile" className="p-2.5 hover:text-blue-300">
+                    Profile
                   </Link>
-                )}
-                {userData.author.status === "approved" && (
-                  <Link href="/author" className="p-2.5 hover:text-blue-300">
-                    Author
-                  </Link>
-                )}
-                <Link href="/profile" className="p-2.5 hover:text-blue-300">
-                  Profile
+                  <button
+                    onClick={logoutUser}
+                    className="p-2.5 hover:text-blue-300"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link href="/signin" className="p-2.5 hover:text-blue-300">
+                  Sign In
                 </Link>
-                <button
-                  onClick={logoutUser}
-                  className="p-2.5 hover:text-blue-300"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link href="/signin" className="p-2.5 hover:text-blue-300">
-                Sign In
-              </Link>
-            )}
-          </div>
+              )}
+            </div>
+          </ClientRender>
 
           <div className="flex slg:hidden items-center">
             <Hamburger

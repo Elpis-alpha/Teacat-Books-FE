@@ -1,9 +1,25 @@
 import { backendLocation as BE } from "../config";
 
 const routes = {
-  // User Routes
-  getUser: `${BE}/user/get-me`,
-  logoutUser: `${BE}/user/logout`,
+  user: {
+    me: `${BE}/user/get-me`,
+    logout: `${BE}/user/logout`,
+    getSigninOtp: `${BE}/user/password-auth`,
+    signin: `${BE}/user/otp-auth`,
+    getResetOtp: `${BE}/user/forget-password`,
+    reset: `${BE}/user/forget-password-otp`,
+  },
+
+  oauth: {
+    twitter: `${BE}/oauth/twitter`,
+    discord: `${BE}/oauth/discord`,
+    google: `${BE}/oauth/google`,
+    twitterLogin: `${BE}/oauth/twitter/login`,
+    discordLogin: `${BE}/oauth/discord/login`,
+    googleLogin: `${BE}/oauth/google/login`,
+    twitterDisconnect: `${BE}/oauth/twitter/disconnect`,
+    discordDisconnect: `${BE}/oauth/discord/disconnect`,
+  },
 
   // getUser: () => `${BE}/user/get-me`,
 };

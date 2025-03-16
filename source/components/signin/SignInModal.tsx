@@ -1,7 +1,7 @@
 "use client";
 import { images } from "@/source/config";
 import BigImage from "../reusable/BigImage";
-import { FormEventHandler, useEffect, useState } from "react";
+import { FormEventHandler, useEffect, useRef, useState } from "react";
 import {
   FaEnvelope,
   FaEye,
@@ -15,8 +15,18 @@ import Link from "next/link";
 import { ClipLoader } from "react-spinners";
 import toast from "react-hot-toast";
 import { isEmail } from "validator";
+import { getOauthToken, openWithPost } from "@/source/helpers";
+import routes from "@/source/api/routes";
+import { useAppDispatch } from "@/source/store/hooks";
+import { setUserData, setUserLoading } from "@/source/store/slice/userSlice";
+import { postApiJson } from "@/source/api";
+import { saveToken } from "@/source/api/misc";
+import { useRouter } from "next/navigation";
 
 const SignInModal = () => {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
   const [_email, setEmail] = useState("");
   const [_password, setPassword] = useState("");
   const [_otp, setOtp] = useState("");
@@ -32,7 +42,13 @@ const SignInModal = () => {
     | "signing-in-with-google"
     | "signing-in-with-twitter"
     | "signing-in-with-discord"
+    | "redirecting-to-profile"
   >("");
+
+  const oauthRef = useRef({
+    interval: null as NodeJS.Timeout | null,
+    active: false,
+  });
 
   // Timer for OTP
   useEffect(() => {
@@ -48,22 +64,50 @@ const SignInModal = () => {
   const handleFormSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
-    const email = _email.trim();
-    const password = _password.trim();
-    const otp = parseInt(_otp.trim());
+    try {
+      const email = _email.trim();
+      const password = _password.trim();
+      const otp = parseInt(_otp.trim());
 
-    if (processing !== "") {
-      return toast.error("Please wait for the previous task to complete");
-    } else if (!isEmail(email)) {
-      return toast.error("Please provide a valid email");
-    } else if (password.length < 6) {
-      return toast.error("Password must be at least 6 characters long");
-    }
+      if (processing !== "") {
+        return toast.error("Please wait for the previous task to complete");
+      } else if (!isEmail(email)) {
+        return toast.error("Please provide a valid email");
+      } else if (password.length < 6) {
+        return toast.error("Password must be at least 6 characters long");
+      }
 
-    if (!atOTPStage) return await handleRequestOtp("sending-otp");
+      if (!atOTPStage) return await handleRequestOtp("sending-otp");
 
-    if (isNaN(otp) || otp < 100_000 || otp > 999_999) {
-      return toast.error("Please provide a valid OTP");
+      if (isNaN(otp) || otp < 100_000 || otp > 999_999) {
+        return toast.error("Please provide a valid OTP");
+      }
+
+      setProcessing("signing-in-with-otp");
+      dispatch(setUserLoading(true));
+
+      const response = await postApiJson(routes.user.signin, {
+        email,
+        password,
+        otp,
+      });
+
+      if (response.error || !response.user || !response.token) {
+        toast.error(response.errorMessage ?? "Failed to sign in");
+        setProcessing("");
+        return;
+      }
+
+      dispatch(setUserData(response.user));
+      saveToken(response.token);
+      toast.success("Sign in successful");
+      router.push("/profile");
+      setProcessing("redirecting-to-profile");
+    } catch (error) {
+      toast.error("Failed to sign in");
+      console.error(error);
+      setProcessing("");
+      dispatch(setUserLoading(false));
     }
   };
 
@@ -88,7 +132,16 @@ const SignInModal = () => {
       setProcessing(_processing);
 
       // Send OTP
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const response = await postApiJson(routes.user.getSigninOtp, {
+        email,
+        password,
+      });
+
+      if (response.error || !response.message) {
+        toast.error(response.errorMessage ?? "Failed to send OTP");
+        setProcessing("");
+        return;
+      }
 
       setProcessing("");
       toast.success("OTP sent successfully");
@@ -105,16 +158,56 @@ const SignInModal = () => {
     try {
       if (processing !== "") {
         return toast.error("Please wait for the previous task to complete");
+      } else if (oauthRef.current.active) {
+        return toast.error("Please wait for the previous task to complete");
+      } else if (oauthRef.current.interval) {
+        clearInterval(oauthRef.current.interval);
       }
+
+      const token = getOauthToken();
+      const handle = openWithPost(
+        routes.oauth.google,
+        { token },
+        {
+          width: 800,
+          height: 600,
+          top: 50,
+          left: 100,
+          additionalFeatures: "resizable=yes,scrollbars=yes",
+        }
+      );
+      if (!handle) return toast.error("Please enable browser popup!");
+
+      dispatch(setUserLoading(true));
       setProcessing("signing-in-with-google");
 
-      // Send OTP
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      oauthRef.current.interval = setInterval(async () => {
+        console.log(handle.closed);
+        if (handle.closed) {
+          if (oauthRef.current.interval) {
+            clearInterval(oauthRef.current.interval);
+          }
+          oauthRef.current.active = false;
 
-      setProcessing("");
-      toast.success("Google signed in");
+          const response = await postApiJson(routes.oauth.googleLogin, {
+            token,
+          });
+          if (response.error || !response.data || !response.token) {
+            toast.error(response.errorMessage ?? "Failed to login");
+            setProcessing("");
+          } else {
+            dispatch(setUserData(response.data));
+            saveToken(response.token);
+            toast.success("Google login successful");
+            router.push("/profile");
+            setProcessing("redirecting-to-profile");
+          }
+
+          dispatch(setUserLoading(false));
+        }
+      }, 500);
     } catch (error) {
-      toast.error("Failed to initiate google signin");
+      toast.error("Failed to complete google signin");
       setProcessing("");
       console.error(error);
     }
@@ -124,14 +217,54 @@ const SignInModal = () => {
     try {
       if (processing !== "") {
         return toast.error("Please wait for the previous task to complete");
+      } else if (oauthRef.current.active) {
+        return toast.error("Please wait for the previous task to complete");
+      } else if (oauthRef.current.interval) {
+        clearInterval(oauthRef.current.interval);
       }
+
+      const token = getOauthToken();
+      const handle = openWithPost(
+        routes.oauth.twitter,
+        { token },
+        {
+          width: 800,
+          height: 600,
+          top: 50,
+          left: 100,
+          additionalFeatures: "resizable=yes,scrollbars=yes",
+        }
+      );
+      if (!handle) return toast.error("Please enable browser popup!");
+
+      dispatch(setUserLoading(true));
       setProcessing("signing-in-with-twitter");
 
-      // Send OTP
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      oauthRef.current.interval = setInterval(async () => {
+        console.log(handle.closed);
+        if (handle.closed) {
+          if (oauthRef.current.interval) {
+            clearInterval(oauthRef.current.interval);
+          }
+          oauthRef.current.active = false;
 
-      setProcessing("");
-      toast.success("Twitter signed in");
+          const response = await postApiJson(routes.oauth.twitterLogin, {
+            token,
+          });
+          if (response.error || !response.data || !response.token) {
+            toast.error(response.errorMessage ?? "Failed to login");
+            setProcessing("");
+          } else {
+            dispatch(setUserData(response.data));
+            saveToken(response.token);
+            toast.success("Twitter login successful");
+            router.push("/profile");
+            setProcessing("redirecting-to-profile");
+          }
+
+          dispatch(setUserLoading(false));
+        }
+      }, 500);
     } catch (error) {
       toast.error("Failed to initiate twitter signin");
       setProcessing("");
@@ -143,14 +276,54 @@ const SignInModal = () => {
     try {
       if (processing !== "") {
         return toast.error("Please wait for the previous task to complete");
+      } else if (oauthRef.current.active) {
+        return toast.error("Please wait for the previous task to complete");
+      } else if (oauthRef.current.interval) {
+        clearInterval(oauthRef.current.interval);
       }
+
+      const token = getOauthToken();
+      const handle = openWithPost(
+        routes.oauth.discord,
+        { token },
+        {
+          width: 800,
+          height: 600,
+          top: 50,
+          left: 100,
+          additionalFeatures: "resizable=yes,scrollbars=yes",
+        }
+      );
+      if (!handle) return toast.error("Please enable browser popup!");
+
+      dispatch(setUserLoading(true));
       setProcessing("signing-in-with-discord");
 
-      // Send OTP
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      oauthRef.current.interval = setInterval(async () => {
+        console.log(handle.closed);
+        if (handle.closed) {
+          if (oauthRef.current.interval) {
+            clearInterval(oauthRef.current.interval);
+          }
+          oauthRef.current.active = false;
 
-      setProcessing("");
-      toast.success("Discord signed in");
+          const response = await postApiJson(routes.oauth.discordLogin, {
+            token,
+          });
+          if (response.error || !response.data || !response.token) {
+            toast.error(response.errorMessage ?? "Failed to login");
+            setProcessing("");
+          } else {
+            dispatch(setUserData(response.data));
+            saveToken(response.token);
+            toast.success("Discord login successful");
+            router.push("/profile");
+            setProcessing("redirecting-to-profile");
+          }
+
+          dispatch(setUserLoading(false));
+        }
+      }, 500);
     } catch (error) {
       toast.error("Failed to initiate discord signin");
       setProcessing("");
@@ -241,7 +414,9 @@ const SignInModal = () => {
                       onClick={() => handleRequestOtp("resending-otp")}
                     >
                       {timeLeftToOTP > 0 ? (
-                        <span className="text-sm sm:text-lg">{timeLeftToOTP}</span>
+                        <span className="text-sm sm:text-lg">
+                          {timeLeftToOTP}
+                        </span>
                       ) : processing === "resending-otp" ? (
                         <ClipLoader color="#ffffff" size={20} />
                       ) : (
@@ -266,7 +441,15 @@ const SignInModal = () => {
                   disabled={!!processing}
                   className="w-full px-4 py-2 sm:py-3.5 bg-highlight rounded-xl hover:bg-highlight-dark flex items-center justify-center gap-2"
                 >
-                  {!atOTPStage && processing !== "sending-otp" ? (
+                  {processing === "redirecting-to-profile" ? (
+                    <>Redirecting...</>
+                  ) : processing === "signing-in-with-discord" ? (
+                    <>Discord Signin...</>
+                  ) : processing === "signing-in-with-google" ? (
+                    <>Google Signin...</>
+                  ) : processing === "signing-in-with-twitter" ? (
+                    <>Twitter Signin...</>
+                  ) : !atOTPStage && processing !== "sending-otp" ? (
                     <>Send OTP</>
                   ) : !atOTPStage && processing === "sending-otp" ? (
                     <>
