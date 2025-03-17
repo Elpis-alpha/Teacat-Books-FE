@@ -89,8 +89,11 @@ const AuthorStatus = ({ profileProcessing }: midProfileProps) => {
 
   return (
     <div className="w-full">
-      <div className="flex items-center gap-2.5">
-        <p className="flex-1">
+      <p className="block sm:hidden pb-2 text-right">
+        {status === "approved" ? "You are an author" : "You are not an author"}
+      </p>
+      <div className="flex items-center gap-2.5 max-sm:justify-end">
+        <p className="flex-1 max-sm:hidden">
           {status === "approved"
             ? "You are an author"
             : "You are not an author"}

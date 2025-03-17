@@ -191,7 +191,7 @@ const ForgotPassword = () => {
                         )}
                       </button>
                       <button
-                        className="p-2 bg-bad-red/50 rounded-r-xl flex items-center justify-center min-w-[60px]"
+                        className="p-2 bg-bad-red/50 hover:bg-bad-red-dark rounded-r-xl flex items-center justify-center min-w-[60px]"
                         title="Close OTP"
                         type="button"
                         disabled={!!processing}

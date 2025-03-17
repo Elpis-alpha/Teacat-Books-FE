@@ -5,11 +5,18 @@
   /* COLORS */
   --color-highlight: #4169e2;
   --color-highlight-dark: #2f4b8f;
+
   --color-main-bg: #161a26;
   --color-sub-bg: #202336;
-  --color-good-green: #28a745;
+
+  --color-good-green: #1d8735;
+  --color-good-green-dark: #085419;
+
   --color-bad-red: #ff0000;
+  --color-bad-red-dark: #870000;
+
   --color-weird-teal: #00708e;
+  --color-weird-teal-dark: #00445c;
 
   /* FONTS */
   --font-miller: var(--font-miller), serif;
@@ -56,14 +63,18 @@
     animation: none !important;
   }
 
-  input:read-only,
+  input:read-only:not([type="file"]),
+  .readonly-input,
   textarea:read-only {
     opacity: 0.5;
     cursor: not-allowed;
     animation: none !important;
   }
 
-  *[aria-disabled="true"] {
+  *[aria-disabled="true"],
+  a[aria-disabled="true"],
+  .disabled,
+  a.disabled {
     opacity: 0.5;
     cursor: not-allowed;
     animation: none !important;

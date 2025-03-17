@@ -3,19 +3,20 @@ import { useAppSelector } from "@/source/store/hooks";
 import ClientRender from "../reusable/ClientRender";
 import { ErrorPage, LoadingPage } from "../reusable/SimplePages";
 
-type AdminProviderProps = {
+type AuthorProviderProps = {
   children: React.ReactNode;
 };
-const AdminProvider = ({ children }: AdminProviderProps) => {
+const AuthorProvider = ({ children }: AuthorProviderProps) => {
   const { data: userData } = useAppSelector((state) => state.user);
 
   return (
     <ClientRender initial={<LoadingPage message="Authenticating" />}>
-      {userData?.isAdmin === true ? (
+      {userData?.author?.status === "approved" ||
+      userData?.author?.status === "pending-removal" ? (
         <>{children}</>
       ) : (
         <ErrorPage
-          message="Admins only"
+          message="Authors only"
           returnLink="/profile"
           returnText="Go to Profile"
         />
@@ -23,4 +24,4 @@ const AdminProvider = ({ children }: AdminProviderProps) => {
     </ClientRender>
   );
 };
-export default AdminProvider;
+export default AuthorProvider;

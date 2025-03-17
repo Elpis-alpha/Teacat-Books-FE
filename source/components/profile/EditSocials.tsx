@@ -241,25 +241,25 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
           {mail.authType === "google" ? (
             <a
               href={`mailto:${mail.email}`}
-              className="flex-1 text-right"
+              className="flex-1 text-right line-clamp-1"
               target="_blank"
               rel="noopener noreferrer"
             >
               {mail.email}
             </a>
           ) : (
-            <p className="flex-1 text-right opacity-50">Not connected</p>
+            <p className="flex-1 text-right opacity-50 line-clamp-1">Not connected</p>
           )}
           {mail.authType !== "google" && (
             <button
               disabled={!!processing}
               onClick={connectGoogle}
-              className="rounded-xl w-12.5 h-10 flex items-center justify-center bg-highlight hover:bg-highlight-dark"
+              className="rounded-xl w-10 sm:w-12.5 h-8 sm:h-10 flex items-center justify-center bg-highlight hover:bg-highlight-dark"
             >
               {processing === "connecting-google" ? (
                 <ClipLoader color="#fff" size={16} />
               ) : (
-                <FaLink className="text-base" />
+                <FaLink className="text-xs sm:text-base" />
               )}
             </button>
           )}
@@ -274,22 +274,22 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
           {twitter.active ? (
             <a
               href={`https://twitter.com/intent/user?user_id=${twitter.id}`}
-              className="flex-1 text-right"
+              className="flex-1 text-right line-clamp-1"
               target="_blank"
               rel="noopener noreferrer"
             >
               @{twitter.username}
             </a>
           ) : (
-            <p className="flex-1 text-right opacity-50">Not connected</p>
+            <p className="flex-1 text-right opacity-50 line-clamp-1">Not connected</p>
           )}
           <button
             disabled={!!processing}
             onClick={twitter.active ? disconnectTwitter : connectTwitter}
             className={
-              "rounded-xl w-12.5 h-10 flex items-center justify-center " +
+              "rounded-xl w-10 sm:w-12.5 h-8 sm:h-10 flex items-center justify-center " +
               (twitter.active
-                ? "bg-bad-red hover:bg-red-900"
+                ? "bg-bad-red hover:bg-bad-red-dark"
                 : "bg-highlight hover:bg-highlight-dark")
             }
           >
@@ -297,9 +297,9 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
             processing === "disconnecting-twitter" ? (
               <ClipLoader color="#fff" size={16} />
             ) : twitter.active ? (
-              <FaUnlink className="text-base" />
+              <FaUnlink className="text-xs sm:text-base" />
             ) : (
-              <FaLink className="text-base" />
+              <FaLink className="text-xs sm:text-base" />
             )}
           </button>
         </div>
@@ -313,22 +313,22 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
           {discord.active ? (
             <a
               href={`https://discordapp.com/users/${discord.id}`}
-              className="flex-1 text-right"
+              className="flex-1 text-right line-clamp-1"
               target="_blank"
               rel="noopener noreferrer"
             >
               {discord.username}
             </a>
           ) : (
-            <p className="flex-1 text-right opacity-50">Not connected</p>
+            <p className="flex-1 text-right opacity-50 line-clamp-1">Not connected</p>
           )}
           <button
             disabled={!!processing}
             onClick={discord.active ? disconnectDiscord : connectDiscord}
             className={
-              "rounded-xl w-12.5 h-10 flex items-center justify-center " +
+              "rounded-xl w-10 sm:w-12.5 h-8 sm:h-10 flex items-center justify-center " +
               (discord.active
-                ? "bg-bad-red hover:bg-red-900"
+                ? "bg-bad-red hover:bg-bad-red-dark"
                 : "bg-highlight hover:bg-highlight-dark")
             }
           >
@@ -336,9 +336,9 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
             processing === "disconnecting-discord" ? (
               <ClipLoader color="#fff" size={16} />
             ) : discord.active ? (
-              <FaUnlink className="text-base" />
+              <FaUnlink className="text-xs sm:text-base" />
             ) : (
-              <FaLink className="text-base" />
+              <FaLink className="text-xs sm:text-base" />
             )}
           </button>
         </div>

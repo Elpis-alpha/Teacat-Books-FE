@@ -20,7 +20,7 @@ export const removeToken = () => {
 };
 
 export const generateLSSB = (limit = 10, skip = 0, sortBy = "createdAt:desc") =>
-  `?limit=${limit}&skip=${skip}&sortBy=${sortBy}`;
+  `?limit=${limit}&skip=${skip}&sort=${sortBy}`;
 
 export type APIFunctionType = () => Promise<Record<string | number, any>>;
 export type ReqBodyType = Record<string | number, any>;

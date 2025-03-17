@@ -3,7 +3,7 @@ export interface AuthorTicket {
   author:
     | string
     | {
-        id: string;
+        _id: string;
         username: string;
         avatar: string;
       };
@@ -37,4 +37,56 @@ export interface OneUser {
     id?: string;
     username?: string;
   };
+}
+
+export interface BookTicketInterface {
+  _id: string;
+  ticketNumber: number;
+  action:
+    | "new-book"
+    | "update-image"
+    | "update-meta"
+    | "update-text"
+    | "delete-book";
+
+  author: string | { _id: string; name: string; avatar: string };
+
+  bookID?: string;
+  cachedBookName?: string;
+
+  messageForReviewer: string;
+  reviewerFeedback?: string;
+  status: "pending" | "approved" | "rejected" | "cancelled";
+  dateReviewed?: string;
+
+  newBook?: TicketNewBook;
+  updateImage?: {
+    imageType: "main" | "cover";
+    oldImageURL: string;
+    newImageURL: string;
+  };
+  updateMeta?: {
+    textType: "title" | "description";
+    oldText: string;
+    newText: string;
+  };
+  updateText?: {
+    oldEpubURL: string;
+    newEpubURL: string;
+  };
+
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TicketNewBook {
+  title: string;
+  description: string;
+  price: number;
+  borrowableCopies: number;
+  mainImage: string;
+  coverImage: string;
+  epubURL?: string;
+  allowsLLM: boolean;
+  wallet: string;
 }

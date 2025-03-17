@@ -1,4 +1,5 @@
 import { backendLocation as BE } from "../config";
+import { generateLSSB } from "./misc";
 
 const routes = {
   user: {
@@ -32,10 +33,38 @@ const routes = {
       create: `${BE}/ticket/author/create`,
       cancel: `${BE}/ticket/author/cancel`,
       myTicket: `${BE}/ticket/author/my-ticket`,
+      // tickets: `${BE}/ticket/author/tickets`,
+    },
+    book: {
+      newBook: `${BE}/ticket/book/create-new-book-ticket`,
+      updateImage: `${BE}/ticket"/book/create-update-image-ticket"`,
+      updateBook: `${BE}/ticket"/book/create-update-text-ticket"`,
+      updateMeta: `${BE}/ticket"/book/create-update-meta-ticket"`,
+      deleteBook: `${BE}/ticket"/book/create-delete-book-ticket"`,
+      get: (
+        limit: number,
+        skip: number,
+        sort: string,
+        showReviewed: boolean,
+        showAll: boolean,
+        ticketNumber?: number
+      ) =>
+        `${BE}/ticket/book/tickets${generateLSSB(
+          limit,
+          skip,
+          sort
+        )}&showReviewed=${tt(showReviewed)}&showAll=${tt(showAll)}${
+          typeof ticketNumber === "number"
+            ? `&ticketNumber=${ticketNumber}`
+            : ""
+        }`,
+      cancel: `${BE}/ticket/book/cancel`,
     },
   },
 
   // getUser: () => `${BE}/user/get-me`,
 };
+
+const tt = (val: boolean) => (val ? "true" : "false");
 
 export default routes;
