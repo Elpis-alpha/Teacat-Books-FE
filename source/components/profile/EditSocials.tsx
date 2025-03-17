@@ -13,6 +13,7 @@ import { useRef } from "react";
 import toast from "react-hot-toast";
 import { FaLink, FaUnlink } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
+import SafeImage from "../reusable/SafeImage";
 
 const EditSocials = ({ profileProcessing }: midProfileProps) => {
   const dispatch = useAppDispatch();
@@ -231,7 +232,7 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
       <p>Socials</p>
       <div className="mt-4 flex flex-col gap-6">
         <div className="flex items-center gap-3">
-          <img
+          <SafeImage
             src="/icons/google.svg"
             alt="Google"
             className="w-[22px] sm:w-[30px]"
@@ -264,7 +265,7 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
           )}
         </div>
         <div className="flex items-center gap-3">
-          <img
+          <SafeImage
             src="/icons/twitter.svg"
             alt="Twitter"
             className="w-[22px] sm:w-[30px]"
@@ -303,7 +304,7 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
           </button>
         </div>
         <div className="flex items-center gap-3">
-          <img
+          <SafeImage
             src="/icons/discord.svg"
             alt="Discord"
             className="w-[22px] sm:w-[30px]"

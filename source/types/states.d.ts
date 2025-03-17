@@ -18,3 +18,23 @@ export interface AuthorTicket {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface OneUser {
+  id: string;
+  name: string;
+  avatar: string;
+  bio: string;
+  isAuthor: boolean;
+  isAdmin: boolean;
+  mail: string;
+  twitter: {
+    active: boolean;
+    id?: string;
+    username?: string;
+  };
+  discord: {
+    active: boolean;
+    id?: string;
+    username?: string;
+  };
+}

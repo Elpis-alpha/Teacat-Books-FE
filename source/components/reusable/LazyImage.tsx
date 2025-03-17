@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import SafeImage from "./SafeImage";
 
 type LazyImageProps = {
   lowSizeSrc: string;
@@ -11,6 +12,9 @@ type LazyImageProps = {
 const LazyImage = (props: LazyImageProps) => {
   const { alt, className, highSizeSrc, lowSizeSrc } = props;
   const imageRef = useRef<HTMLImageElement>(null);
+
+  const [ready, setReady] = useState(false);
+  const hasChanged = useRef(false);
 
   useEffect(() => {
     const changeImage = (image: HTMLImageElement) => {
@@ -24,11 +28,20 @@ const LazyImage = (props: LazyImageProps) => {
       };
     };
 
-    if (imageRef.current) changeImage(imageRef.current);
-  }, [highSizeSrc]);
+    if (imageRef.current && ready && !hasChanged.current) {
+      hasChanged.current = true;
+      changeImage(imageRef.current);
+    }
+  }, [highSizeSrc, ready]);
 
   return (
-    <img src={lowSizeSrc} alt={alt} className={className} ref={imageRef} />
+    <SafeImage
+      setReady={setReady}
+      src={lowSizeSrc}
+      alt={alt}
+      className={className}
+      ref={imageRef}
+    />
   );
 };
 export default LazyImage;

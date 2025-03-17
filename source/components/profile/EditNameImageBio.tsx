@@ -11,6 +11,7 @@ import { FormEventHandler, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { FaSave, FaTimes } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
+import SafeImage from "../reusable/SafeImage";
 
 const EditNameImageBio = ({ profileProcessing }: midProfileProps) => {
   const userData = useAppSelector((state) => state.user).data!;
@@ -134,7 +135,7 @@ const EditNameImageBio = ({ profileProcessing }: midProfileProps) => {
   return (
     <div className="flex flex-col gap-8 w-full">
       <div className="w-[200px] h-[200px] mx-auto">
-        <img
+        <SafeImage
           src={imageURL}
           alt={userData.name + " Profile"}
           className="w-full h-full rounded-full z-10 absolute inset-0 object-cover border-white border-1"

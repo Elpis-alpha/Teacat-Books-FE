@@ -13,6 +13,7 @@ const routes = {
 
     uploadAvatar: `${BE}/user/upload-image`,
     resetAvatar: `${BE}/user/reset-image`,
+    one: (userID: string) => `${BE}/user/get-one?userID=${userID}`,
   },
 
   oauth: {

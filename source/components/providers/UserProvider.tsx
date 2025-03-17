@@ -7,7 +7,9 @@ type UserProviderProps = {
   children: React.ReactNode;
 };
 const UserProvider = ({ children }: UserProviderProps) => {
-  const { available, loading, tested } = useAppSelector((state) => state.user);
+  const { available, loading, tested, data } = useAppSelector(
+    (state) => state.user
+  );
 
   return (
     <ClientRender initial={<LoadingPage message="Authenticating" />}>
@@ -17,15 +19,15 @@ const UserProvider = ({ children }: UserProviderProps) => {
         <LoadingPage message="Authenticating" />
       ) : !available ? (
         <ErrorPage
-          message="Authentication failed"
+          message="You are not authenticated"
           returnLink="/signin"
           returnText="Go to Sign-In"
         />
-      ) : available ? (
+      ) : available && data ? (
         <>{children}</>
       ) : (
         <ErrorPage
-          message="Authentication failed"
+          message="You are not authenticated"
           returnLink="/signin"
           returnText="Go to Sign-In"
         />

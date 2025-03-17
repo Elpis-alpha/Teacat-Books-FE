@@ -60,10 +60,12 @@ export const ErrorPage = ({
   returnLink,
   returnText,
   returnContent,
+  returnClick,
 }: {
   message: string;
   returnLink?: string;
   returnText?: string;
+  returnClick?: () => void;
   returnContent?: React.ReactNode | string | number;
 }) => {
   return (
@@ -76,6 +78,14 @@ export const ErrorPage = ({
         >
           {returnText}
         </Link>
+      )}
+      {returnClick && (
+        <button
+          onClick={returnClick}
+          className="text-lg text-highlight hover:underline text-center"
+        >
+          {returnText}
+        </button>
       )}
       {returnContent || <></>}
     </NormalPage>

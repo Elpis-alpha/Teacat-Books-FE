@@ -22,6 +22,7 @@ import { setUserData, setUserLoading } from "@/source/store/slice/userSlice";
 import { postApiJson } from "@/source/api";
 import { saveToken } from "@/source/api/misc";
 import { useRouter } from "next/navigation";
+import SafeImage from "../reusable/SafeImage";
 
 const SignInModal = () => {
   const dispatch = useAppDispatch();
@@ -482,7 +483,7 @@ const SignInModal = () => {
                   {processing === "signing-in-with-google" ? (
                     <ClipLoader color="#ffffff" size={24} />
                   ) : (
-                    <img
+                    <SafeImage
                       src="/icons/google.svg"
                       alt="Google"
                       className="max-w-[22px] sm:max-w-[30px]"
@@ -497,7 +498,7 @@ const SignInModal = () => {
                   {processing === "signing-in-with-twitter" ? (
                     <ClipLoader color="#ffffff" size={24} />
                   ) : (
-                    <img
+                    <SafeImage
                       src="/icons/twitter.svg"
                       alt="Twitter"
                       className="max-w-[22px] sm:max-w-[30px]"
@@ -512,7 +513,7 @@ const SignInModal = () => {
                   {processing === "signing-in-with-discord" ? (
                     <ClipLoader color="#ffffff" size={24} />
                   ) : (
-                    <img
+                    <SafeImage
                       src="/icons/discord.svg"
                       alt="Discord"
                       className="max-w-[22px] sm:max-w-[30px]"

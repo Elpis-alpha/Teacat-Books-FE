@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import SafeImage from "./SafeImage";
 
 interface BigImageProps {
   src: string;
@@ -16,6 +17,9 @@ const BigImage = (props: BigImageProps) => {
     }
     return src;
   }, [src]);
+
+  const [ready, setReady] = useState(false);
+  const hasChanged = useRef(false);
 
   useEffect(() => {
     const handleIamgeReload = (image: HTMLImageElement) => {
@@ -41,15 +45,17 @@ const BigImage = (props: BigImageProps) => {
       };
     };
 
-    if (imageRef.current) {
+    if (imageRef.current && ready && !hasChanged.current) {
+      hasChanged.current = true;
       handleIamgeReload(imageRef.current);
     }
-  }, []);
+  }, [ready]);
 
   return (
     <div className="min-h-[100vh] w-full flex items-center justify-center flex-col py-36">
       {children}
-      <img
+      <SafeImage
+        setReady={setReady}
         ref={imageRef}
         src={imageURL}
         alt="hero"
