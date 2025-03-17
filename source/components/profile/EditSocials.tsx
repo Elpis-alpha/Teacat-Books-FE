@@ -229,7 +229,7 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
   return (
     <div className="w-full">
       <p>Socials</p>
-      <div className="mt-8 flex flex-col gap-4">
+      <div className="mt-4 flex flex-col gap-6">
         <div className="flex items-center gap-3">
           <img
             src="/icons/google.svg"

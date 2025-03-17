@@ -11,7 +11,9 @@ export type profileProcessing =
   | "disconnecting-twitter"
   | "connecting-discord"
   | "disconnecting-discord"
-  | "connecting-google";
+  | "connecting-google"
+  | "creating-author-ticket"
+  | "canceling-author-ticket";
 export type profileProcessingState = [
   profileProcessing,
   Dispatch<SetStateAction<profileProcessing>>

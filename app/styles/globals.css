@@ -185,3 +185,9 @@
     animation: skeleton-keyframes 1s linear infinite alternate;
   }
 }
+
+@utility gsap-init {
+  & {
+    visibility: 0;
+  }
+}

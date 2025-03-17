@@ -26,6 +26,14 @@ const routes = {
     discordDisconnect: `${BE}/oauth/discord/disconnect`,
   },
 
+  ticket: {
+    author: {
+      create: `${BE}/ticket/author/create`,
+      cancel: `${BE}/ticket/author/cancel`,
+      myTicket: `${BE}/ticket/author/my-ticket`,
+    },
+  },
+
   // getUser: () => `${BE}/user/get-me`,
 };
 

@@ -5,6 +5,7 @@ import { profileProcessing } from "@/source/types/misc";
 import EditPassword from "./EditPassword";
 import { useAppSelector } from "@/source/store/hooks";
 import EditSocials from "./EditSocials";
+import AuthorStatus from "./AuthorStatus";
 
 const ProfilePage = () => {
   const profileProcessing = useState<profileProcessing>("");
@@ -18,6 +19,7 @@ const ProfilePage = () => {
           <EditPassword profileProcessing={profileProcessing} />
         )}
         <EditSocials profileProcessing={profileProcessing} />
+        <AuthorStatus profileProcessing={profileProcessing} />
       </div>
     </div>
   );

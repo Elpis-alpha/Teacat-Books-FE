@@ -1,9 +1,13 @@
+"use client";
+import ClientRender from "../reusable/ClientRender";
+import CurrentAuthorTicket from "./CurrentAuthorTicket";
+
 const ModalsContainer = () => {
   return (
-    <>
+    <ClientRender>
+      <CurrentAuthorTicket />
       {/* <YourModalHere /> */}
-      {/* <YourModalHere /> */}
-    </>
+    </ClientRender>
   );
 };
 export default ModalsContainer;

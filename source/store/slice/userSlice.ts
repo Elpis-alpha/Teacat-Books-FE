@@ -77,6 +77,14 @@ const UserSlice = createSlice({
       state.data.twitter = payload;
     },
 
+    setUserAuthor: (
+      state,
+      { payload }: { payload: userDataType["author"] }
+    ) => {
+      if (!state.data) return;
+      state.data.author = payload;
+    },
+
     setUserBorrowLockdown: (state, { payload }: { payload: string }) => {
       if (!state.data) return;
       state.data.borrowLockdownEndsAt = payload;
@@ -96,4 +104,5 @@ export const {
   setUserDiscord,
   setUserMail,
   setUserTwitter,
+  setUserAuthor,
 } = UserSlice.actions;
