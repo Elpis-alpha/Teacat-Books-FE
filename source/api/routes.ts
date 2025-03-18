@@ -37,10 +37,10 @@ const routes = {
     },
     book: {
       newBook: `${BE}/ticket/book/create-new-book-ticket`,
-      updateImage: `${BE}/ticket"/book/create-update-image-ticket"`,
-      updateBook: `${BE}/ticket"/book/create-update-text-ticket"`,
-      updateMeta: `${BE}/ticket"/book/create-update-meta-ticket"`,
-      deleteBook: `${BE}/ticket"/book/create-delete-book-ticket"`,
+      updateImage: `${BE}/ticket/book/create-update-image-ticket`,
+      updateBook: `${BE}/ticket/book/create-update-text-ticket`,
+      updateMeta: `${BE}/ticket/book/create-update-meta-ticket`,
+      deleteBook: `${BE}/ticket/book/create-delete-book-ticket`,
       get: (
         limit: number,
         skip: number,
@@ -60,6 +60,28 @@ const routes = {
         }`,
       cancel: `${BE}/ticket/book/cancel`,
     },
+    admin: {
+      reviewAuthor: `${BE}/ticket/admin/review-author`,
+      reviewBook: `${BE}/ticket/admin/review-book`,
+    },
+  },
+
+  book: {
+    // all: `${BE}/book/all`,
+    all: (
+      limit: number,
+      skip: number,
+      sort: string,
+      status: null | "new-books" | "completed-books" | "ongoing-books",
+      author: string | null,
+      text: string | null,
+      featured: "true" | null
+    ) =>
+      `${BE}/book/all${generateLSSB(limit, skip, sort)}${
+        status ? `&status=${status}` : ""
+      }${author ? `&author=${author}` : ""}${text ? `&text=${text}` : ""}${
+        featured ? `&featured=${featured}` : ""
+      }`,
   },
 
   // getUser: () => `${BE}/user/get-me`,

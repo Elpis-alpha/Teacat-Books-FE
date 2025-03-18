@@ -11,8 +11,7 @@ const AuthorProvider = ({ children }: AuthorProviderProps) => {
 
   return (
     <ClientRender initial={<LoadingPage message="Authenticating" />}>
-      {userData?.author?.status === "approved" ||
-      userData?.author?.status === "pending-removal" ? (
+      {userData?.author?.status === "approved" ? (
         <>{children}</>
       ) : (
         <ErrorPage

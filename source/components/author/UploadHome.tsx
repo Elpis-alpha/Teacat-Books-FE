@@ -31,11 +31,11 @@ const UploadHome = () => {
     if (processing === "uploading") {
       toast.error("Please wait for the current upload to finish.");
       return;
-    } else if (!title) {
+    } else if (!title.trim()) {
       return toast.error("Please enter a title.");
-    } else if (!description) {
+    } else if (!description.trim()) {
       return toast.error("Please enter a description.");
-    } else if (!messageForReviewer) {
+    } else if (!messageForReviewer.trim()) {
       return toast.error("Please enter a message for the reviewer.");
     } else if (!price || isNaN(price) || price <= 0) {
       return toast.error("Please enter a valid price.");
@@ -57,9 +57,9 @@ const UploadHome = () => {
       setProcessing("uploading");
       // upload book
       const response = await postApiFormData(routes.ticket.book.newBook, {
-        title,
-        description,
-        messageForReviewer,
+        title: title.trim(),
+        description: description.trim(),
+        messageForReviewer: messageForReviewer.trim(),
         price: price.toString(),
         borrowableCopies: borrowableCopies.toString(),
         bookEpub: bookEpub.current,

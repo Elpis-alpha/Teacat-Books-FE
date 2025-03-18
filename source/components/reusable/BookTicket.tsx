@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
 import { postApiJson } from "@/source/api";
 import routes from "@/source/api/routes";
+import TextInput from "./TextInput";
 
 type BookTicketProps = {
   ticket: BookTicketInterface;
@@ -29,6 +30,8 @@ const BookTicket = (props: BookTicketProps) => {
   const { ticket, viewer, refetch } = props;
   const ticketType = ticket.action;
   const [expanded, setExpanded] = useState(false);
+  const [expandReview, setExpandReview] = useState(false);
+  const [reviewerFeedback, setReviewerFeedback] = useState("");
   const userData = useAppSelector((state) => state.user).data!;
   const [processingState, setProcessingState] = props.processingState;
 
@@ -88,8 +91,29 @@ const BookTicket = (props: BookTicketProps) => {
     if (ticket.status !== "pending")
       return toast.error("Ticket is not pending");
     if (userData.isAdmin) return toast.error("You are not an admin");
+    if (!reviewerFeedback) return toast.error("Feedback is required");
 
-    // approve ticket
+    try {
+      setProcessingState({ on: "accepting", data: ticket._id });
+
+      const response = await postApiJson(routes.ticket.admin.reviewBook, {
+        ticketID: ticket._id,
+        reviewerFeedback: reviewerFeedback,
+        approveTicket: true,
+      });
+
+      if (response.error || !response.message) {
+        console.error(response);
+        toast.error(response.errorMessage || "Failed to approve ticket");
+      } else {
+        toast.success("Ticket approved successfully");
+        refetch();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to approve ticket");
+    }
+    setProcessingState({ on: "", data: "" });
   };
 
   const rejectTicket = async () => {
@@ -97,8 +121,29 @@ const BookTicket = (props: BookTicketProps) => {
     if (ticket.status !== "pending")
       return toast.error("Ticket is not pending");
     if (userData.isAdmin) return toast.error("You are not an admin");
+    if (!reviewerFeedback) return toast.error("Feedback is required");
 
-    // reject ticket
+    try {
+      setProcessingState({ on: "rejecting", data: ticket._id });
+
+      const response = await postApiJson(routes.ticket.admin.reviewBook, {
+        ticketID: ticket._id,
+        reviewerFeedback: reviewerFeedback,
+        approveTicket: false,
+      });
+
+      if (response.error || !response.message) {
+        console.error(response);
+        toast.error(response.errorMessage || "Failed to reject ticket");
+      } else {
+        toast.success("Ticket rejected successfully");
+        refetch();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to reject ticket");
+    }
+    setProcessingState({ on: "", data: "" });
   };
 
   return (
@@ -115,7 +160,7 @@ const BookTicket = (props: BookTicketProps) => {
           ? "Book Update"
           : ticketType === "update-meta"
           ? ticket?.updateMeta?.textType === "title"
-            ? "TitleUpdate"
+            ? "Title Update"
             : "Description Update"
           : "Delete Book"}
         <span
@@ -317,8 +362,37 @@ const BookTicket = (props: BookTicketProps) => {
               )}
           </button>
         )}
-        {viewer === "admin" && ticket.status === "pending" && (
-          <>
+        {viewer === "admin" && ticket.status === "pending" && !expandReview && (
+          <button
+            onClick={() => setExpandReview(true)}
+            className="text-white bg-highlight py-1.5 px-5 rounded-lg hover:opacity-50"
+            disabled={!!processingState.on}
+          >
+            Review
+          </button>
+        )}
+        {viewer === "admin" && ticket.status === "pending" && expandReview && (
+          <button
+            onClick={() => setExpandReview(false)}
+            className="text-black bg-white py-1.5 px-5 rounded-lg hover:opacity-50"
+            disabled={!!processingState.on}
+          >
+            Cancel Review
+          </button>
+        )}
+      </div>
+      {viewer === "admin" && ticket.status === "pending" && expandReview && (
+        <div className="">
+          <TextInput
+            label="Reviewer feedback"
+            onChange={setReviewerFeedback}
+            value={reviewerFeedback}
+            readonly={!!processingState.on}
+            isTextArea
+            placeholder="Feedback for author"
+            rows={5}
+          />
+          <div className="flex gap-2">
             <button
               onClick={approveTicket}
               disabled={!!processingState.on}
@@ -341,9 +415,9 @@ const BookTicket = (props: BookTicketProps) => {
                   <ClipLoader color="#fff" size={15} />
                 )}
             </button>
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

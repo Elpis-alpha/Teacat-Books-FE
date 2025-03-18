@@ -90,3 +90,38 @@ export interface TicketNewBook {
   allowsLLM: boolean;
   wallet: string;
 }
+
+export interface BookInterface {
+  _id: string;
+
+  author: string | { _id: string; name: string; avatar: string };
+  title: string;
+  description: string;
+  price: number;
+  mediaIDLength: number;
+
+  mainImage: string;
+  coverImage: string;
+
+  featured?: boolean;
+
+  epubUpdatedAt: Date;
+  epubURL?: string;
+
+  wordCount: number;
+  isCompleted: boolean;
+
+  helioPayLinkID: string;
+
+  totalCopies: number;
+  availableCopies: number;
+
+  numberOfReviews: number;
+  sumOfReviews: number;
+  averageRating: number;
+
+  allowsLLM: boolean;
+
+  createdAt: string;
+  updatedAt: string;
+}
