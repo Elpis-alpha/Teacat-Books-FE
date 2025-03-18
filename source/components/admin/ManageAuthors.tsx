@@ -1,19 +1,17 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
 import PaginatedItems from "../reusable/PaginatedItems";
 import { getApiJson } from "@/source/api";
 import routes from "@/source/api/routes";
 import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
-import BookTicket from "../reusable/BookTicket";
-import { BookTicketInterface } from "@/source/types/states";
+import { SimpleUser } from "@/source/types/states";
+import AuthorToManage from "./AuthorToManage";
 
-const ManageTickets = () => {
-  const [showReviewed, setShowReviewed] = useState(false);
+const ManageAuthors = () => {
   const [searchValue, setSearchValue] = useState("");
   const processingState = useState({
-    on: "" as "accepting" | "rejecting" | "canceling" | "",
+    on: "" as "removing" | "",
     data: "",
   });
   const processing = !!processingState[0].on;
@@ -21,8 +19,8 @@ const ManageTickets = () => {
   const [data, setData] = useState({
     available: false,
     loading: true,
-    error: "Failed to fetch tickets",
-    tickets: [],
+    error: "Failed to fetch authors",
+    authors: [],
   });
 
   // pagination logic
@@ -34,31 +32,31 @@ const ManageTickets = () => {
   }, [resetPagination]);
 
   useEffect(() => {
-    const fetchTickets = async () => {
+    const fetchAuthors = async () => {
       setData({
         available: false,
         loading: true,
-        error: "Failed to fetch tickets",
-        tickets: [],
+        error: "Failed to fetch authors",
+        authors: [],
       });
 
       try {
         const response = await getApiJson(
-          routes.ticket.book.get(limit, 0, "createdAt:asc", false, false)
+          routes.user.all(limit, 0, "createdAt:asc", true, null)
         );
-        if (response.error || !response.tickets) {
+        if (response.error || !response.users) {
           setData({
             available: false,
             loading: false,
-            error: response.errorMessage || "Failed to fetch tickets",
-            tickets: [],
+            error: response.errorMessage || "Failed to fetch authors",
+            authors: [],
           });
         } else {
           setData({
             available: true,
             loading: false,
             error: "",
-            tickets: response.tickets,
+            authors: response.users,
           });
 
           if (typeof response.count === "number") {
@@ -70,51 +68,40 @@ const ManageTickets = () => {
         setData({
           available: false,
           loading: false,
-          error: "Failed to fetch tickets",
-          tickets: [],
+          error: "Failed to fetch authors",
+          authors: [],
         });
       }
     };
 
-    fetchTickets();
+    fetchAuthors();
   }, []);
 
-  const fetchTickets = async (
-    page: number,
-    showReviewed: boolean,
-    ticketNumber?: number
-  ) => {
+  const fetchAuthors = async (page: number, text: string | null = null) => {
     setData({
       available: false,
       loading: true,
-      error: "Failed to fetch tickets",
-      tickets: [],
+      error: "Failed to fetch authors",
+      authors: [],
     });
 
     try {
       const response = await getApiJson(
-        routes.ticket.book.get(
-          limit,
-          page * limit,
-          "createdAt:desc",
-          showReviewed,
-          false,
-          ticketNumber
-        )
+        routes.user.all(limit, page * limit, "createdAt:desc", true, text)
       );
-      if (response.error || !response.tickets) {
+      if (response.error || !response.users) {
         setData({
           available: false,
           loading: false,
-          error: response.errorMessage || "Failed to fetch tickets",
-          tickets: [],
+          error: response.errorMessage || "Failed to fetch authors",
+          authors: [],
         });
       } else {
         setData({
           available: true,
           loading: false,
           error: "",
-          tickets: response.tickets,
+          authors: response.users,
         });
 
         _page.current = page;
@@ -127,8 +114,8 @@ const ManageTickets = () => {
       setData({
         available: false,
         loading: false,
-        error: "Failed to fetch tickets",
-        tickets: [],
+        error: "Failed to fetch authors",
+        authors: [],
       });
     }
   };
@@ -136,21 +123,19 @@ const ManageTickets = () => {
   const handleSearch: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
 
-    if (!searchValue) return toast.error("Please enter a ticket number");
+    if (!searchValue) return toast.error("Please enter a search text");
 
-    const ticketNumber = parseInt(searchValue);
-    if (isNaN(ticketNumber) || ticketNumber < 0)
-      return toast.error("Invalid ticket number");
+    const text = searchValue.trim() || null;
 
     setResetPagination(true);
-    fetchTickets(0, showReviewed, ticketNumber).catch(() => {});
+    fetchAuthors(0, text).catch(() => {});
   };
 
   return (
     <div className="w-full px-6 md:px-10 xl:px-16 py-10 text-base sm:text-xl flex-1 flex flex-col font-proxima">
       <div className="max-w-[1640px] w-full flex-1 flex flex-col items-center justify-center gap-5 sm:gap-10 mx-auto">
         <h2 className="w-full font-proxima font-bold text-xl sm:text-4xl">
-          Manage Tickets
+          Manage Authors
         </h2>
         <div className="w-full">
           <form
@@ -163,7 +148,7 @@ const ManageTickets = () => {
               name="search"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search tickets e.g. 239478692323498"
+              placeholder="Search authors e.g. Alex Cinder"
               className="w-full flex-1 px-7 py-2.5 rounded-lg bg-white/5"
             />
             <div className="flex gap-4">
@@ -180,7 +165,7 @@ const ManageTickets = () => {
                 onClick={() => {
                   setResetPagination(true);
                   setSearchValue("");
-                  fetchTickets(0, showReviewed).catch(() => {});
+                  fetchAuthors(0, null).catch(() => {});
                 }}
                 className="bg-transparent border-2 py-1.5 sm:py-2 px-7 rounded-lg hover:opacity-50"
               >
@@ -188,44 +173,6 @@ const ManageTickets = () => {
               </button>
             </div>
           </form>
-          <div className="font-proxima flex gap-4 w-full mt-4">
-            <button
-              disabled={data.loading || processing}
-              onClick={() => {
-                if (showReviewed) {
-                  setSearchValue("");
-                  setResetPagination(true);
-                  fetchTickets(0, false).catch(() => {});
-                  setShowReviewed(false);
-                }
-              }}
-              className={`${
-                showReviewed
-                  ? "bg-white/10 hover:bg-white/40"
-                  : "bg-white text-black"
-              } py-1 px-5 sm:px-7 rounded-lg text-base block`}
-            >
-              Unreviewed
-            </button>
-            <button
-              disabled={data.loading || processing}
-              onClick={() => {
-                if (!showReviewed) {
-                  setSearchValue("");
-                  setResetPagination(true);
-                  fetchTickets(0, true).catch(() => {});
-                  setShowReviewed(true);
-                }
-              }}
-              className={`${
-                showReviewed
-                  ? "bg-white text-black"
-                  : "bg-white/10 hover:bg-white/40"
-              } py-1 px-5 sm:px-7 rounded-lg text-base block`}
-            >
-              Reviewed
-            </button>
-          </div>
         </div>
         <div className="w-full flex-1">
           {data.loading ? (
@@ -233,26 +180,19 @@ const ManageTickets = () => {
               <ClipLoader color="#fff" size={40} />
             </div>
           ) : data.available ? (
-            data.tickets.length === 0 ? (
+            data.authors.length === 0 ? (
               <div className="w-full items-center justify-center flex p-5">
-                <p>No tickets found{_page.current > 0 && " on this page"}</p>
+                <p>No authors found{_page.current > 0 && " on this page"}</p>
               </div>
             ) : (
               <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                {data.tickets.map((ticket: BookTicketInterface) => (
-                  <BookTicket
-                    key={ticket._id}
+                {data.authors.map((author: SimpleUser) => (
+                  <AuthorToManage
+                    key={author._id}
                     processingState={processingState}
-                    ticket={ticket}
-                    viewer="author"
+                    author={author}
                     refetch={() =>
-                      fetchTickets(
-                        _page.current,
-                        showReviewed,
-                        (!isNaN(parseInt(searchValue)) &&
-                          parseInt(searchValue)) ||
-                          undefined
-                      )
+                      fetchAuthors(_page.current, searchValue.trim() || null)
                     }
                   />
                 ))}
@@ -268,7 +208,7 @@ const ManageTickets = () => {
           <PaginatedItems
             count={count}
             itemsPerPage={limit}
-            pageChange={(x) => fetchTickets(x, showReviewed)}
+            pageChange={(x) => fetchAuthors(x, searchValue.trim() || null)}
             reset={resetPagination}
             disabled={data.loading || processing}
           />
@@ -278,5 +218,5 @@ const ManageTickets = () => {
   );
 };
 
-export default ManageTickets;
+export default ManageAuthors;
 const limit = 6;

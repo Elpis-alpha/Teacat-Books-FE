@@ -24,7 +24,8 @@ const SafeImage = ({ src, alt, className, ref, setReady }: SafeImageProps) => {
       _setReady(true);
       setError(false);
     };
-    img.onerror = () => {
+    img.onerror = (err) => {
+      console.log("Error loading image", src, err);
       _setReady(true);
       if (setReady) setReady(true);
       setError(true);

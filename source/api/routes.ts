@@ -14,7 +14,18 @@ const routes = {
 
     uploadAvatar: `${BE}/user/upload-image`,
     resetAvatar: `${BE}/user/reset-image`,
+    removeAuthorStatus: `${BE}/user/remove-author-status`,
     one: (userID: string) => `${BE}/user/get-one?userID=${userID}`,
+    all: (
+      limit: number,
+      skip: number,
+      sort: string,
+      authorsOnly: boolean,
+      search: string | null
+    ) =>
+      `${BE}/user/search-user${generateLSSB(limit, skip, sort)}&authors=${tt(
+        authorsOnly
+      )}${search ? `&search=${search}` : ""}`,
   },
 
   oauth: {
@@ -33,7 +44,23 @@ const routes = {
       create: `${BE}/ticket/author/create`,
       cancel: `${BE}/ticket/author/cancel`,
       myTicket: `${BE}/ticket/author/my-ticket`,
-      // tickets: `${BE}/ticket/author/tickets`,
+      tickets: (
+        limit: number,
+        skip: number,
+        sort: string,
+        showReviewed: boolean,
+        showAll: boolean,
+        ticketNumber?: number
+      ) =>
+        `${BE}/ticket/author/tickets${generateLSSB(
+          limit,
+          skip,
+          sort
+        )}&showReviewed=${tt(showReviewed)}&showAll=${tt(showAll)}${
+          typeof ticketNumber === "number"
+            ? `&ticketNumber=${ticketNumber}`
+            : ""
+        }`,
     },
     book: {
       newBook: `${BE}/ticket/book/create-new-book-ticket`,
@@ -63,6 +90,7 @@ const routes = {
     admin: {
       reviewAuthor: `${BE}/ticket/admin/review-author`,
       reviewBook: `${BE}/ticket/admin/review-book`,
+      changeFeatured: `${BE}/ticket/admin/change-featured`,
     },
   },
 
@@ -82,6 +110,24 @@ const routes = {
       }${author ? `&author=${author}` : ""}${text ? `&text=${text}` : ""}${
         featured ? `&featured=${featured}` : ""
       }`,
+
+    review: {
+      process: `${BE}/book/process-review`,
+      all: (
+        limit: number,
+        skip: number,
+        sort: string,
+        status: null | "approved" | "pending" | "rejected",
+        isAdminRequest: boolean,
+        stars: number | null,
+        bookID: string | null
+      ) =>
+        `${BE}/book/reviews${generateLSSB(limit, skip, sort)}${
+          status ? `&status=${status}` : ""
+        }&isAdminRequest=${tt(isAdminRequest)}${
+          stars ? `&stars=${stars}` : ""
+        }${bookID ? `&bookID=${bookID}` : ""}`,
+    },
   },
 
   // getUser: () => `${BE}/user/get-me`,

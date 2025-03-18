@@ -100,7 +100,7 @@ const CurrentAuthorTicket = () => {
     <div className="fixed left-0 right-0 bottom-0 top-[0px] bg-[#DBDBDB]/[0.01] backdrop-blur-[10px] z-[90] flex justify-center p-5">
       <div
         ref={mainRef}
-        className="gsap-init m-auto w-full max-w-[458px] rounded-[24px] bg-sub-bg shadow-lg py-12 pl-6 pr-3"
+        className="gsap-init m-auto w-full max-w-[458px] rounded-[24px] bg-sub-bg shadow-lg py-8 pl-6 pr-3"
       >
         {ticket.data && ticket.status === "success" ? (
           <div className="pr-3 overflow-auto max-h-[70vh] text-lg">
@@ -109,7 +109,7 @@ const CurrentAuthorTicket = () => {
               <p className="font-bold">
                 {ticket.data.action === "become-author"
                   ? "Become an author"
-                  : "Remove author status"}
+                  : "Remove Authorship"}
               </p>
               <p className="text-sm ">
                 Status:{" "}

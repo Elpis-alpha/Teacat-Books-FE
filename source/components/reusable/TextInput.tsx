@@ -7,11 +7,21 @@ type TextInputProps = {
   placeholder?: string;
   isTextArea?: boolean;
   rows?: number;
+  extraText?: string | React.ReactNode;
 };
 
 const TextInput = (props: TextInputProps) => {
-  const { label, value, onChange, placeholder, isTextArea, rows, readonly } =
-    props;
+  const {
+    label,
+    value,
+    onChange,
+    placeholder,
+    isTextArea,
+    rows,
+    readonly,
+    extraText,
+  } = props;
+
   return (
     <div className="w-full">
       <label className="font-bold block">{label}</label>
@@ -34,6 +44,7 @@ const TextInput = (props: TextInputProps) => {
           className="w-full px-4 sm:px-5 py-2.5 sm:py-3.5 rounded-xl mt-1.5 bg-white/20"
         />
       )}
+      {extraText && <p className="text-xs mt-1.5">{extraText}</p>}
     </div>
   );
 };

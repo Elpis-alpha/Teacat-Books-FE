@@ -1,16 +1,16 @@
-import ManageTickets from "@/source/components/reusable/ManageTickets";
-import AuthorProvider from "@/source/components/providers/AuthorProvider";
+import AdminProvider from "@/source/components/providers/AdminProvider";
 import UserProvider from "@/source/components/providers/UserProvider";
 import { NormalPage } from "@/source/components/reusable/SimplePages";
+import ManageAuthors from "@/source/components/admin/ManageAuthors";
 
 export default function Home() {
   return (
     <UserProvider>
-      <AuthorProvider>
+      <AdminProvider>
         <NormalPage usePhysicalNavBar useStart>
-          <ManageTickets viewer="author" />
+          <ManageAuthors />
         </NormalPage>
-      </AuthorProvider>
+      </AdminProvider>
     </UserProvider>
   );
 }

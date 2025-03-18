@@ -5,7 +5,7 @@ import {
   setUserData,
   setUserLoading,
 } from "@/source/store/slice/userSlice";
-import { getToken } from "@/source/api/misc";
+import { getToken, removeToken } from "@/source/api/misc";
 import { getApiJson } from "@/source/api";
 import routes from "@/source/api/routes";
 
@@ -21,7 +21,10 @@ const FetchAppData = () => {
         if (!getToken()) return dispatch(removeUserData());
 
         const response = await getApiJson(routes.user.me);
-        if (response.error) throw new Error(response.error);
+        if (response.error) {
+          if (response.error !== "failed-to-connect") removeToken();
+          throw new Error(response.error);
+        }
         if (!response.user) throw new Error("User not found");
 
         dispatch(setUserData(response.user));

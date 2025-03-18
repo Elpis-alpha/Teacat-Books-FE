@@ -10,7 +10,7 @@ const PublicProfilePage = ({ user }: { user: OneUser }) => {
       <div className="max-w-[600px] mx-auto text-xl flex flex-col items-center">
         <div className="w-[200px] h-[200px] mx-auto">
           <SafeImage
-            src={user.avatar + "khsasdf"}
+            src={makeImageSmaller(user.avatar)}
             alt={user.name + " Profile"}
             className="w-full h-full rounded-full z-10 absolute inset-0 object-cover border-white border-1"
           />
@@ -73,3 +73,6 @@ const PublicProfilePage = ({ user }: { user: OneUser }) => {
   );
 };
 export default PublicProfilePage;
+const makeImageSmaller = (imageURL = "c") => {
+  return imageURL.replace("/upload/", `/upload/c_scale,w_200/`);
+};

@@ -35,6 +35,7 @@ const BookToManage = (props: BookToManageProps) => {
     | "coverImage"
     | "epub"
     | "remove"
+    | "featured"
   >("");
   const [adminApproving, setAdminApproving] = useState(false); // for admin [viewer], approves immediately the ticket is created
 
@@ -55,8 +56,8 @@ const BookToManage = (props: BookToManageProps) => {
         : { authorName: "Author", authorID: book.author };
     } else {
       return {
-        authorName: book.author?.name || "Author",
-        authorID: book.author._id,
+        authorName: book?.author?.name || "Author",
+        authorID: book?.author?._id || "",
       };
     }
   }, [book.author, userData._id, userData.name]);
@@ -236,11 +237,41 @@ const BookToManage = (props: BookToManageProps) => {
     setProcessingState({ on: "", data: "" });
   };
 
+  const toggleFeatured = async () => {
+    if (processingState.on) return toast("Please wait");
+    if (viewer !== "admin") return toast.error("Only admin can feature books");
+
+    try {
+      setEditing("featured");
+      setProcessingState({ on: "ticketing", data: book._id });
+
+      const response = await postApiJson(routes.ticket.admin.changeFeatured, {
+        bookID: book._id,
+        featured: book.featured ? false : true,
+      });
+
+      if (response.error || !response.message) {
+        console.error(response);
+        toast.error(response.errorMessage || "Failed to toggle featured");
+      } else {
+        toast.success("Featured toggled successfully");
+        refetch();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to toggle featured");
+    }
+    setProcessingState({ on: "", data: "" });
+    setEditing("");
+  };
+
   return (
     <div className="bg-sub-bg rounded-3xl py-6 px-7 text-sm sm:text-base font-proxima flex flex-col gap-4 sm:gap-6">
       <div className="">
         <h3 className="font-bold text-lg sm:text-2xl flex items-start justify-between gap-2">
-          <Link href={`/book/${book._id}`}>{book.title}</Link>
+          <Link target="_blank" rel="noreferrer" href={`/book/${book._id}`}>
+            {book.title}
+          </Link>
           {book.epubURL && (
             <a
               href={book.epubURL}
@@ -259,7 +290,12 @@ const BookToManage = (props: BookToManageProps) => {
           {viewer === "admin" && (
             <>
               {" ---- "}
-              <Link className="underline" href={`/profile/${authorID}`}>
+              <Link
+                target="_blank"
+                rel="noreferrer"
+                className="underline"
+                href={`/profile/${authorID}`}
+              >
                 {authorName}
               </Link>
             </>
@@ -339,8 +375,22 @@ const BookToManage = (props: BookToManageProps) => {
         >
           {editing === "remove" ? "Cancel" : "Remove Book"}
         </button>
+        <button
+          disabled={!!processingState.on}
+          onClick={toggleFeatured}
+          className={`py-1.5 px-5 rounded-lg hover:opacity-50 flex items-center justify-center gap-2 ${
+            book.featured
+              ? "bg-fuchsia-900 text-white"
+              : "bg-highlight text-white"
+          }`}
+        >
+          {book.featured ? "Remove from Featured" : "Mark as Featured"}
+          {processingState.on === "ticketing" &&
+            processingState.data === book._id &&
+            editing === "featured" && <ClipLoader color="#fff" size={15} />}
+        </button>
       </div>
-      {editing && (
+      {editing && editing !== "featured" && (
         <form
           onSubmit={(e) => {
             e.preventDefault();

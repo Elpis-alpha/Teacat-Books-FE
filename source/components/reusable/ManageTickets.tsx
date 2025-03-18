@@ -1,20 +1,19 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import PaginatedItems from "../reusable/PaginatedItems";
+import PaginatedItems from "./PaginatedItems";
 import { getApiJson } from "@/source/api";
 import routes from "@/source/api/routes";
 import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
-import { BookInterface } from "@/source/types/states";
-import { useAppSelector } from "@/source/store/hooks";
-import BookToManage from "../reusable/BookToManage";
+import BookTicket from "./BookTicket";
+import { BookTicketInterface } from "@/source/types/states";
 
-const ManageBooks = () => {
-  const userID = useAppSelector((state) => state.user.data?._id || "");
+const ManageTickets = ({ viewer }: { viewer: "author" | "admin" }) => {
+  const [showReviewed, setShowReviewed] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const processingState = useState({
-    on: "" as "ticketing" | "",
+    on: "" as "accepting" | "rejecting" | "canceling" | "",
     data: "",
   });
   const processing = !!processingState[0].on;
@@ -22,8 +21,8 @@ const ManageBooks = () => {
   const [data, setData] = useState({
     available: false,
     loading: true,
-    error: "Failed to fetch books",
-    books: [],
+    error: "Failed to fetch tickets",
+    tickets: [],
   });
 
   // pagination logic
@@ -35,31 +34,37 @@ const ManageBooks = () => {
   }, [resetPagination]);
 
   useEffect(() => {
-    const fetchBooks = async () => {
+    const fetchTickets = async () => {
       setData({
         available: false,
         loading: true,
-        error: "Failed to fetch books",
-        books: [],
+        error: "Failed to fetch tickets",
+        tickets: [],
       });
 
       try {
         const response = await getApiJson(
-          routes.book.all(limit, 0, "createdAt:asc", null, userID, null, null)
+          routes.ticket.book.get(
+            limit,
+            0,
+            "createdAt:asc",
+            false,
+            viewer === "admin"
+          )
         );
-        if (response.error || !response.books) {
+        if (response.error || !response.tickets) {
           setData({
             available: false,
             loading: false,
-            error: response.errorMessage || "Failed to fetch books",
-            books: [],
+            error: response.errorMessage || "Failed to fetch tickets",
+            tickets: [],
           });
         } else {
           setData({
             available: true,
             loading: false,
             error: "",
-            books: response.books,
+            tickets: response.tickets,
           });
 
           if (typeof response.count === "number") {
@@ -71,48 +76,51 @@ const ManageBooks = () => {
         setData({
           available: false,
           loading: false,
-          error: "Failed to fetch books",
-          books: [],
+          error: "Failed to fetch tickets",
+          tickets: [],
         });
       }
     };
 
-    fetchBooks();
-  }, [userID]);
+    fetchTickets();
+  }, [viewer]);
 
-  const fetchBooks = async (page: number, text: string | null = null) => {
+  const fetchTickets = async (
+    page: number,
+    showReviewed: boolean,
+    ticketNumber?: number
+  ) => {
     setData({
       available: false,
       loading: true,
-      error: "Failed to fetch books",
-      books: [],
+      error: "Failed to fetch tickets",
+      tickets: [],
     });
 
     try {
       const response = await getApiJson(
-        routes.book.all(
+        routes.ticket.book.get(
           limit,
           page * limit,
-          "createdAt:desc",
-          null,
-          userID,
-          text || null,
-          null
+          showReviewed ? "dateReviewed:desc" : "createdAt:desc",
+          showReviewed,
+          viewer === "admin",
+          ticketNumber
         )
       );
-      if (response.error || !response.books) {
+      if (response.error || !response.tickets) {
         setData({
           available: false,
           loading: false,
-          error: response.errorMessage || "Failed to fetch books",
-          books: [],
+          error: response.errorMessage || "Failed to fetch tickets",
+          tickets: [],
         });
       } else {
         setData({
           available: true,
           loading: false,
           error: "",
-          books: response.books,
+          tickets: response.tickets,
         });
 
         _page.current = page;
@@ -125,8 +133,8 @@ const ManageBooks = () => {
       setData({
         available: false,
         loading: false,
-        error: "Failed to fetch books",
-        books: [],
+        error: "Failed to fetch tickets",
+        tickets: [],
       });
     }
   };
@@ -134,19 +142,24 @@ const ManageBooks = () => {
   const handleSearch: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
 
-    if (!searchValue) return toast.error("Please enter a search text");
+    if (searchValue.trim().length === 0) {
+      setResetPagination(true);
+      return fetchTickets(0, showReviewed).catch(() => {});
+    }
 
-    const text = searchValue.trim() || null;
+    const ticketNumber = parseInt(searchValue);
+    if (isNaN(ticketNumber) || ticketNumber < 0)
+      return toast.error("Invalid ticket number");
 
     setResetPagination(true);
-    fetchBooks(0, text).catch(() => {});
+    fetchTickets(0, showReviewed, ticketNumber).catch(() => {});
   };
 
   return (
     <div className="w-full px-6 md:px-10 xl:px-16 py-10 text-base sm:text-xl flex-1 flex flex-col font-proxima">
       <div className="max-w-[1640px] w-full flex-1 flex flex-col items-center justify-center gap-5 sm:gap-10 mx-auto">
         <h2 className="w-full font-proxima font-bold text-xl sm:text-4xl">
-          Manage Books
+          Manage Tickets
         </h2>
         <div className="w-full">
           <form
@@ -159,7 +172,7 @@ const ManageBooks = () => {
               name="search"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search titles e.g. Benefactor's Legacy"
+              placeholder="Search tickets e.g. 239478692323498"
               className="w-full flex-1 px-7 py-2.5 rounded-lg bg-white/5"
             />
             <div className="flex gap-4">
@@ -176,7 +189,7 @@ const ManageBooks = () => {
                 onClick={() => {
                   setResetPagination(true);
                   setSearchValue("");
-                  fetchBooks(0, null).catch(() => {});
+                  fetchTickets(0, showReviewed).catch(() => {});
                 }}
                 className="bg-transparent border-2 py-1.5 sm:py-2 px-7 rounded-lg hover:opacity-50"
               >
@@ -184,6 +197,44 @@ const ManageBooks = () => {
               </button>
             </div>
           </form>
+          <div className="font-proxima flex gap-4 w-full mt-4">
+            <button
+              disabled={data.loading || processing}
+              onClick={() => {
+                if (showReviewed) {
+                  setSearchValue("");
+                  setResetPagination(true);
+                  fetchTickets(0, false).catch(() => {});
+                  setShowReviewed(false);
+                }
+              }}
+              className={`${
+                showReviewed
+                  ? "bg-white/10 hover:bg-white/40"
+                  : "bg-white text-black"
+              } py-1 px-5 sm:px-7 rounded-lg text-base block`}
+            >
+              Unreviewed
+            </button>
+            <button
+              disabled={data.loading || processing}
+              onClick={() => {
+                if (!showReviewed) {
+                  setSearchValue("");
+                  setResetPagination(true);
+                  fetchTickets(0, true).catch(() => {});
+                  setShowReviewed(true);
+                }
+              }}
+              className={`${
+                showReviewed
+                  ? "bg-white text-black"
+                  : "bg-white/10 hover:bg-white/40"
+              } py-1 px-5 sm:px-7 rounded-lg text-base block`}
+            >
+              Reviewed
+            </button>
+          </div>
         </div>
         <div className="w-full flex-1">
           {data.loading ? (
@@ -191,20 +242,26 @@ const ManageBooks = () => {
               <ClipLoader color="#fff" size={40} />
             </div>
           ) : data.available ? (
-            data.books.length === 0 ? (
+            data.tickets.length === 0 ? (
               <div className="w-full items-center justify-center flex p-5">
-                <p>No books found{_page.current > 0 && " on this page"}</p>
+                <p>No tickets found{_page.current > 0 && " on this page"}</p>
               </div>
             ) : (
               <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                {data.books.map((book: BookInterface) => (
-                  <BookToManage
-                    key={book._id}
+                {data.tickets.map((ticket: BookTicketInterface) => (
+                  <BookTicket
+                    key={ticket._id}
                     processingState={processingState}
-                    book={book}
-                    viewer="author"
+                    ticket={ticket}
+                    viewer={viewer}
                     refetch={() =>
-                      fetchBooks(_page.current, searchValue.trim() || null)
+                      fetchTickets(
+                        _page.current,
+                        showReviewed,
+                        (!isNaN(parseInt(searchValue)) &&
+                          parseInt(searchValue)) ||
+                          undefined
+                      )
                     }
                   />
                 ))}
@@ -220,7 +277,7 @@ const ManageBooks = () => {
           <PaginatedItems
             count={count}
             itemsPerPage={limit}
-            pageChange={(x) => fetchBooks(x, searchValue.trim() || null)}
+            pageChange={(x) => fetchTickets(x, showReviewed)}
             reset={resetPagination}
             disabled={data.loading || processing}
           />
@@ -230,5 +287,5 @@ const ManageBooks = () => {
   );
 };
 
-export default ManageBooks;
+export default ManageTickets;
 const limit = 6;

@@ -79,6 +79,23 @@ export interface BookTicketInterface {
   updatedAt: string;
 }
 
+export interface AuthorTicketInterface {
+  _id: string;
+  ticketNumber: number;
+  action: "become-author" | "remove-author";
+  author: string | { _id: string; name: string; avatar: string };
+  messageForReviewer: string;
+  status: "pending" | "approved" | "rejected" |  "cancelled";
+
+  reviewer?: string;
+  reviewerFeedback?: string;
+  dateReviewed?: string;
+  wallet?: string;
+
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface TicketNewBook {
   title: string;
   description: string;
@@ -124,4 +141,25 @@ export interface BookInterface {
 
   createdAt: string;
   updatedAt: string;
+}
+
+export interface BookReviewInterface {
+  _id: string;
+
+  book: string;
+  user: string | SimpleUser;
+
+  stars: number;
+  reviewText?: string;
+  status: "pending" | "approved" | "rejected";
+
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface SimpleUser {
+  _id: string;
+  name: string;
+  avatar: string;
+  bio?: string;
 }

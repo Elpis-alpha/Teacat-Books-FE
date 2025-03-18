@@ -115,10 +115,15 @@ const AuthorStatus = ({ profileProcessing }: midProfileProps) => {
           <button
             onClick={() => setShowForm(true)}
             disabled={!!processing || status === "rejected"}
-            className="bg-highlight hover:bg-highlight-dark text-sm sm:text-base py-2 px-4 rounded-[10px]"
+            className={
+              "text-sm sm:text-base py-2 px-4 rounded-[10px] " +
+              (status === "rejected"
+                ? "bg-bad-red"
+                : "bg-highlight hover:bg-highlight-dark")
+            }
           >
             {status === "approved"
-              ? "Revoke Author Status"
+              ? "Revoke Authorship"
               : status === "rejected"
               ? "Rejected"
               : "Become an Author"}
@@ -151,6 +156,7 @@ const AuthorStatus = ({ profileProcessing }: midProfileProps) => {
             <input
               type="text"
               placeholder="Solana USDC Wallet Address"
+              readOnly={!!processing}
               value={wallet}
               onChange={(e) => setWallet(e.target.value)}
               className="bg-white/20 px-5 py-3.5 w-full rounded-xl"
@@ -160,6 +166,7 @@ const AuthorStatus = ({ profileProcessing }: midProfileProps) => {
             placeholder="Message for the reviewer"
             value={messageForReviewer}
             onChange={(e) => setMessageForReviewer(e.target.value)}
+            readOnly={!!processing}
             rows={4}
             className="bg-white/20 px-5 py-3.5 w-full rounded-xl overflow-auto"
           />

@@ -42,8 +42,8 @@ const BookTicket = (props: BookTicketProps) => {
         : { authorName: "Author", authorID: ticket.author };
     } else {
       return {
-        authorName: ticket.author?.name || "Author",
-        authorID: ticket.author._id,
+        authorName: ticket?.author?.name || "Author",
+        authorID: ticket?.author?._id || "",
       };
     }
   }, [ticket.author, userData._id, userData.name]);
@@ -90,7 +90,7 @@ const BookTicket = (props: BookTicketProps) => {
     if (viewer !== "admin") return toast.error("You are not in admin mode");
     if (ticket.status !== "pending")
       return toast.error("Ticket is not pending");
-    if (userData.isAdmin) return toast.error("You are not an admin");
+    if (!userData.isAdmin) return toast.error("You are not an admin");
     if (!reviewerFeedback) return toast.error("Feedback is required");
 
     try {
@@ -120,7 +120,7 @@ const BookTicket = (props: BookTicketProps) => {
     if (viewer !== "admin") return toast.error("You are not in admin mode");
     if (ticket.status !== "pending")
       return toast.error("Ticket is not pending");
-    if (userData.isAdmin) return toast.error("You are not an admin");
+    if (!userData.isAdmin) return toast.error("You are not an admin");
     if (!reviewerFeedback) return toast.error("Feedback is required");
 
     try {
@@ -178,13 +178,23 @@ const BookTicket = (props: BookTicketProps) => {
         </span>
       </h3>
       <div className="flex items-center gap-2">
-        <Link href={`/profile/${authorID}`} className="underline">
+        <Link
+          target="_blank"
+          rel="noreferrer"
+          href={`/profile/${authorID}`}
+          className="underline"
+        >
           {authorName}
         </Link>
         {ticket.bookID && (
           <>
             <span>-</span>
-            <Link href={`/book/${ticket.bookID}`} className="underline">
+            <Link
+              target="_blank"
+              rel="noreferrer"
+              href={`/book/${ticket.bookID}`}
+              className="underline"
+            >
               {ticket.cachedBookName || "Book"}
             </Link>
           </>
