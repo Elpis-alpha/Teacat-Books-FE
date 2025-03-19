@@ -34,11 +34,13 @@ const AuthorTicket = (props: AuthorTicketProps) => {
   const { authorName, authorID } = useMemo(() => {
     if (typeof ticket.author === "string") {
       return { authorName: "Author", authorID: ticket.author };
-    } else {
+    } else if (ticket.author) {
       return {
         authorName: ticket?.author?.name || "Author",
         authorID: ticket?.author?._id || "",
       };
+    } else {
+      return { authorName: "Author", authorID: "" };
     }
   }, [ticket.author]);
 

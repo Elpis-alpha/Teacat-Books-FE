@@ -145,12 +145,12 @@ const NavBar = () => {
       <div
         ref={navRef}
         onClick={clickBlur}
-        className={`fixed slg:hidden block backdrop-blur-sm w-full h-full top-0 bottom-0 z-50 left-[101vw] transition-all cursor-alias`}
+        className={`fixed slg:hidden block backdrop-blur-sm w-full h-full top-0 bottom-0 z-70 left-[101vw] transition-all cursor-alias`}
         id="nav-blur"
       >
         <div
           className={
-            "h-full w-[300px] mr-0 ml-auto p-[32px] overflow-auto flex flex-col gap-[30px]  " +
+            "h-full w-[300px] max-w-[100vw]  mr-0 ml-auto p-[32px] overflow-auto flex flex-col gap-[30px]  " +
             "bg-sub-bg cursor-auto"
           }
         >

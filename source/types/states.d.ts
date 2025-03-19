@@ -85,7 +85,7 @@ export interface AuthorTicketInterface {
   action: "become-author" | "remove-author";
   author: string | { _id: string; name: string; avatar: string };
   messageForReviewer: string;
-  status: "pending" | "approved" | "rejected" |  "cancelled";
+  status: "pending" | "approved" | "rejected" | "cancelled";
 
   reviewer?: string;
   reviewerFeedback?: string;
@@ -146,7 +146,7 @@ export interface BookInterface {
 export interface BookReviewInterface {
   _id: string;
 
-  book: string;
+  book: string | { _id: string; title: string };
   user: string | SimpleUser;
 
   stars: number;

@@ -17,6 +17,12 @@ export default async function Home({
   const myCookie = cookieStore.get(tokenCookieName);
 
   const { userID } = await params;
+  if (!userID || userID.length !== 24) {
+    return (
+      <ErrorPage message="Invalid User" returnLink="/" returnText="go home" />
+    );
+  }
+
   const response = await getApiJson(routes.user.one(userID), myCookie?.value);
   if (response.error || !response.user || !response.user?.id) {
     console.error(response);

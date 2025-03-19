@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const AdminHome = () => {
   return (
-    <div className="w-full px-6 md:px-10 xl:px-16 py-10 text-center text-base sm:text-xl">
+    <div className="w-full px-6 md:px-10 xl:px-16 py-4 sm:py-10 text-center text-base sm:text-xl">
       <div className="max-w-[650px] flex flex-col items-center justify-center gap-4 mx-auto">
         <h3 className="font-proxima text-balance font-bold">
           Welcome Admin, What do you want to do?

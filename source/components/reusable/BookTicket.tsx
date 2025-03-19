@@ -40,11 +40,13 @@ const BookTicket = (props: BookTicketProps) => {
       return ticket.author === userData._id
         ? { authorName: userData.name, authorID: ticket.author }
         : { authorName: "Author", authorID: ticket.author };
-    } else {
+    } else if (ticket.author) {
       return {
         authorName: ticket?.author?.name || "Author",
         authorID: ticket?.author?._id || "",
       };
+    } else {
+      return { authorName: "Author", authorID: "" };
     }
   }, [ticket.author, userData._id, userData.name]);
 

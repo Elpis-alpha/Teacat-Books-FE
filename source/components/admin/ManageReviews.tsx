@@ -135,7 +135,7 @@ const ManageReviews = () => {
   };
 
   return (
-    <div className="w-full px-6 md:px-10 xl:px-16 py-10 text-base sm:text-xl flex-1 flex flex-col font-proxima">
+    <div className="w-full px-6 md:px-10 xl:px-16 py-4 sm:py-10 text-base sm:text-xl flex-1 flex flex-col font-proxima">
       <div className="max-w-[1640px] w-full flex-1 flex flex-col items-center justify-center gap-5 sm:gap-10 mx-auto">
         <h2 className="w-full font-proxima font-bold text-xl sm:text-4xl">
           Manage Reviews

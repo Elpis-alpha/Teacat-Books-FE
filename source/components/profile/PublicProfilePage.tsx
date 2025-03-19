@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const PublicProfilePage = ({ user }: { user: OneUser }) => {
   return (
-    <div className="w-full py-[60px] px-6 md:px-10 xl:px-16 flex-1 flex items-center justify-center">
+    <div className="w-full py-10 sm:py-[60px] px-6 md:px-10 xl:px-16 flex-1 flex items-center justify-center">
       <div className="max-w-[600px] mx-auto text-xl flex flex-col items-center">
         <div className="w-[200px] h-[200px] mx-auto">
           <SafeImage
@@ -61,7 +61,7 @@ const PublicProfilePage = ({ user }: { user: OneUser }) => {
         {user.isAuthor && (
           <div className="mt-4">
             <Link
-              href={`/books?authorID=${user.id}`}
+              href={`/books?author=${user.id}`}
               className="text-sm sm:text-base px-8 py-2 rounded-lg bg-highlight hover:bg-highlight-dark flex"
             >
               My Books

@@ -54,11 +54,13 @@ const BookToManage = (props: BookToManageProps) => {
       return book.author === userData._id
         ? { authorName: userData.name, authorID: book.author }
         : { authorName: "Author", authorID: book.author };
-    } else {
+    } else if (book.author) {
       return {
         authorName: book?.author?.name || "Author",
         authorID: book?.author?._id || "",
       };
+    } else {
+      return { authorName: "Author", authorID: "" };
     }
   }, [book.author, userData._id, userData.name]);
 
@@ -375,20 +377,22 @@ const BookToManage = (props: BookToManageProps) => {
         >
           {editing === "remove" ? "Cancel" : "Remove Book"}
         </button>
-        <button
-          disabled={!!processingState.on}
-          onClick={toggleFeatured}
-          className={`py-1.5 px-5 rounded-lg hover:opacity-50 flex items-center justify-center gap-2 ${
-            book.featured
-              ? "bg-fuchsia-900 text-white"
-              : "bg-highlight text-white"
-          }`}
-        >
-          {book.featured ? "Remove from Featured" : "Mark as Featured"}
-          {processingState.on === "ticketing" &&
-            processingState.data === book._id &&
-            editing === "featured" && <ClipLoader color="#fff" size={15} />}
-        </button>
+        {viewer === "admin" && (
+          <button
+            disabled={!!processingState.on}
+            onClick={toggleFeatured}
+            className={`py-1.5 px-5 rounded-lg hover:opacity-50 flex items-center justify-center gap-2 ${
+              book.featured
+                ? "bg-fuchsia-900 text-white"
+                : "bg-highlight text-white"
+            }`}
+          >
+            {book.featured ? "Remove from Featured" : "Mark as Featured"}
+            {processingState.on === "ticketing" &&
+              processingState.data === book._id &&
+              editing === "featured" && <ClipLoader color="#fff" size={15} />}
+          </button>
+        )}
       </div>
       {editing && editing !== "featured" && (
         <form

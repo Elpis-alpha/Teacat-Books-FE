@@ -28,13 +28,28 @@ const ReviewToManage = (props: ReviewToManageProps) => {
   const { userName, userID } = useMemo(() => {
     if (typeof review.user === "string") {
       return { userName: "User", userID: review.user };
-    } else {
+    } else if (review.user) {
       return {
         userName: review?.user?.name || "User",
         userID: review?.user?._id || "",
       };
+    } else {
+      return { userName: "User", userID: "" };
     }
   }, [review.user]);
+
+  const { title, bookID } = useMemo(() => {
+    if (typeof review.book === "string") {
+      return { title: "Book", bookID: review.book };
+    } else if (review.book) {
+      return {
+        title: review?.book?.title || "Book",
+        bookID: review?.book?._id || "",
+      };
+    } else {
+      return { title: "Book", bookID: "" };
+    }
+  }, [review.book]);
 
   const timestamp = useMemo(() => {
     const createdAt = new Date(review.createdAt);
@@ -95,16 +110,12 @@ const ReviewToManage = (props: ReviewToManageProps) => {
     <div className="bg-sub-bg rounded-3xl py-6 px-7 text-sm sm:text-base font-proxima flex flex-col gap-3">
       <div className="">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="font-bold text-lg sm:text-2xl">
-            <Link target="_blank" rel="noreferrer" href={`/profile/${userID}`}>
-              {userName}
-            </Link>
-          </h3>
+          <h3 className="font-bold text-lg sm:text-2xl">{title}</h3>
           <Link
             target="_blank"
             rel="noreferrer"
             className="text-blue-500 hover:underline text-sm sm:text-base"
-            href={`/book/${review.book}`}
+            href={`/book/${bookID}`}
           >
             View Book
           </Link>
@@ -114,12 +125,23 @@ const ReviewToManage = (props: ReviewToManageProps) => {
             count={5}
             edit={false}
             size={24}
-            value={4}
+            value={review.stars}
             color2={"#ffd700"}
           />
         </div>
         <p className="text-sm sm:text-base mt-1">
           {review.reviewText || "No review available"}
+        </p>
+        <p className="text-xs sm:text-sm">
+          By{" "}
+          <Link
+            target="_blank"
+            className="text-blue-300"
+            rel="noreferrer"
+            href={`/profile/${userID}`}
+          >
+            {userName}
+          </Link>
         </p>
         <p className="text-xs sm:text-sm mt-2">{timestamp}</p>
       </div>

@@ -85,7 +85,7 @@ const UploadHome = () => {
   };
 
   return (
-    <div className="w-full px-6 md:px-10 xl:px-16 py-10 text-base sm:text-xl">
+    <div className="w-full px-6 md:px-10 xl:px-16 py-4 sm:py-10 text-base sm:text-xl">
       <form
         onSubmit={handleUpload}
         className="max-w-[700px] flex flex-col items-center justify-center gap-4 mx-auto"

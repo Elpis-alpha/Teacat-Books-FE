@@ -1,3 +1,4 @@
+import 'swiper/css';
 import { NormalPage } from "@/source/components/reusable/SimplePages";
 import WelcomeHero from "@/source/components/home/WelcomeHero";
 import FeaturedBooks from "@/source/components/home/FeaturedBooks";
