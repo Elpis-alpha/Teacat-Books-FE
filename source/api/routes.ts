@@ -110,6 +110,7 @@ const routes = {
       }${author ? `&author=${author}` : ""}${text ? `&text=${text}` : ""}${
         featured ? `&featured=${featured}` : ""
       }`,
+    one: (bookID: string) => `${BE}/book/one?bookID=${bookID}`,
 
     review: {
       process: `${BE}/book/process-review`,

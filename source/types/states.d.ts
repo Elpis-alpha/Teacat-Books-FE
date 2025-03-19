@@ -157,6 +157,27 @@ export interface BookReviewInterface {
   updatedAt: string;
 }
 
+export interface SimpleBookPageReview {
+  "5": number;
+  "4": number;
+  "3": number;
+  "2": number;
+  "1": number;
+  "has-text": number;
+}
+
+export interface SimpleBookPageMyData {
+  bought?: {
+    _id: string;
+    createdAt: string;
+  }
+  borrowed?: {
+    copyNumber: number;
+    holdStartDate?: string;
+    holdEndDate?: string;
+  };
+}
+
 export interface SimpleUser {
   _id: string;
   name: string;
