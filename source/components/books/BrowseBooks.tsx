@@ -123,7 +123,11 @@ const BrowseBooks = (props: BrowseBookProps) => {
                 ) : (
                   <div className="w-full grid grid-cols-1 1_5xl:grid-cols-2 gap-4 sm:gap-6">
                     {data.books.map((book) => (
-                      <BookSearchItem key={book._id + "jas"} book={book} />
+                      <BookSearchItem
+                        key={book._id + "jas"}
+                        book={book}
+                        mine={data.mine[book._id] || null}
+                      />
                     ))}
                   </div>
                 )

@@ -1,12 +1,18 @@
 import { BookInterface } from "@/source/types/states";
 import SafeImage from "../reusable/SafeImage";
 import { BarLoader } from "react-spinners";
-import ReactStars from "react-stars";
 import Link from "next/link";
 import { useAppDispatch } from "@/source/store/hooks";
 import { setModal } from "@/source/store/slice/UIslice";
+import StarRating, { StarRatingSkeleton } from "../reusable/StarRating";
 
-const BookSearchItem = ({ book }: { book: BookInterface }) => {
+const BookSearchItem = ({
+  book,
+  mine,
+}: {
+  book: BookInterface;
+  mine: "bought" | "borrowed" | null;
+}) => {
   const dispatch = useAppDispatch();
 
   return (
@@ -28,29 +34,12 @@ const BookSearchItem = ({ book }: { book: BookInterface }) => {
             {book.title}
           </Link>
         </h3>
-        <div className="items-center gap-2 hidden sm:flex">
-          <ReactStars
-            count={5}
-            edit={false}
-            size={24}
-            half={true}
-            value={Math.round(book.averageRating * 2) / 2}
-            color2={"#ffd700"}
+        <div className="items-center gap-2 flex">
+          <StarRating
+            value={book.averageRating}
+            className="text-base sm:text-lg w-5 sm:w-5.5 py-2"
           />
-          <small className="opacity-50 text-sm">
-            ({book.numberOfReviews} review{book.numberOfReviews !== 1 && "s"})
-          </small>
-        </div>
-        <div className="items-center gap-2 flex sm:hidden">
-          <ReactStars
-            count={5}
-            edit={false}
-            size={18}
-            half={true}
-            value={Math.round(book.averageRating * 2) / 2}
-            color2={"#ffd700"}
-          />
-          <small className="opacity-50 text-xs line-clamp-1 flex-1">
+          <small className="opacity-50 text-xs line-clamp-1 sm:text-sm">
             ({book.numberOfReviews} review{book.numberOfReviews !== 1 && "s"})
           </small>
         </div>
@@ -58,26 +47,43 @@ const BookSearchItem = ({ book }: { book: BookInterface }) => {
           {book.description}
         </p>
         <div className="flex items-end gap-3 mt-3 flex-1 pb-2 flex-wrap text-xs smm:text-sm sm:text-base">
-          <button
-            onClick={() => {
-              dispatch(
-                setModal({ active: true, type: "borrow-book", data: book._id })
-              );
-            }}
-            className={
-              "bg-highlight py-1 sm:py-1.5 px-2 sm:px-4 rounded-md hover:bg-highlight-dark " +
-              (book.availableCopies === 0 ? "opacity-70" : "")
-            }
-          >
-            Borrow {book.totalCopies - book.availableCopies}/{book.totalCopies}
-          </button>
-          <div className="bg-white text-black rounded-md py-px sm:py-0.5 px-1 sm:px-2">
-            ${book.price.toFixed(2)}
-          </div>
+          {mine === null && (
+            <button
+              onClick={() => {
+                dispatch(
+                  setModal({
+                    active: true,
+                    type: "borrow-book",
+                    data: book._id,
+                  })
+                );
+              }}
+              className={
+                "bg-highlight py-1 sm:py-1.5 px-2 sm:px-4 rounded-md hover:bg-highlight-dark " +
+                (book.availableCopies === 0 ? "opacity-70" : "")
+              }
+            >
+              Borrow {book.totalCopies - book.availableCopies}/
+              {book.totalCopies}
+            </button>
+          )}
+          {(mine === "borrowed" || mine === "bought") && (
+            <Link
+              href={`/read/${book._id}`}
+              className="bg-white text-black hover:opacity-70 py-1 sm:py-1.5 px-2 sm:px-4 rounded-md"
+            >
+              {mine === "borrowed" ? "Borrowed" : "Bought"}
+            </Link>
+          )}
+          {mine !== "bought" && (
+            <div className="bg-white text-black rounded-md py-px sm:py-0.5 px-1 sm:px-2">
+              ${book.price.toFixed(2)}
+            </div>
+          )}
           <div className="ssm:flex-1 inline-block text-right underline">
             <Link
               href={`/book/${book._id}`}
-              className="line-clamp-1 hover:text-blue-300"
+              className="line-clamp-1 hover:text-blue-300 inline-block"
             >
               View Details
             </Link>
@@ -98,9 +104,7 @@ export const BookSearchItemSkeleton = () => {
           Title
         </h3>
         <div className="items-center gap-2 hidden sm:flex">
-          <span style={{ color: "hsla(201, 20%, 80%, 0.4)", fontSize: "24px" }}>
-            ★★★★★
-          </span>
+          <StarRatingSkeleton className="text-base sm:text-lg w-5 sm:w-5.5 py-2" />
           <small className="skeleton rounded-lg text-sm">(0 reviews)</small>
         </div>
         <div className="items-center gap-2 flex sm:hidden">

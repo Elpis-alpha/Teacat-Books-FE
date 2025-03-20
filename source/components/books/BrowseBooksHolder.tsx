@@ -21,7 +21,6 @@ const BrowseBooksHolder = ({
 }: {
   authorData: SimpleUser | null;
 }) => {
-  console.log(authorData);
   const author = useRef(authorData);
   const [data, setData] = useState<BrowseBooksData>({
     available: false,
@@ -88,14 +87,14 @@ const BrowseBooksHolder = ({
             typeof response.borrowedBook === "object" &&
             response.borrowedBook
           ) {
-            mine[response.borrowedBook?._id] = "borrowed";
+            mine[response.borrowedBook?.book] = "borrowed";
           }
           if (
             typeof response.boughtBooks === "object" &&
             Array.isArray(response.boughtBooks)
           ) {
             response.boughtBooks?.forEach?.((book) => {
-              if (book) mine[book?._id] = "bought";
+              if (book) mine[book?.book] = "bought";
             });
           }
 

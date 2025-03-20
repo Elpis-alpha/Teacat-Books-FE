@@ -157,6 +157,19 @@ export interface BookReviewInterface {
   updatedAt: string;
 }
 
+export interface BookReviewNormalInterface {
+  _id: string;
+  reviewText: string;
+  stars: number;
+  user: {
+    _id: string;
+    name: string;
+    avatar: string;
+    isAdmin: boolean;
+    isAuthor: boolean;
+  };
+}
+
 export interface SimpleBookPageReview {
   "5": number;
   "4": number;
@@ -170,12 +183,14 @@ export interface SimpleBookPageMyData {
   bought?: {
     _id: string;
     createdAt: string;
-  }
+  };
   borrowed?: {
     copyNumber: number;
     holdStartDate?: string;
     holdEndDate?: string;
   };
+  canReview?: boolean;
+  epubURL?: string;
 }
 
 export interface SimpleUser {

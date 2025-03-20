@@ -119,7 +119,6 @@ const EditNameImageBio = ({ profileProcessing }: midProfileProps) => {
     e.preventDefault();
     if (processing) return toast("Please wait");
     if (_bio.trim() === userData.bio.trim()) return toast("No changes made");
-    console.log(_bio, userData.bio);
 
     setProcessing("bio");
 

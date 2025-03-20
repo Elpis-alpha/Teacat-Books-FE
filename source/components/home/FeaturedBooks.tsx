@@ -60,14 +60,14 @@ const FeaturedBooks = () => {
             typeof response.borrowedBook === "object" &&
             response.borrowedBook
           ) {
-            mine[response.borrowedBook?._id] = "borrowed";
+            mine[response.borrowedBook?.book] = "borrowed";
           }
           if (
             typeof response.boughtBooks === "object" &&
             Array.isArray(response.boughtBooks)
           ) {
             response.boughtBooks?.forEach?.((book) => {
-              if (book) mine[book?._id] = "bought";
+              if (book) mine[book?.book] = "bought";
             });
           }
 
@@ -93,8 +93,6 @@ const FeaturedBooks = () => {
 
     fetchBooks();
   }, []);
-
-  useEffect(() => {}, []);
 
   return (
     <div className="w-full pt-40 pb-10">
@@ -128,7 +126,10 @@ const FeaturedBooks = () => {
                   style={{ height: "auto", display: "flex" }}
                   key={book._id + "ljsdf"}
                 >
-                  <FeaturedBook book={book} />
+                  <FeaturedBook
+                    book={book}
+                    mine={data.mine[book._id] || null}
+                  />
                 </SwiperSlide>
               ))}
               <SwiperSetup

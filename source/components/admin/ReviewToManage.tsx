@@ -6,7 +6,7 @@ import routes from "@/source/api/routes";
 import { ClipLoader } from "react-spinners";
 import { useMemo } from "react";
 import { format } from "date-fns";
-import ReactStars from "react-stars";
+import StarRating from "../reusable/StarRating";
 
 type ReviewToManageProps = {
   review: BookReviewInterface;
@@ -121,12 +121,9 @@ const ReviewToManage = (props: ReviewToManageProps) => {
           </Link>
         </div>
         <div className="">
-          <ReactStars
-            count={5}
-            edit={false}
-            size={24}
+          <StarRating
             value={review.stars}
-            color2={"#ffd700"}
+            className="text-base sm:text-lg w-5 sm:w-5.5 py-2"
           />
         </div>
         <p className="text-sm sm:text-base mt-1">

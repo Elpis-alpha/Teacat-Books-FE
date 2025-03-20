@@ -197,6 +197,12 @@
   }
 }
 
+@utility skeleton-text {
+  & {
+    animation: skeleton-text-keyframes 1s linear infinite alternate;
+  }
+}
+
 @utility gsap-init {
   & {
     visibility: 0;

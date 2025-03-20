@@ -43,7 +43,7 @@ export default async function Home({
   }
 
   return (
-    <NormalPage useStart usePhysicalNavBar>
+    <NormalPage useStart>
       <BookPage
         book={response.book}
         review={response.review}

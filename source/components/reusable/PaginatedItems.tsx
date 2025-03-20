@@ -42,12 +42,10 @@ const PaginatedItems = ({
         reset ? 0 : typeof forcePageTo === "number" ? forcePageTo : undefined
       }
       onPageChange={({ selected }) => {
-        console.log("disabled", { disabled, selected, c: currentPage.current });
         if (disabled) {
           setForcePageTo(currentPage.current);
           return;
         }
-        console.log("meeeeee");
         currentPage.current = selected;
         pageChange(selected);
       }}

@@ -6,7 +6,13 @@ import { useMemo } from "react";
 import { setModal } from "@/source/store/slice/UIslice";
 import { useAppDispatch } from "@/source/store/hooks";
 
-const FeaturedBook = ({ book }: { book: BookInterface }) => {
+const FeaturedBook = ({
+  book,
+  mine,
+}: {
+  book: BookInterface;
+  mine: "bought" | "borrowed" | null;
+}) => {
   const dispatch = useAppDispatch();
   const { authorName, authorID } = useMemo(() => {
     if (typeof book.author === "string") {
@@ -49,22 +55,39 @@ const FeaturedBook = ({ book }: { book: BookInterface }) => {
           {book.description}
         </div>
         <div className="flex flex-1 items-end gap-3 mt-5 flex-wrap text-xs ssm:text-lg sm:text-base md:text-lg w-full">
-          <button
-            onClick={() => {
-              dispatch(
-                setModal({ active: true, type: "borrow-book", data: book._id })
-              );
-            }}
-            className={
-              "bg-highlight py-1 sm:py-1.5 px-2 sm:px-4 rounded-md hover:bg-highlight-dark " +
-              (book.availableCopies === 0 ? "opacity-70" : "")
-            }
-          >
-            Borrow {book.totalCopies - book.availableCopies}/{book.totalCopies}
-          </button>
-          <div className="bg-white text-black rounded-md py-px sm:py-0.5 px-1 sm:px-2">
-            ${book.price.toFixed(2)}
-          </div>
+          {mine === null && (
+            <button
+              onClick={() => {
+                dispatch(
+                  setModal({
+                    active: true,
+                    type: "borrow-book",
+                    data: book._id,
+                  })
+                );
+              }}
+              className={
+                "bg-highlight py-1 sm:py-1.5 px-2 sm:px-4 rounded-md hover:bg-highlight-dark " +
+                (book.availableCopies === 0 ? "opacity-70" : "")
+              }
+            >
+              Borrow {book.totalCopies - book.availableCopies}/
+              {book.totalCopies}
+            </button>
+          )}
+          {(mine === "borrowed" || mine === "bought") && (
+            <Link
+              href={`/read/${book._id}`}
+              className="bg-white text-black hover:opacity-70 py-1 sm:py-1.5 px-2 sm:px-4 rounded-md"
+            >
+              {mine === "borrowed" ? "Borrowed" : "Bought"}
+            </Link>
+          )}
+          {mine !== "bought" && (
+            <div className="bg-white text-black rounded-md py-px sm:py-0.5 px-1 sm:px-2">
+              ${book.price.toFixed(2)}
+            </div>
+          )}
           <div className="flex-1 inline-block text-right underline">
             <Link
               href={`/book/${book._id}`}

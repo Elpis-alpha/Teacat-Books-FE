@@ -51,7 +51,7 @@ interface UIStateType {
       }
     | {
         active: true;
-        type?: "borrow-book" | "buy-book" | "author-ticket"
+        type?: "borrow-book" | "buy-book" | "author-ticket" | "review-book"
         data?: string;
       };
 }
