@@ -6,6 +6,7 @@ import routes from "@/source/api/routes";
 import { ClipLoader } from "react-spinners";
 import { BookReviewInterface } from "@/source/types/states";
 import ReviewToManage from "./ReviewToManage";
+import toast from "react-hot-toast";
 
 const ManageReviews = () => {
   const processingState = useState({
@@ -84,6 +85,9 @@ const ManageReviews = () => {
   }, []);
 
   const fetchReviews = async (page: number) => {
+    if (data.loading)
+      return toast.error("Please wait for the current request to finish");
+
     setData({
       available: false,
       loading: true,

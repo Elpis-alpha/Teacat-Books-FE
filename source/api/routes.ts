@@ -127,6 +127,10 @@ const routes = {
       )}&bookID=${bookID}&taken=${tt(taken)}${
         userID ? `&userID=${userID}` : ""
       }`,
+    mine: (limit: number, skip: number, sort: string, onlyBought: boolean) =>
+      `${BE}/book/mine${generateLSSB(limit, skip, sort)}&onlyBought=${tt(
+        onlyBought
+      )}`,
 
     review: {
       review: `${BE}/book/review`,

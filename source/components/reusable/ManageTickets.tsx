@@ -90,6 +90,9 @@ const ManageTickets = ({ viewer }: { viewer: "author" | "admin" }) => {
     showReviewed: boolean,
     ticketNumber?: number
   ) => {
+    if (data.loading)
+      return toast.error("Please wait for the current request to finish");
+
     setData({
       available: false,
       loading: true,

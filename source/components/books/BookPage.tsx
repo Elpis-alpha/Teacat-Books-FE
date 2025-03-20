@@ -127,6 +127,8 @@ const BookPage = ({
               <div className="flex gap-3 flex-wrap">
                 {(myData.bought || myData.borrowed) && !bookReturned && (
                   <Link
+                    target="_blank"
+                    rel="noopener noreferrer"
                     href={`/read/${book._id}`}
                     className="bg-highlight hover:bg-highlight-dark py-1.5 2xl:py-2.5 px-5 2xl:px-7 rounded-md 2xl:rounded-xl"
                   >
@@ -137,10 +139,7 @@ const BookPage = ({
                   <button
                     onClick={returnBook}
                     disabled={
-                      new Date(myData.borrowed.holdEndDate || "") <
-                        new Date() ||
-                      bookReturned ||
-                      !!processing
+                      holdEndDate < new Date() || bookReturned || !!processing
                     }
                     className={
                       "bg-highlight not-disabled:hover:bg-highlight-dark py-1.5 2xl:py-2.5 px-5 2xl:px-7 rounded-md 2xl:rounded-xl line-clamp-1 "

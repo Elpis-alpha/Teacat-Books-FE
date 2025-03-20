@@ -12,6 +12,7 @@ import { ClipLoader } from "react-spinners";
 import BookCopy from "../reusable/BookCopy";
 import PaginatedItems from "../reusable/PaginatedItems";
 import { format } from "date-fns";
+import toast from "react-hot-toast";
 
 const BorrowBookModal = () => {
   const dispatch = useAppDispatch();
@@ -149,6 +150,9 @@ const BorrowBookModal = () => {
   }, [modal, userID]);
 
   const fetchCopies = async (page: number, bookID: string, taken: boolean) => {
+    if (data.loading)
+      return toast.error("Please wait for the current request to finish");
+
     setData({
       available: false,
       loading: true,

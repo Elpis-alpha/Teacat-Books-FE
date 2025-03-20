@@ -8,6 +8,7 @@ import { ClipLoader } from "react-spinners";
 import { BookInterface } from "@/source/types/states";
 import { useAppSelector } from "@/source/store/hooks";
 import BookToManage from "./BookToManage";
+import toast from "react-hot-toast";
 
 const ManageBooks = ({ viewer }: { viewer: "author" | "admin" }) => {
   const userID = useAppSelector((state) => state.user.data?._id || "");
@@ -88,6 +89,9 @@ const ManageBooks = ({ viewer }: { viewer: "author" | "admin" }) => {
   }, [userID, viewer]);
 
   const fetchBooks = async (page: number, text: string | null = null) => {
+    if (data.loading)
+      return toast.error("Please wait for the current request to finish");
+
     setData({
       available: false,
       loading: true,

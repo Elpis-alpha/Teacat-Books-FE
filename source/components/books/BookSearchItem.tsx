@@ -69,6 +69,8 @@ const BookSearchItem = ({
           )}
           {(mine === "borrowed" || mine === "bought") && (
             <Link
+              target="_blank"
+              rel="noopener noreferrer"
               href={`/read/${book._id}`}
               className="bg-white text-black hover:opacity-70 py-1 sm:py-1.5 px-2 sm:px-4 rounded-md"
             >

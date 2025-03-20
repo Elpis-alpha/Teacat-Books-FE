@@ -11,6 +11,7 @@ import routes from "@/source/api/routes";
 import PaginatedItems from "../reusable/PaginatedItems";
 import { ClipLoader } from "react-spinners";
 import ReviewItem from "./ReviewItem";
+import toast from "react-hot-toast";
 
 const ReviewsContainer = ({
   review,
@@ -89,6 +90,9 @@ const ReviewsContainer = ({
   }, [book._id]);
 
   const fetchReviews = async (page: number) => {
+    if (data.loading)
+      return toast.error("Please wait for the current request to finish");
+
     setData({
       available: false,
       loading: true,

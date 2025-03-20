@@ -96,7 +96,7 @@ const NavBar = () => {
             </Link>
           </div>
           <ClientRender initial={null}>
-            <div className="not-slg:hidden slg:flex items-center gap-9">
+            <div className="not-slg:hidden slg:flex items-center xl:gap-8 gap-9">
               {loading ? (
                 <div className="p-2.5 flex">
                   <ClipLoader color="#fff" size={24} />
@@ -113,6 +113,9 @@ const NavBar = () => {
                       Author
                     </Link>
                   )}
+                  <Link href="/my-books" className="p-2.5 hover:text-blue-300">
+                    My Books
+                  </Link>
                   <Link href="/profile" className="p-2.5 hover:text-blue-300">
                     Profile
                   </Link>

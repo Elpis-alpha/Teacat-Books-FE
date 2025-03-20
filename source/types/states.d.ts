@@ -200,7 +200,7 @@ export interface SimpleUser {
   bio?: string;
 }
 
-interface BookCopyInterface {
+export interface BookCopyInterface {
   _id: string;
   book: string;
   copyNumber: number;
@@ -212,4 +212,19 @@ interface BookCopyInterface {
 
   createdAt: string;
   updatedAt: string;
+}
+
+export interface MyBookPageData {
+  borrowed: {
+    copy: BookCopyInterface;
+    book: BookInterface;
+  } | null;
+  bought: {
+    book: BookInterface;
+    bought: {
+      _id: string;
+      createdAt: string;
+    };
+    epubURL?: string;
+  }[];
 }

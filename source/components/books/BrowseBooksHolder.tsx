@@ -15,6 +15,7 @@ import SideBar from "./SideBar";
 import gsap from "gsap";
 import ModalOverflow from "../modals/ModalOverflow";
 import { FaTimes } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const BrowseBooksHolder = ({
   authorData,
@@ -133,6 +134,11 @@ const BrowseBooksHolder = ({
       filter: BookFilterType,
       searchValue: string | null
     ) => {
+      if (data.loading) {
+        toast.error("Please wait for the current request to finish");
+        return;
+      }
+
       setData({
         available: false,
         loading: true,
@@ -202,7 +208,7 @@ const BrowseBooksHolder = ({
         });
       }
     },
-    []
+    [data.loading]
   );
 
   // to search
