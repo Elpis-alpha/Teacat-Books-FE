@@ -56,7 +56,11 @@ const StarRating = ({
             onMouseLeave={() => onInput && setHovered(null)}
           >
             {status === "full" ? (
-              <FaStar className="text-[#ffd700]" />
+              <FaStar
+                className={
+                  value < star.star ? "text-[#ffd90045]" : "text-[#ffd700]"
+                }
+              />
             ) : status === "half" ? (
               <FaRegStarHalfStroke className="text-[#ffd700]" />
             ) : (

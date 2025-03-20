@@ -8,6 +8,7 @@ type TextInputProps = {
   isTextArea?: boolean;
   rows?: number;
   extraText?: string | React.ReactNode;
+  smallerPaddings?: boolean;
 };
 
 const TextInput = (props: TextInputProps) => {
@@ -20,6 +21,7 @@ const TextInput = (props: TextInputProps) => {
     rows,
     readonly,
     extraText,
+    smallerPaddings,
   } = props;
 
   return (
@@ -32,7 +34,10 @@ const TextInput = (props: TextInputProps) => {
           placeholder={placeholder}
           rows={rows}
           readOnly={readonly}
-          className="w-full px-4 sm:px-5 py-2.5 sm:py-3.5 rounded-xl mt-1.5 bg-white/20"
+          className={
+            "w-full px-4 py-2.5 rounded-xl mt-1.5 bg-white/20 " +
+            (smallerPaddings ? "" : "sm:px-5 sm:py-3.5")
+          }
         />
       ) : (
         <input
@@ -41,10 +46,17 @@ const TextInput = (props: TextInputProps) => {
           onChange={(e) => onChange(e.target.value)}
           readOnly={readonly}
           placeholder={placeholder}
-          className="w-full px-4 sm:px-5 py-2.5 sm:py-3.5 rounded-xl mt-1.5 bg-white/20"
+          className={
+            "w-full px-4 py-2.5 rounded-xl mt-1.5 bg-white/20 " +
+            (smallerPaddings ? "" : "sm:px-5 sm:py-3.5")
+          }
         />
       )}
-      {extraText && <p className="text-xs mt-1.5">{extraText}</p>}
+      {extraText && (
+        <p className={"text-xs opacity-70 " + (smallerPaddings ? "mt-0.5" : "mt-1.5")}>
+          {extraText}
+        </p>
+      )}
     </div>
   );
 };

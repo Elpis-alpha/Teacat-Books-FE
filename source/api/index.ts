@@ -10,7 +10,7 @@ const protect = async (vip: APIFunctionType) => {
   try {
     validated = await vip();
   } catch {
-    validated = { error: "failed-to-connect", errorMessage: "Network issues" };
+    validated = { error: "failed-to-connect", errorMessage: "Server / Network issues" };
   }
   return validated;
 };

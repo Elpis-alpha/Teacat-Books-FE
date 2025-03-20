@@ -199,3 +199,17 @@ export interface SimpleUser {
   avatar: string;
   bio?: string;
 }
+
+interface BookCopyInterface {
+  _id: string;
+  book: string;
+  copyNumber: number;
+
+  holder?: string | SimpleUser;
+  holdStartDate?: string;
+  holdEndDate?: string;
+  cooldownReleaseDate?: string;
+
+  createdAt: string;
+  updatedAt: string;
+}

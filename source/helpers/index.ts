@@ -300,6 +300,45 @@ export const openWithPost = (
   }
 };
 
+export const openWithGet = (
+  url: string,
+  windowFeatures?: {
+    width?: number;
+    height?: number;
+    top?: number;
+    left?: number;
+    additionalFeatures?: string;
+  }
+): Window | null => {
+  try {
+    const width = windowFeatures?.width ?? 600;
+    const height = windowFeatures?.height ?? 600;
+    const top =
+      windowFeatures?.top ?? Math.max(0, (window.screen.height - height) / 2);
+    const left =
+      windowFeatures?.left ?? Math.max(0, (window.screen.width - width) / 2);
+
+    const features = [
+      `width=${width}`,
+      `height=${height}`,
+      `top=${top}`,
+      `left=${left}`,
+      windowFeatures?.additionalFeatures ?? "popup=yes",
+    ].join(",");
+
+    const newWindow = window.open(url, "_blank", features);
+    console.log("newWindow", url, features);
+    if (!newWindow) {
+      return null;
+    }
+
+    return newWindow;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
 export const validateAddress = (wallet: string) => {
   try {
     new PublicKey(wallet);
@@ -353,4 +392,12 @@ export const getOauthToken = () => {
     ":" +
     addMinutes(new Date(), 3).getTime().toString()
   );
+};
+
+export const generateHelioLink = (
+  paylinkID: string,
+  userID: string,
+  email: string
+) => {
+  return `https://app.dev.hel.io/pay/${paylinkID}?email=${email}&productValue=${userID}`;
 };

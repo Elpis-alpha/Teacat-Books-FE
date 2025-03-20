@@ -7,13 +7,16 @@ import {
 import { BarLoader } from "react-spinners";
 import SafeImage from "../reusable/SafeImage";
 import BigImage from "../reusable/BigImage";
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import StarRating from "../reusable/StarRating";
 import { useAppDispatch } from "@/source/store/hooks";
 import { setModal } from "@/source/store/slice/UIslice";
 import toast from "react-hot-toast";
 import ReviewsContainer from "./ReviewsContainer";
+import { format } from "date-fns";
+import { postApiJson } from "@/source/api";
+import routes from "@/source/api/routes";
 
 const BookPage = ({
   book,
@@ -25,6 +28,16 @@ const BookPage = ({
   review: SimpleBookPageReview;
 }) => {
   const dispatch = useAppDispatch();
+  const { current: holdEndDate } = useRef(
+    myData.borrowed?.holdEndDate
+      ? !isNaN(new Date(myData.borrowed.holdEndDate).getTime())
+        ? new Date(myData.borrowed.holdEndDate)
+        : null
+      : null
+  );
+  const [processing, setProcessing] = useState<"" | "returning">("");
+  const [bookReturned, setBookReturned] = useState(false);
+
   const { authorName, authorID } = useMemo(() => {
     if (typeof book.author === "string") {
       return { authorName: "author", authorID: book.author };
@@ -37,6 +50,38 @@ const BookPage = ({
       return { authorName: "author", authorID: "" };
     }
   }, [book.author]);
+
+  const returnBook = async () => {
+    if (processing) return;
+    if (!myData.borrowed || !holdEndDate) {
+      return toast.error("You can't return this book");
+    }
+    if (new Date(holdEndDate) < new Date()) {
+      return toast.error("You can't return this book after the due date");
+    }
+    setProcessing("returning");
+
+    try {
+      const response = await postApiJson(routes.book.return, {
+        bookID: book._id,
+        copyNumber: myData.borrowed.copyNumber,
+      });
+      if (response.error || !response.bookCopy) {
+        toast.error(
+          response.errorMessage || "An error occurred while returning the book"
+        );
+        console.error(response);
+      } else {
+        setBookReturned(true);
+        toast.success("Book returned successfully");
+      }
+    } catch (error) {
+      toast.error("An error occurred while returning the book");
+      console.error(error);
+    }
+
+    setProcessing("");
+  };
 
   return (
     <>
@@ -80,7 +125,7 @@ const BookPage = ({
               </div>
               <p className="whitespace-pre-wrap">{book.description}</p>
               <div className="flex gap-3 flex-wrap">
-                {(myData.bought || myData.borrowed) && (
+                {(myData.bought || myData.borrowed) && !bookReturned && (
                   <Link
                     href={`/read/${book._id}`}
                     className="bg-highlight hover:bg-highlight-dark py-1.5 2xl:py-2.5 px-5 2xl:px-7 rounded-md 2xl:rounded-xl"
@@ -88,24 +133,30 @@ const BookPage = ({
                     Read Book
                   </Link>
                 )}
-                {myData.borrowed && (
+                {myData.borrowed && holdEndDate && (
                   <button
+                    onClick={returnBook}
                     disabled={
-                      new Date(myData.borrowed.holdEndDate || "") < new Date()
+                      new Date(myData.borrowed.holdEndDate || "") <
+                        new Date() ||
+                      bookReturned ||
+                      !!processing
                     }
                     className={
-                      "bg-highlight hover:bg-highlight-dark py-1.5 2xl:py-2.5 px-5 2xl:px-7 rounded-md 2xl:rounded-xl "
+                      "bg-highlight not-disabled:hover:bg-highlight-dark py-1.5 2xl:py-2.5 px-5 2xl:px-7 rounded-md 2xl:rounded-xl line-clamp-1 "
                     }
                   >
-                    Return Book - (Due:{" "}
-                    {new Date(
-                      myData.borrowed.holdEndDate || ""
-                    ).toLocaleDateString()}
-                    )
+                    {bookReturned
+                      ? "Book Returned"
+                      : `Return - (Due: ${format(
+                          holdEndDate,
+                          "EEE, MMM d, h:mm a"
+                        )})`}
                   </button>
                 )}
                 {!myData.bought && !myData.borrowed && (
                   <button
+                    disabled={!!processing}
                     onClick={() => {
                       dispatch(
                         setModal({
@@ -137,12 +188,13 @@ const BookPage = ({
                 )}
                 {!myData.bought && (
                   <button
+                    disabled={!!processing}
                     onClick={() => {
                       dispatch(
                         setModal({
                           active: true,
                           type: "buy-book",
-                          data: book._id,
+                          data: `${book._id}:${book.helioPayLinkID}`,
                         })
                       );
                     }}
@@ -153,11 +205,8 @@ const BookPage = ({
                 )}
                 {typeof myData.canReview === "boolean" && (
                   <button
-                    disabled={!myData.canReview}
+                    disabled={!myData.canReview || !!processing}
                     onClick={() => {
-                      if (!myData.canReview) {
-                        return toast.error("You can't review this book");
-                      }
                       dispatch(
                         setModal({
                           active: true,
@@ -166,7 +215,7 @@ const BookPage = ({
                         })
                       );
                     }}
-                    className="bg-[#868100] hover:bg-[#565426] py-1.5 2xl:py-2.5 px-5 2xl:px-7 rounded-md 2xl:rounded-xl"
+                    className="bg-[#868100] not-disabled:hover:bg-[#565426] py-1.5 2xl:py-2.5 px-5 2xl:px-7 rounded-md 2xl:rounded-xl"
                   >
                     Leave a Review
                   </button>

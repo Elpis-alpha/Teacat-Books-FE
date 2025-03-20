@@ -1,12 +1,17 @@
 "use client";
 import ClientRender from "../reusable/ClientRender";
-import CurrentAuthorTicket from "./CurrentAuthorTicket";
+import AuthorTicketModal from "./AuthorTicketModal";
+import BorrowBookModal from "./BorrowBookModal";
+import BuyBookModal from "./BuyBookModal";
+import ReviewBookModal from "./ReviewBookModal";
 
 const ModalsContainer = () => {
   return (
     <ClientRender>
-      <CurrentAuthorTicket />
-      {/* <YourModalHere /> */}
+      <AuthorTicketModal />
+      <BorrowBookModal />
+      <BuyBookModal />
+      <ReviewBookModal />
     </ClientRender>
   );
 };

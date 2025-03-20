@@ -11,7 +11,7 @@ import gsap from "gsap";
 import { ClipLoader } from "react-spinners";
 import { format } from "date-fns";
 
-const CurrentAuthorTicket = () => {
+const AuthorTicketModal = () => {
   const dispatch = useAppDispatch();
   const { modal } = useAppSelector((state) => state.ui);
   const { data: userData } = useAppSelector((state) => state.user);
@@ -186,4 +186,4 @@ const CurrentAuthorTicket = () => {
   );
 };
 
-export default CurrentAuthorTicket;
+export default AuthorTicketModal;

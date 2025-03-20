@@ -95,7 +95,8 @@ const routes = {
   },
 
   book: {
-    // all: `${BE}/book/all`,
+    borrow: `${BE}/book/borrow`,
+    return: `${BE}/book/return`,
     all: (
       limit: number,
       skip: number,
@@ -111,8 +112,24 @@ const routes = {
         featured ? `&featured=${featured}` : ""
       }`,
     one: (bookID: string) => `${BE}/book/one?bookID=${bookID}`,
+    copies: (
+      limit: number,
+      skip: number,
+      sort: string,
+      bookID: string,
+      taken: boolean,
+      userID: string | null
+    ) =>
+      `${BE}/book/copies${generateLSSB(
+        limit,
+        skip,
+        sort
+      )}&bookID=${bookID}&taken=${tt(taken)}${
+        userID ? `&userID=${userID}` : ""
+      }`,
 
     review: {
+      review: `${BE}/book/review`,
       process: `${BE}/book/process-review`,
       all: (
         limit: number,
@@ -131,7 +148,9 @@ const routes = {
     },
   },
 
-  // getUser: () => `${BE}/user/get-me`,
+  helio: {
+    check: `${BE}/helio/check-payment`,
+  },
 };
 
 const tt = (val: boolean) => (val ? "true" : "false");
