@@ -23,7 +23,7 @@ const LandingBook = ({
   return (
     <div className="">
       <SafeImage
-        src={book.mainImage}
+        src={makeImageSmaller(book.mainImage)}
         alt={book.title}
         className="w-[200px] sm:w-[250px] epub-special-image"
       />
@@ -74,3 +74,6 @@ const LandingBook = ({
   );
 };
 export default LandingBook;
+const makeImageSmaller = (imageURL = "c") => {
+  return imageURL.replace("/upload/", `/upload/c_scale,w_250/`);
+};

@@ -61,7 +61,7 @@ const AuthorToManage = (props: AuthorToManageProps) => {
             </Link>
           </h3>
           <SafeImage
-            src={author.avatar}
+            src={makeImageSmaller(author.avatar)}
             alt={author.name}
             className="w-10 h-10 sm:w-16 sm:h-16 rounded-full"
           />
@@ -88,3 +88,7 @@ const AuthorToManage = (props: AuthorToManageProps) => {
   );
 };
 export default AuthorToManage;
+
+const makeImageSmaller = (imageURL = "c") => {
+  return imageURL.replace("/upload/", `/upload/c_scale,w_100/`);
+};

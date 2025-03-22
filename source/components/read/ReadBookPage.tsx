@@ -379,7 +379,7 @@ const ReadBookPage = (props: ReadBookPageProps) => {
         >
           <div className="px-8 pb-5">
             <SafeImage
-              src={props.book.mainImage}
+              src={makeImageSmaller(props.book.mainImage)}
               alt={props.book.title}
               className="w-[100px]"
             />
@@ -482,4 +482,7 @@ export const PreReadBookPage = ({ theme }: { theme: ThemeInterface }) => {
       <ClipLoader color={theme.textColor} size={36} />
     </main>
   );
+};
+const makeImageSmaller = (imageURL = "c") => {
+  return imageURL.replace("/upload/", `/upload/c_scale,w_100/`);
 };
