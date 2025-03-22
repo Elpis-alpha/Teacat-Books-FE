@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 const Footer = () => {
   const path = usePathname();
   if (path.startsWith("/signin")) return <></>;
+  if (path.startsWith("/read")) return <></>;
 
   return (
     <footer className="bg-sub-bg w-full">
@@ -14,7 +15,9 @@ const Footer = () => {
           <p className="pt-1">
             Support new authors and find the next great novels
           </p>
-          <p className="sm:hidden pt-6">@{new Date().getFullYear()}, Teacat Books.</p>
+          <p className="sm:hidden pt-6">
+            @{new Date().getFullYear()}, Teacat Books.
+          </p>
           <p className="sm:hidden pt-1">All rights reserved.</p>
         </div>
         <div className="max-sm:hidden text-right">

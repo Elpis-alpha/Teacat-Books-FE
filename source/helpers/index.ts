@@ -327,7 +327,6 @@ export const openWithGet = (
     ].join(",");
 
     const newWindow = window.open(url, "_blank", features);
-    console.log("newWindow", url, features);
     if (!newWindow) {
       return null;
     }

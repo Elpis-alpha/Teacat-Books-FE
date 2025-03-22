@@ -97,11 +97,11 @@
   }
 
   ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+    width: 5px;
+    height: 5px;
   }
   ::-webkit-scrollbar-track {
-    background: transparent;
+    background: #676d97;
   }
   ::-webkit-scrollbar-thumb {
     background: #010018;
@@ -164,6 +164,31 @@
     transition: background-color 5000s ease-in-out 0s;
     box-shadow: inset 0 0 20px 40px rgba(255, 255, 255, 0.13);
   }
+
+  .epub-img-center img.epub-special-image {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .epub-img-left img.epub-special-image {
+    margin-right: auto;
+  }
+
+  .epub-img-right img.epub-special-image {
+    margin-left: auto;
+  }
+
+  .epub-img-center .justify-epub {
+    justify-content: center;
+  }
+
+  .epub-img-left .justify-epub {
+    justify-content: left;
+  }
+
+  .epub-img-right .justify-epub {
+    justify-content: right;
+  }
 }
 
 @utility shake {
@@ -206,5 +231,17 @@
 @utility gsap-init {
   & {
     visibility: 0;
+  }
+}
+
+@utility base-theme-transition {
+  & {
+    transition: color 0.4s, background-color 0.4s, line-height 0.4s;
+  }
+}
+
+@utility mid-theme-transition {
+  & {
+    transition: padding 0.4s, font-size 0.4s;
   }
 }

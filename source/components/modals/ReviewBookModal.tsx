@@ -8,7 +8,7 @@ import {
 import ModalOverflow from "./ModalOverflow";
 import { useAppDispatch, useAppSelector } from "@/source/store/hooks";
 import { animateModal } from "@/source/helpers/gsap.config";
-import { setModal } from "@/source/store/slice/UIslice";
+import { setHasReviewed, setModal } from "@/source/store/slice/UIslice";
 import { postApiJson } from "@/source/api";
 import routes from "@/source/api/routes";
 import { FaTimes } from "react-icons/fa";
@@ -104,6 +104,7 @@ const ReviewBookModal = () => {
         toast.error(response.errorMessage || "Failed to review book");
       } else {
         toast.success("Book reviewed successfully");
+        dispatch(setHasReviewed(modal.data));
         exitWithAnimation();
       }
     } catch (e) {

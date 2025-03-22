@@ -189,7 +189,7 @@ export interface SimpleBookPageMyData {
     holdStartDate?: string;
     holdEndDate?: string;
   };
-  canReview?: boolean;
+  canReview?: true | string;
   epubURL?: string;
 }
 
@@ -227,4 +227,30 @@ export interface MyBookPageData {
     };
     epubURL?: string;
   }[];
+}
+
+export interface ReadInterface {
+  _id: string;
+  text: string;
+  title: number;
+  chapterNumber: number;
+}
+
+export interface ChapterInterface {
+  _id: string;
+  chapterNumber: number;
+  title: string;
+}
+
+export interface ReadingSessionInterface {
+  _id: string;
+  book: string;
+  user: string;
+
+  currentChapter: number;
+  chapterProgressPercent: number;
+  lastReadAt: string;
+
+  createdAt: string;
+  updatedAt: string;
 }

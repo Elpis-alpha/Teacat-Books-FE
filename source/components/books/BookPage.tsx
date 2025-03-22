@@ -10,7 +10,7 @@ import BigImage from "../reusable/BigImage";
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import StarRating from "../reusable/StarRating";
-import { useAppDispatch } from "@/source/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/source/store/hooks";
 import { setModal } from "@/source/store/slice/UIslice";
 import toast from "react-hot-toast";
 import ReviewsContainer from "./ReviewsContainer";
@@ -37,6 +37,7 @@ const BookPage = ({
   );
   const [processing, setProcessing] = useState<"" | "returning">("");
   const [bookReturned, setBookReturned] = useState(false);
+  const hasReviewed = useAppSelector((store) => store.ui.hasReviewed);
 
   const { authorName, authorID } = useMemo(() => {
     if (typeof book.author === "string") {
@@ -202,10 +203,16 @@ const BookPage = ({
                     Buy Book
                   </button>
                 )}
-                {typeof myData.canReview === "boolean" && (
+                {myData.canReview && (
                   <button
                     disabled={!myData.canReview || !!processing}
                     onClick={() => {
+                      if (typeof myData.canReview === "string") {
+                        return toast(myData.canReview);
+                      } else if (hasReviewed === book._id) {
+                        return toast("You have already reviewed this book");
+                      }
+
                       dispatch(
                         setModal({
                           active: true,

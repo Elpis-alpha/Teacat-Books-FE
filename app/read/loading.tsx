@@ -1,16 +1,10 @@
-import { cookies } from "next/headers";
 import { PreReadBookPage } from "@/source/components/read/ReadBookPage";
 import { getTheme } from "@/source/helpers/read";
-import { LoadingPage } from "@/source/components/reusable/SimplePages";
+import { cookies } from "next/headers";
 
 export default async function NotFound() {
   const cookieStore = await cookies();
   const _theme = cookieStore.get("read-theme");
-
-  if (_theme?.value) {
-    const theme = getTheme(_theme?.value);
-    return <PreReadBookPage theme={theme} />;
-  }
-
-  return <LoadingPage />;
+  const theme = getTheme(_theme?.value);
+  return <PreReadBookPage theme={theme} />;
 }

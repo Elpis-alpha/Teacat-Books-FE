@@ -3,6 +3,7 @@ import ClientRender from "../reusable/ClientRender";
 import AuthorTicketModal from "./AuthorTicketModal";
 import BorrowBookModal from "./BorrowBookModal";
 import BuyBookModal from "./BuyBookModal";
+import ReadThemeModal from "./ReadThemeModal";
 import ReviewBookModal from "./ReviewBookModal";
 
 const ModalsContainer = () => {
@@ -12,6 +13,7 @@ const ModalsContainer = () => {
       <BorrowBookModal />
       <BuyBookModal />
       <ReviewBookModal />
+      <ReadThemeModal />
     </ClientRender>
   );
 };

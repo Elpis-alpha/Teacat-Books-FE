@@ -20,9 +20,12 @@ import {
 import { FaShield, FaUserPen } from "react-icons/fa6";
 import { ClipLoader } from "react-spinners";
 import ClientRender from "../reusable/ClientRender";
+import { usePathname } from "next/navigation";
 
 const NavBar = () => {
   const dispatch = useAppDispatch();
+  const path = usePathname();
+
   const {
     available,
     loading,
@@ -74,6 +77,8 @@ const NavBar = () => {
       dispatch(setUserLoading(false));
     }
   };
+
+  if (path.startsWith("/read")) return <></>;
 
   return (
     <>

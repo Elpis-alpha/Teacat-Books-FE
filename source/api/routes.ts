@@ -112,6 +112,9 @@ const routes = {
         featured ? `&featured=${featured}` : ""
       }`,
     one: (bookID: string) => `${BE}/book/one?bookID=${bookID}`,
+    chapter: (bookID: string, chapterNumber: number) =>
+      `${BE}/book/chapter?bookID=${bookID}&chapterNumber=${chapterNumber}`,
+    bookmark: `${BE}/book/bookmark`,
     copies: (
       limit: number,
       skip: number,

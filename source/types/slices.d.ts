@@ -21,7 +21,7 @@ interface userDataType {
   // AUTHENTICATION
   mail: {
     email: string;
-    authType: ("password" | "google");
+    authType: "password" | "google";
     googleID?: string;
   };
 
@@ -51,7 +51,9 @@ interface UIStateType {
       }
     | {
         active: true;
-        type?: "borrow-book" | "buy-book" | "author-ticket" | "review-book"
+        type?: "borrow-book" | "buy-book" | "author-ticket" | "review-book" | "set-theme"
         data?: string;
       };
+  changeTheme: number;
+  hasReviewed: string;
 }
