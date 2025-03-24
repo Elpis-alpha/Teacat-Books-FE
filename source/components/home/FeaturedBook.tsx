@@ -29,7 +29,7 @@ const FeaturedBook = ({
 
   return (
     <div className="flex w-full flex-1 bg-sub-bg flex-col items-center justify-center shadow-2xl">
-      <div className="w-full max-h-[60vh] overflow-hidden">
+      <div className="w-full overflow-hidden">
         <div className="w-full pt-[160%]" />
         <SafeImage
           src={makeImageSmaller(book.mainImage)}
@@ -41,20 +41,20 @@ const FeaturedBook = ({
         </div>
       </div>
       <div className="py-6 xl:py-10 px-5 xl:px-9 flex-1 flex items-baseline flex-col">
-        <h3 className="text-3xl xl:text-4xl font-bold">
+        <h3 className="text-2xl xl:text-3xl font-bold">
           <Link className="hover:text-blue-300" href={`/book/${book._id}`}>
             {book.title}
           </Link>
         </h3>
-        <p className="py-2.5 text-lg xl:text-xl text-balance italic">
+        <p className="py-2.5 text-xl xl:text-lg text-balance italic">
           <Link className="hover:text-blue-300" href={`/profile/${authorID}`}>
             By {authorName}
           </Link>
         </p>
-        <div className="text-lg xl:text-xl line-clamp-4">
+        <div className="text-base xl:text-lg line-clamp-4">
           {book.description}
         </div>
-        <div className="flex flex-1 items-end gap-3 mt-5 flex-wrap text-xs ssm:text-lg sm:text-base md:text-lg w-full">
+        <div className="flex flex-1 items-end gap-3 mt-5 flex-wrap text-xs ssm:text-base sm:text-sm md:text-base w-full">
           {mine === null && (
             <button
               onClick={() => {
@@ -116,13 +116,13 @@ export const FeaturedBookSkeleton = ({ className }: { className: string }) => {
         <div className="w-full pt-[160%]" />
       </div>
       <div className="py-6 xl:py-10 px-5 xl:px-9 flex-1 flex items-baseline flex-col">
-        <h3 className="text-3xl xl:text-4xl font-bold skeleton rounded-md min-w-[150px] xsm:min-w-[200px]">
+        <h3 className="text-2xl xl:text-3xl font-bold skeleton rounded-md min-w-[150px] xsm:min-w-[200px]">
           Title
         </h3>
-        <p className="my-2.5 text-lg xl:text-xl text-balance italic skeleton rounded-md">
+        <p className="my-2.5 text-xl xl:text-lg text-balance italic skeleton rounded-md">
           By Author
         </p>
-        <div className="text-lg xl:text-xl line-clamp-4 skeleton rounded-md">
+        <div className="text-base xl:text-lg line-clamp-4 skeleton rounded-md">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea
           voluptatibus a quod eveniet, suscipit quam voluptas expedita
           temporibus nostrum illo sunt inventore distinctio eum nihil tempora
@@ -131,7 +131,7 @@ export const FeaturedBookSkeleton = ({ className }: { className: string }) => {
           voluptas expedita temporibus nostrum illo sunt inventore distinctio
           eum nihil tempora voluptates accusamus sit quos!
         </div>
-        <div className="flex flex-1 items-end gap-3 mt-5 flex-wrap text-xs ssm:text-lg sm:text-base md:text-lg w-full">
+        <div className="flex flex-1 items-end gap-3 mt-5 flex-wrap text-xs ssm:text-base sm:text-sm md:text-base w-full">
           <button className="py-1 sm:py-1.5 px-2 sm:px-4 rounded-md skeleton">
             Borrow 0/10
           </button>

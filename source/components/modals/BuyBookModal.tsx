@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import ModalOverflow from "./ModalOverflow";
 import { useAppDispatch, useAppSelector } from "@/source/store/hooks";
 import { animateModal } from "@/source/helpers/gsap.config";
-import { setModal } from "@/source/store/slice/UIslice";
+import { setModal, updateMyBooks } from "@/source/store/slice/UIslice";
 import { FaCheckCircle, FaTimes, FaTimesCircle } from "react-icons/fa";
 import gsap from "gsap";
 import TextInput from "../reusable/TextInput";
@@ -12,11 +12,12 @@ import { generateHelioLink, openWithGet } from "@/source/helpers";
 import { isEmail } from "validator";
 import { postApiJson } from "@/source/api";
 import routes from "@/source/api/routes";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const BuyBookModal = () => {
-  const dispatch = useAppDispatch();
+  const path = usePathname();
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { modal } = useAppSelector((state) => state.ui);
   const userID = useAppSelector((state) => state.user.data?._id);
   const userEmail = useAppSelector((state) => state.user.data?.mail?.email);
@@ -146,7 +147,14 @@ const BuyBookModal = () => {
       if (result === "success") {
         setStage("payment-verified");
         await new Promise((resolve) => setTimeout(resolve, 2000));
-        router.push("/my-books");
+        if (!path.includes("/my-books")) {
+          console.log("pushing");
+          router.push("/my-books");
+        } else {
+          console.log("refreshing");
+          dispatch(updateMyBooks());
+        }
+        exitWithAnimation();
         return;
       } else {
         error = result.error;
@@ -194,7 +202,13 @@ const BuyBookModal = () => {
       if (result === "success") {
         setStage("payment-restored");
         await new Promise((resolve) => setTimeout(resolve, 2000));
-        router.push("/my-books");
+        if (!path.includes("/my-books")) {
+          router.push("/my-books");
+        } else {
+          console.log("refreshing");
+          dispatch(updateMyBooks());
+        }
+        exitWithAnimation();
         return;
       } else {
         error = result.error;

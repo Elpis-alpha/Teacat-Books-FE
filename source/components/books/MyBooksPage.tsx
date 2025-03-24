@@ -8,6 +8,7 @@ import { MyBookPageData } from "@/source/types/states";
 import BoughtBook, { BoughtBookSkeleton } from "./BoughtBook";
 import BorrowedBook, { BorrowedBookSkeleton } from "./BorrowedBook";
 import toast from "react-hot-toast";
+import { useAppSelector } from "@/source/store/hooks";
 
 const MyBooksPage = () => {
   const [processing, setProcessing] = useState("" as "returning" | "");
@@ -26,6 +27,9 @@ const MyBooksPage = () => {
   useEffect(() => {
     if (resetPagination) setResetPagination(false);
   }, [resetPagination]);
+
+  const updateMyBooks = useAppSelector((store) => store.ui.updateMyBooks);
+  const previousChaged = useRef(updateMyBooks - 1);
 
   useEffect(() => {
     const fetchMyBooks = async () => {
@@ -70,8 +74,11 @@ const MyBooksPage = () => {
       }
     };
 
-    fetchMyBooks();
-  }, []);
+    if (previousChaged.current !== updateMyBooks) {
+      previousChaged.current = updateMyBooks;
+      fetchMyBooks();
+    }
+  }, [updateMyBooks]);
 
   const fetchMyBooks = async (page: number, all: boolean) => {
     if (data.loading !== "none")

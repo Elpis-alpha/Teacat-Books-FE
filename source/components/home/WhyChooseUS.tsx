@@ -47,7 +47,7 @@ const WhyChooseUS = () => {
               Track Orders
             </h3>
             <p className="pt-1.5 text-base sm:text-lg lg:text-xl">
-              Keep track of your purchases and borrowed books in one place
+              Keep track of your purchases and borrowed books in one place.
             </p>
           </div>
         </div>

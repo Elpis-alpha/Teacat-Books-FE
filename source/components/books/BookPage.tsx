@@ -87,7 +87,7 @@ const BookPage = ({
   return (
     <>
       <BigImage blackOpacity={70} src={book.coverImage}>
-        <div className="z-30 px-6 md:px-10 xl:px-16 w-full text-base sm:text-xl">
+        <div className="z-30 px-6 md:px-10 xl:px-16 w-full text-xl sm:text-base">
           <div className="max-w-[1640px] mx-auto flex items-start justify-center flex-col slg:flex-row gap-15 lg:gap-[46px]">
             <div className="w-[250px] h-[400px] sm:w-[350px] sm:h-[560px] 2xl:w-[500px] 2xl:h-[800px] mx-auto">
               <SafeImage
@@ -99,9 +99,9 @@ const BookPage = ({
                 <BarLoader color="#fff" width={40} height={1} />
               </div>
             </div>
-            <div className="flex-1 text-lg 2xl:text-2xl flex flex-col gap-4 2xl:gap-5 slg:py-10">
-              <h2 className="font-bold text-5xl 2xl:text-7xl">{book.title}</h2>
-              <p className="italic text-2xl 2xl:text-4xl">
+            <div className="flex-1 text-sm 2xl:text-xl flex flex-col gap-4 2xl:gap-5 slg:py-10">
+              <h2 className="font-bold text-4xl 2xl:text-6xl">{book.title}</h2>
+              <p className="italic text-xl 2xl:text-3xl">
                 <Link
                   className="hover:text-blue-300"
                   href={`/profile/${authorID}`}
@@ -112,9 +112,9 @@ const BookPage = ({
               <div className="items-center gap-2 flex">
                 <StarRating
                   value={book.averageRating}
-                  className="2xl:w-[45px] 2xl:text-[40px] text-2xl w-[26px]"
+                  className="2xl:w-[35px] 2xl:text-3xl text-xl w-[22px]"
                 />
-                <small className="opacity-50 text-base 2xl:text-xl">
+                <small className="opacity-50 text-sm 2xl:text-lg">
                   ({book.numberOfReviews} review
                   {book.numberOfReviews !== 1 && "s"})
                 </small>

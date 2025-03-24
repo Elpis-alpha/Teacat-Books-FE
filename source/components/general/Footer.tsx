@@ -13,7 +13,7 @@ const Footer = () => {
             Teacat Books
           </h1>
           <p className="pt-1">
-            Support new authors and find the next great novels
+            Support new authors and find the next great novel.
           </p>
           <p className="sm:hidden pt-6">
             @{new Date().getFullYear()}, Teacat Books.

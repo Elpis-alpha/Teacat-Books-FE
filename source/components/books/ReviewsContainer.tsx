@@ -147,25 +147,25 @@ const ReviewsContainer = ({
     <div className="py-[120px] w-full px-6 md:px-10 xl:px-16">
       <div className="max-w-[1640px] mx-auto">
         <div className="flex items-start flex-col sm:flex-row max-sm:gap-10">
-          <div className="w-full sm:w-[300px] xl:w-[500px] flex flex-wrap flex-row sm:flex-col gap-y-0 gap-x-10">
-            <p className="font-proxima font-bold text-8xl">
+          <div className="w-full sm:w-[300px] xl:w-[500px] flex flex-wrap flex-row sm:flex-col gap-y-0 gap-x-6">
+            <p className="font-proxima font-bold text-5xl">
               {book.averageRating.toFixed(1)}
             </p>
             <div className="mt-5 flex-1">
               <StarRating
                 value={book.averageRating}
-                className="xl:w-[45px] xl:text-[40px] text-2xl w-[26px]"
+                className="2xl:w-[26px] 2xl:text-2xl text-lg w-[20px]"
               />
-              <p className="text-xl xl:text-2xl line-clamp-1 mt-3">
+              <p className="text-base xl:text-xl line-clamp-1 mt-3">
                 {book.numberOfReviews} review
                 {book.numberOfReviews !== 1 && "s"}
               </p>
             </div>
           </div>
-          <div className="flex-1 text-2xl xl:text-3xl flex flex-col gap-3 xl:gap-5 w-full">
+          <div className="flex-1 text-base xl:text-xl flex flex-col xl:gap-1 w-full">
             <button className="flex items-center gap-5 xl:gap-8">
               <p>5</p>
-              <div className="w-full bg-white/40 h-4 xl:h-5 rounded-full">
+              <div className="w-full bg-white/40 h-2 xl:h-3 rounded-full">
                 <div
                   className="h-full bg-[#ffd700] rounded-full max-w-full"
                   style={{
@@ -180,7 +180,7 @@ const ReviewsContainer = ({
             </button>
             <button className="flex items-center gap-5 xl:gap-8">
               <p>4</p>
-              <div className="w-full bg-white/40 h-4 xl:h-5 rounded-full">
+              <div className="w-full bg-white/40 h-2 xl:h-3 rounded-full">
                 <div
                   className="h-full bg-[#ffd700] rounded-full max-w-full"
                   style={{
@@ -195,7 +195,7 @@ const ReviewsContainer = ({
             </button>
             <button className="flex items-center gap-5 xl:gap-8">
               <p>3</p>
-              <div className="w-full bg-white/40 h-4 xl:h-5 rounded-full">
+              <div className="w-full bg-white/40 h-2 xl:h-3 rounded-full">
                 <div
                   className="h-full bg-[#ffd700] rounded-full max-w-full"
                   style={{
@@ -210,7 +210,7 @@ const ReviewsContainer = ({
             </button>
             <button className="flex items-center gap-5 xl:gap-8">
               <p>2</p>
-              <div className="w-full bg-white/40 h-4 xl:h-5 rounded-full">
+              <div className="w-full bg-white/40 h-2 xl:h-3 rounded-full">
                 <div
                   className="h-full bg-[#ffd700] rounded-full max-w-full"
                   style={{
@@ -225,7 +225,7 @@ const ReviewsContainer = ({
             </button>
             <button className="flex items-center gap-5 xl:gap-8">
               <p>1</p>
-              <div className="w-full bg-white/40 h-4 xl:h-5 rounded-full">
+              <div className="w-full bg-white/40 h-2 xl:h-3 rounded-full">
                 <div
                   className="h-full bg-[#ffd700] rounded-full max-w-full"
                   style={{

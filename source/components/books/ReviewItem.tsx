@@ -11,7 +11,7 @@ const ReviewItem = (props: ReviewItemProps) => {
   return (
     <div className="flex items-start flex-col sm:flex-row max-sm:gap-4">
       <div className="w-full sm:w-[300px] xl:w-[500px] flex items-center gap-y-0 gap-x-5 pr-8">
-        <div className="xl:w-[135px] h-[85px] w-[85px] xl:h-[135px] rounded-full overflow-hidden">
+        <div className="xl:w-[100px] h-[65px] w-[65px] xl:h-[100px] rounded-full overflow-hidden">
           <SafeImage
             src={makeImageSmaller(review.user.avatar)}
             alt={review.user.name}
@@ -22,12 +22,12 @@ const ReviewItem = (props: ReviewItemProps) => {
           </div>
         </div>
         <div className="flex-1 w-full">
-          <h4 className="line-clamp-1 font-bold text-xl xl:text-3xl">
+          <h4 className="line-clamp-1 font-bold text-sm xl:text-xl">
             {review.user.name}
           </h4>
           <p
             className={
-              "text-base xl:text-xl line-clamp-1 mt-2 py-0.5 xl:py-1 xl:px-4 px-2 rounded-lg inline-flex " +
+              "text-sm xl:text-base line-clamp-1 mt-2 py-0.5 xl:py-0.5 xl:px-3 px-2 rounded-lg inline-flex " +
               (review.user.isAdmin
                 ? "bg-[#FF00DD]/30"
                 : review.user.isAuthor
@@ -43,11 +43,11 @@ const ReviewItem = (props: ReviewItemProps) => {
           </p>
         </div>
       </div>
-      <div className="flex-1 text-lg xl:text-2xl flex flex-col gap-2 xl:gap-3 w-full sm:pt-5 pb-5">
+      <div className="flex-1 text-base xl:text-lg flex flex-col gap-2 xl:gap-3 w-full sm:pt-5 pb-5">
         <div className="">
           <StarRating
             value={review.stars}
-            className="xl:w-[35px] xl:text-[30px] text-xl w-[22px]"
+            className="2xl:w-[26px] 2xl:text-2xl text-lg w-[20px]"
           />
         </div>
         <p>{review.reviewText || "No Review Text"}</p>

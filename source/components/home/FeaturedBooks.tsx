@@ -104,7 +104,7 @@ const FeaturedBooks = () => {
           {data.available && data.books.length >= 1 ? (
             <Swiper
               spaceBetween={200}
-              slidesPerView={3}
+              slidesPerView={4}
               style={{ zIndex: 20 }}
               breakpoints={{
                 0: {
@@ -117,6 +117,10 @@ const FeaturedBooks = () => {
                 },
                 1024: {
                   slidesPerView: 3,
+                  spaceBetween: 20,
+                },
+                1400: {
+                  slidesPerView: 4,
                   spaceBetween: 20,
                 },
               }}
@@ -142,6 +146,7 @@ const FeaturedBooks = () => {
               <FeaturedBookSkeleton className="" />
               <FeaturedBookSkeleton className="max-sm:hidden" />
               <FeaturedBookSkeleton className="max-lg:hidden" />
+              <FeaturedBookSkeleton className="max-1_5xl:hidden" />
             </div>
           ) : (
             <div className="flex w-full flex-1 items-center justify-center p-30 ">

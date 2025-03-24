@@ -55,5 +55,6 @@ interface UIStateType {
         data?: string;
       };
   changeTheme: number;
+  updateMyBooks: number;
   hasReviewed: string;
 }

@@ -468,7 +468,7 @@ const SignInModal = () => {
                 </button>
               </div>
             </form>
-            <div className="pt-4 sm:pt-5">
+            <div className="pt-4 sm:pt-5 max-sm:pb-2">
               <div className="flex items-center justify-center gap-2 sm:gap-3 px-3 sm:px-6">
                 <span className="block h-px bg-white/50 flex-1"></span>
                 <p>OR</p>
@@ -522,6 +522,9 @@ const SignInModal = () => {
                 </button>
               </div>
             </div>
+            <p className="pt-3 sm:pt-4 text-xs sm:text-sm text-white/70">
+              {"Don't"} have an account? Use <strong>email</strong> or <strong>google</strong> to sign up
+            </p>
           </div>
         </div>
       </div>
