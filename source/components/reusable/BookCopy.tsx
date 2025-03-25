@@ -32,6 +32,8 @@ const BookCopy = (props: BookCopyProps) => {
     if (!copy.holder) return null;
 
     if (typeof copy.holder === "string") {
+      if (copy.holder === "private")
+        return { holderName: "Private", holderID: "" };
       return { holderName: "Holder", holderID: copy.holder };
     } else if (copy.holder) {
       return {
@@ -113,14 +115,25 @@ const BookCopy = (props: BookCopyProps) => {
           </div>
         ) : !!holder ? (
           <div className="flex-1 flex">
-            <Link
-              target="_blank"
-              rel="noopener noreferrer"
-              href={`/profile/${holder.holderID}`}
-              className="text-white bg-bad-red/40 py-1 px-2 sm:px-3 rounded-lg flex items-center gap-1.5 max-w-[150px] sm:max-w-[200px] ml-auto"
-            >
-              <span className="line-clamp-1">Taken by {holder.holderName}</span>
-            </Link>
+            {holder.holderID ? (
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`/profile/${holder.holderID}`}
+                className="text-white bg-bad-red/40 py-1 px-2 sm:px-3 rounded-lg flex items-center gap-1.5 max-w-[150px] sm:max-w-[200px] ml-auto"
+              >
+                <span className="line-clamp-1">
+                  Taken by {holder.holderName}
+                </span>
+              </Link>
+            ) : (
+              <button
+                disabled={true}
+                className="text-white bg-bad-red/40 py-1 px-2 sm:px-3 rounded-lg flex items-center gap-1.5 max-w-[150px] sm:max-w-[200px] ml-auto"
+              >
+                <span className="line-clamp-1">Private</span>
+              </button>
+            )}
           </div>
         ) : null}
       </div>

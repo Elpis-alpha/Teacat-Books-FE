@@ -22,6 +22,7 @@ const BorrowBookModal = () => {
   const hasAnimated = useRef(false);
 
   const [lockdown, setLockdown] = useState<null | number>(null);
+  const [hasBorrowed, setHasBorrowed] = useState(false);
   const userID = useAppSelector((state) => state.user.data?._id);
 
   const [showTaken, setShowTaken] = useState(false);
@@ -96,7 +97,8 @@ const BorrowBookModal = () => {
           routes.book.copies(
             limit,
             0,
-            "cooldownReleaseDate:asc || copyNumber:asc",
+            // "cooldownReleaseDate:asc || copyNumber:asc",
+            "copyNumber:asc",
             bookID,
             false,
             userID || null
@@ -125,6 +127,10 @@ const BorrowBookModal = () => {
           if (response.lockdown) {
             const ll = new Date(response.lockdown).getTime();
             if (!isNaN(ll)) setLockdown(ll);
+          }
+
+          if (response.hasBorrowed) {
+            setHasBorrowed(true);
           }
         }
       } catch (error) {
@@ -165,7 +171,8 @@ const BorrowBookModal = () => {
         routes.book.copies(
           limit,
           page * limit,
-          "cooldownReleaseDate:asc || copyNumber:asc",
+          // "cooldownReleaseDate:asc || copyNumber:asc",
+          "copyNumber:asc",
           bookID,
           taken,
           null
@@ -255,6 +262,14 @@ const BorrowBookModal = () => {
               <span className="font-bold">
                 {format(lockdown, "MMMM d 'at' h:mm a")}
               </span>
+            </p>
+          </div>
+        )}
+        {hasBorrowed && (
+          <div className="w-full items-center justify-center flex pt-5 px-4">
+            <p>
+              You are already borrowing a book. Please return the book you are
+              borrowing to borrow another.
             </p>
           </div>
         )}

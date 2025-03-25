@@ -51,6 +51,11 @@ const UserSlice = createSlice({
       state.data.bio = payload;
     },
 
+    setUserKeepBorrowHistoryPrivate: (state, { payload }: { payload: boolean }) => {
+      if (!state.data) return;
+      state.data.keepBorrowHistoryPrivate = payload;
+    },
+
     setUserAvatar: (state, { payload }: { payload: string }) => {
       if (!state.data) return;
       state.data.avatar = payload;
@@ -99,6 +104,7 @@ export const {
   setUserLoading,
   setUserName,
   setUserBio,
+  setUserKeepBorrowHistoryPrivate,
   setUserAvatar,
   setUserBorrowLockdown,
   setUserDiscord,

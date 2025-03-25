@@ -4,12 +4,13 @@ import { useAppDispatch, useAppSelector } from "@/source/store/hooks";
 import {
   setUserAvatar,
   setUserBio,
+  setUserKeepBorrowHistoryPrivate,
   setUserName,
 } from "@/source/store/slice/userSlice";
 import { midProfileProps } from "@/source/types/misc";
 import { FormEventHandler, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { FaSave, FaTimes } from "react-icons/fa";
+import { FaCheck, FaSave, FaTimes } from "react-icons/fa";
 import { ClipLoader } from "react-spinners";
 import SafeImage from "../reusable/SafeImage";
 
@@ -20,6 +21,9 @@ const EditNameImageBio = ({ profileProcessing }: midProfileProps) => {
 
   const [_name, setName] = useState(userData.name);
   const [_bio, setBio] = useState(userData.bio);
+  const [_keepBorrowHistoryPrivate, setKeepBorrowHistoryPrivate] = useState(
+    !!userData.keepBorrowHistoryPrivate
+  );
 
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [imageViewURL, setImageViewURL] = useState(userData.avatar);
@@ -135,6 +139,27 @@ const EditNameImageBio = ({ profileProcessing }: midProfileProps) => {
     setProcessing("");
   };
 
+  const saveKeepBorrowHistoryPrivate = async (value: boolean) => {
+    if (processing) return toast("Please wait");
+    if (value === userData.keepBorrowHistoryPrivate)
+      return toast("No changes made");
+
+    setProcessing("keepBorrowHistoryPrivate");
+
+    const response = await postApiJson(routes.user.edit, {
+      keepBorrowHistoryPrivate: value,
+    });
+
+    if (response.error) {
+      toast.error(response.errorMessage || "Failed to borrow history privacy");
+    } else {
+      dispatch(setUserKeepBorrowHistoryPrivate(value));
+      setKeepBorrowHistoryPrivate(value);
+      toast.success("Borrow history privacy updated");
+    }
+    setProcessing("");
+  };
+
   return (
     <div className="flex flex-col gap-8 w-full">
       <div className="w-[200px] h-[200px] mx-auto">
@@ -228,6 +253,36 @@ const EditNameImageBio = ({ profileProcessing }: midProfileProps) => {
           </button>
         </div>
       </form>
+      <div
+        className={
+          "w-full flex items-center gap-4 " +
+          (!!processing ? "readonly-input" : "")
+        }
+      >
+        <button
+          type="button"
+          onClick={() => {
+            if (!processing)
+              saveKeepBorrowHistoryPrivate(!_keepBorrowHistoryPrivate);
+          }}
+          className="w-10 h-10 rounded-xl p-1 flex items-center justify-center bg-white/20 hover:bg-white/40"
+        >
+          {processing === "keepBorrowHistoryPrivate" ? (
+            <ClipLoader color="#fff" size={20} />
+          ) : (
+            _keepBorrowHistoryPrivate && <FaCheck />
+          )}
+        </button>
+        <label
+          className="block flex-1 cursor-pointer"
+          onClick={() => {
+            if (!processing)
+              saveKeepBorrowHistoryPrivate(!_keepBorrowHistoryPrivate);
+          }}
+        >
+          Keep Borrow History Private
+        </label>
+      </div>
     </div>
   );
 };

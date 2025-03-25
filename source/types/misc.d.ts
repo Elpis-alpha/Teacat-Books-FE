@@ -5,6 +5,7 @@ export type profileProcessing =
   | ""
   | "name"
   | "bio"
+  | "keepBorrowHistoryPrivate"
   | "image"
   | "remove-image"
   | "changing-password"

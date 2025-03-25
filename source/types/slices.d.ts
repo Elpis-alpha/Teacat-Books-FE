@@ -39,6 +39,7 @@ interface userDataType {
 
   borrowLockdownEndsAt?: string;
   numberOfOverdueReturns?: number;
+  keepBorrowHistoryPrivate?: boolean;
 
   createdAt: string;
   updatedAt: string;

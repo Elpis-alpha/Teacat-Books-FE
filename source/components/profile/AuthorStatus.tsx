@@ -90,12 +90,18 @@ const AuthorStatus = ({ profileProcessing }: midProfileProps) => {
   return (
     <div className="w-full">
       <p className="block sm:hidden pb-2 text-right">
-        {status === "approved" ? "You are an author" : "You are not an author"}
+        {status === "approved"
+          ? "You are an author"
+          : showForm
+          ? "You do not yet have an author account with us. Please fill out the submission form below for consideration."
+          : "You are not an author"}
       </p>
       <div className="flex items-center gap-2.5 max-sm:justify-end">
         <p className="flex-1 max-sm:hidden">
           {status === "approved"
             ? "You are an author"
+            : showForm
+            ? "You do not yet have an author account with us. Please fill out the submission form below for consideration."
             : "You are not an author"}
         </p>
         {status === "pending-approval" || status === "pending-removal" ? (
@@ -163,11 +169,11 @@ const AuthorStatus = ({ profileProcessing }: midProfileProps) => {
             />
           )}
           <textarea
-            placeholder="Message for the reviewer"
+            placeholder="Do you have any finished books that you would like to host on our site? Please tell us about any in-progress or completed works you think might be a good fit for our site."
             value={messageForReviewer}
             onChange={(e) => setMessageForReviewer(e.target.value)}
             readOnly={!!processing}
-            rows={4}
+            rows={5}
             className="bg-white/20 px-5 py-3.5 w-full rounded-xl overflow-auto"
           />
           <button
