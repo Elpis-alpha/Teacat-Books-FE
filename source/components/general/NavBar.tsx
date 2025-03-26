@@ -90,7 +90,7 @@ const NavBar = () => {
               href="/"
               className="text-2xl sm:text-3xl font-proxima font-bold py-2 flex items-center gap-2 hover:text-blue-300"
             >
-              <SafeImage src="/favicon.svg" alt="Favicon" className="w-10 h-10 -mt-1" />
+              <SafeImage src="/favicon-96x96.png" alt="Favicon" className="w-10 h-10 -mt-1" />
               <h1>Teacat Books</h1>
             </Link>
             <Link
@@ -177,7 +177,7 @@ const NavBar = () => {
               href="/"
               className="text-2xl font-proxima font-bold flex items-center gap-2 hover:text-blue-300"
             >
-              <SafeImage src="/favicon.svg" alt="Favicon" className="w-10 h-10 -mt-1" />
+              <SafeImage src="/favicon-96x96.png" alt="Favicon" className="w-10 h-10 -mt-1" />
               <h1>Teacat Books</h1>
             </Link>
           </div>
