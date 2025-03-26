@@ -148,7 +148,7 @@ const ReadThemeModal = () => {
                     fontFamily === "Miller"
                       ? "bg-white text-black"
                       : "bg-white/10 text-white"
-                  } p-1 rounded-md flex-1`}
+                  } p-1 rounded-md flex-1 font-miller`}
                 >
                   Miller
                 </button>
@@ -159,7 +159,7 @@ const ReadThemeModal = () => {
                     fontFamily === "Proxima"
                       ? "bg-white text-black"
                       : "bg-white/10 text-white"
-                  } p-1 rounded-md flex-1`}
+                  } p-1 rounded-md flex-1 font-proxima`}
                 >
                   Proxima
                 </button>

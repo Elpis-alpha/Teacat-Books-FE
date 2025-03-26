@@ -111,6 +111,7 @@ const routes = {
       }${author ? `&author=${author}` : ""}${text ? `&text=${text}` : ""}${
         featured ? `&featured=${featured}` : ""
       }`,
+    meta: (bookID: string) => `${BE}/book/meta?bookID=${bookID}`,
     one: (bookID: string) => `${BE}/book/one?bookID=${bookID}`,
     chapter: (bookID: string, chapterNumber: number) =>
       `${BE}/book/chapter?bookID=${bookID}&chapterNumber=${chapterNumber}`,

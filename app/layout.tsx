@@ -1,6 +1,5 @@
 import AppProvider from "@/source/components/providers/AppProvider";
 import "./styles/globals.css";
-// import "./styles/utilities.css";
 import type { Metadata } from "next";
 import LocalFont from "next/font/local";
 
@@ -36,6 +35,21 @@ export default function RootLayout({
     <html suppressHydrationWarning lang="en">
       <head>
         <meta name="theme-color" content="#161A26"></meta>
+        <link
+          rel="icon"
+          type="image/png"
+          href="/favicon-96x96.png"
+          sizes="96x96"
+        />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/apple-touch-icon.png"
+        />
+        <meta name="apple-mobile-web-app-title" content="Teacat Books" />
+        <link rel="manifest" href="/site.webmanifest" />
       </head>
       <body
         suppressHydrationWarning
