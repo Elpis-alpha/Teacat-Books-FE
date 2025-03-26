@@ -11,13 +11,13 @@ export interface ThemeInterface {
 }
 
 const defaultTheme: ThemeInterface = {
-  backgroundColor: "white",
+  backgroundColor: "#f6f6f6",
   textColor: "black",
   fontPercentage: 100,
   fontFamily: "Miller",
   textAlignment: "left",
-  lineHeight: 1.5,
-  paddingPercentage: 100,
+  lineHeight: 1.8,
+  paddingPercentage: 120,
 };
 
 export const getTheme = (__theme?: string) => {
