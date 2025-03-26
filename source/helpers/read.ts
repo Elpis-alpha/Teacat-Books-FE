@@ -72,6 +72,7 @@ export const setTheme = (theme: ThemeInterface) => {
 
     cookie.set("read-theme", JSON.stringify(theme), {
       path: "/read",
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 365), // 1 year
     });
   } catch (error) {
     console.error(error);
