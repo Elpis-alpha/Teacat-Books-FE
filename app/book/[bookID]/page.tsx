@@ -7,14 +7,15 @@ import {
 } from "@/source/components/reusable/SimplePages";
 import { host, tokenCookieName } from "@/source/config";
 import BookPage from "@/source/components/books/BookPage";
-import { Metadata, ResolvingMetadata } from "next";
+import { Metadata } from "next";
 import { BookInterface } from "@/source/types/states";
 import { format } from "date-fns";
 
-export async function generateMetadata(
-  { params }: { params: Promise<{ bookID: string }> },
-  parent: ResolvingMetadata
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ bookID: string }>;
+}): Promise<Metadata> {
   const { bookID } = await params;
 
   if (!bookID || bookID.length !== 24) {

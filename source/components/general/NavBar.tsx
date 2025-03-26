@@ -21,6 +21,7 @@ import { FaShield, FaUserPen } from "react-icons/fa6";
 import { ClipLoader } from "react-spinners";
 import ClientRender from "../reusable/ClientRender";
 import { usePathname } from "next/navigation";
+import SafeImage from "../reusable/SafeImage";
 
 const NavBar = () => {
   const dispatch = useAppDispatch();
@@ -85,14 +86,13 @@ const NavBar = () => {
       <nav className="w-full absolute top-0 left-0 z-50 right-0">
         <div className="py-6 px-6 md:px-10 xl:px-16 max-w-[1920px] mx-auto flex gap-6 items-center justify-between">
           <div className="flex gap-8 xl:gap-12.5 items-center">
-            <h1>
-              <Link
-                href="/"
-                className="text-2xl sm:text-3xl font-proxima font-bold py-2 block"
-              >
-                🧋Teacat Books
-              </Link>
-            </h1>
+            <Link
+              href="/"
+              className="text-2xl sm:text-3xl font-proxima font-bold py-2 flex items-center gap-2 hover:text-blue-300"
+            >
+              <SafeImage src="/favicon.svg" alt="Favicon" className="w-10 h-10 -mt-1" />
+              <h1>Teacat Books</h1>
+            </Link>
             <Link
               href="/books"
               className="smm:block hidden hover:text-blue-300"
@@ -101,7 +101,7 @@ const NavBar = () => {
             </Link>
           </div>
           <ClientRender initial={null}>
-            <div className="not-slg:hidden slg:flex items-center xl:gap-8 gap-9">
+            <div className="not-slg:hidden slg:flex items-center lg:gap-9 gap-4">
               {loading ? (
                 <div className="p-2.5 flex">
                   <ClipLoader color="#fff" size={24} />
@@ -172,15 +172,14 @@ const NavBar = () => {
             />
           </div>
           <div className="py-4">
-            <h1>
-              <Link
-                onClick={toggleNav}
-                href="/"
-                className="text-2xl font-proxima font-bold"
-              >
-                🧋Teacat Books
-              </Link>
-            </h1>
+            <Link
+              onClick={toggleNav}
+              href="/"
+              className="text-2xl font-proxima font-bold flex items-center gap-2 hover:text-blue-300"
+            >
+              <SafeImage src="/favicon.svg" alt="Favicon" className="w-10 h-10 -mt-1" />
+              <h1>Teacat Books</h1>
+            </Link>
           </div>
 
           <div className="flex flex-col gap-8 text-left">
