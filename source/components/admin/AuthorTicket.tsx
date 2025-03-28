@@ -56,12 +56,12 @@ const AuthorTicket = (props: AuthorTicketProps) => {
 
   const approveTicket = async () => {
     if (ticket.status !== "pending")
-      return toast.error("Ticket is not pending");
-    if (!reviewerFeedback) return toast.error("Feedback is required");
+      return toast.error("Ticket is not pending.");
+    if (!reviewerFeedback) return toast.error("Feedback is required.");
     if (ticketType === "become-author") {
-      if (!walletHelioID) return toast.error("Wallet Helio ID is required");
+      if (!walletHelioID) return toast.error("Wallet Helio ID is required.");
       if (walletHelioID.length !== 24)
-        return toast.error("Wallet Helio ID is invalid");
+        return toast.error("Wallet Helio ID is invalid.");
     }
 
     try {
@@ -77,22 +77,22 @@ const AuthorTicket = (props: AuthorTicketProps) => {
 
       if (response.error || !response.message) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to approve ticket");
+        toast.error(response.errorMessage || "Failed to approve ticket.");
       } else {
-        toast.success("Ticket approved successfully");
+        toast.success("Ticket approved successfully.");
         refetch();
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to approve ticket");
+      toast.error("Failed to approve ticket.");
     }
     setProcessingState({ on: "", data: "" });
   };
 
   const rejectTicket = async () => {
     if (ticket.status !== "pending")
-      return toast.error("Ticket is not pending");
-    if (!reviewerFeedback) return toast.error("Feedback is required");
+      return toast.error("Ticket is not pending.");
+    if (!reviewerFeedback) return toast.error("Feedback is required.");
 
     try {
       setProcessingState({ on: "rejecting", data: ticket._id });
@@ -111,14 +111,14 @@ const AuthorTicket = (props: AuthorTicketProps) => {
 
       if (response.error || !response.message) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to reject ticket");
+        toast.error(response.errorMessage || "Failed to reject ticket.");
       } else {
-        toast.success("Ticket rejected successfully");
+        toast.success("Ticket rejected successfully.");
         refetch();
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to reject ticket");
+      toast.error("Failed to reject ticket.");
     }
     setProcessingState({ on: "", data: "" });
   };

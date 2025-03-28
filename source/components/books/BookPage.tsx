@@ -55,10 +55,10 @@ const BookPage = ({
   const returnBook = async () => {
     if (processing) return;
     if (!myData.borrowed || !holdEndDate) {
-      return toast.error("You can't return this book");
+      return toast.error("You can't return this book.");
     }
     if (new Date(holdEndDate) < new Date()) {
-      return toast.error("You can't return this book after the due date");
+      return toast.error("You can't return this book after the due date.");
     }
     setProcessing("returning");
 
@@ -69,15 +69,15 @@ const BookPage = ({
       });
       if (response.error || !response.bookCopy) {
         toast.error(
-          response.errorMessage || "An error occurred while returning the book"
+          response.errorMessage || "An error occurred while returning the book."
         );
         console.error(response);
       } else {
         setBookReturned(true);
-        toast.success("Book returned successfully");
+        toast.success("Book returned successfully.");
       }
     } catch (error) {
-      toast.error("An error occurred while returning the book");
+      toast.error("An error occurred while returning the book.");
       console.error(error);
     }
 
@@ -210,7 +210,7 @@ const BookPage = ({
                       if (typeof myData.canReview === "string") {
                         return toast(myData.canReview);
                       } else if (hasReviewed === book._id) {
-                        return toast("You have already reviewed this book");
+                        return toast("You have already reviewed this book.");
                       }
 
                       dispatch(

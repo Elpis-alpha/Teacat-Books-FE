@@ -157,7 +157,7 @@ const BorrowBookModal = () => {
 
   const fetchCopies = async (page: number, bookID: string, taken: boolean) => {
     if (data.loading)
-      return toast.error("Please wait for the current request to finish");
+      return toast.error("Please wait for the current request to finish.");
 
     setData({
       available: false,

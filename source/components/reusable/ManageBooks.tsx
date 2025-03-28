@@ -90,7 +90,7 @@ const ManageBooks = ({ viewer }: { viewer: "author" | "admin" }) => {
 
   const fetchBooks = async (page: number, text: string | null = null) => {
     if (data.loading)
-      return toast.error("Please wait for the current request to finish");
+      return toast.error("Please wait for the current request to finish.");
 
     setData({
       available: false,

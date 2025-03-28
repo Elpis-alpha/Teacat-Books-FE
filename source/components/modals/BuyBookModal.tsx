@@ -108,7 +108,7 @@ const BuyBookModal = () => {
 
     const url = generateHelioLink(helioPayLinkID, userID, userEmail);
     const handle = openWithGet(url);
-    if (!handle) return toast.error("Please enable browser popup!");
+    if (!handle) return toast.error("Please enable browser popup!.");
 
     setStage("redirecting-waiting-for-payment");
   };
@@ -133,7 +133,7 @@ const BuyBookModal = () => {
       });
       if (response.error || !response.status) {
         return {
-          error: response.errorMessage || "Failed to validate purchase",
+          error: response.errorMessage || "Failed to validate purchase.",
         };
       } else {
         return "success" as const;
@@ -188,7 +188,7 @@ const BuyBookModal = () => {
       });
       if (response.error || !response.status) {
         return {
-          error: response.errorMessage || "Failed to validate purchase",
+          error: response.errorMessage || "Failed to validate purchase.",
         };
       } else {
         return "success" as const;

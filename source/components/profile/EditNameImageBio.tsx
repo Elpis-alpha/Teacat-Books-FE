@@ -35,7 +35,7 @@ const EditNameImageBio = ({ profileProcessing }: midProfileProps) => {
   }, [imageViewURL]);
 
   const saveImage = async (imageFile: any) => {
-    if (processing) return toast("Please wait");
+    if (processing) return toast("Please wait...");
     setProcessing("image");
 
     const serverData = await postApiFormData(routes.user.uploadAvatar, {
@@ -44,9 +44,9 @@ const EditNameImageBio = ({ profileProcessing }: midProfileProps) => {
 
     if (!serverData.error && serverData.image) {
       dispatch(setUserAvatar(serverData.image));
-      toast.success("Avatar Uploaded");
+      toast.success("Avatar Uploaded.");
     } else {
-      toast.error(serverData.errorMessage || "Failed tp upload avatar");
+      toast.error(serverData.errorMessage || "Failed tp upload avatar.");
       await removeImage(true);
     }
     setProcessing("");
@@ -63,11 +63,11 @@ const EditNameImageBio = ({ profileProcessing }: midProfileProps) => {
       setProcessing("remove-image");
       const response = await postApiJson(routes.user.resetAvatar);
       if (response.error) {
-        toast.error(response.errorMessage || "Failed to reset avatar");
+        toast.error(response.errorMessage || "Failed to reset avatar.");
       } else {
         dispatch(setUserAvatar(response.image));
         setImageViewURL(response.image);
-        toast.success("Avatar removed successfully");
+        toast.success("Avatar removed successfully.");
       }
       setProcessing("");
     }
@@ -76,7 +76,7 @@ const EditNameImageBio = ({ profileProcessing }: midProfileProps) => {
   const handleImageInput: FormEventHandler<HTMLInputElement> = (e) => {
     if (processing) {
       e.preventDefault();
-      return toast("Please wait");
+      return toast("Please wait...");
     }
     const input = e.target;
     const img = (input as any)?.files?.[0];
@@ -89,20 +89,20 @@ const EditNameImageBio = ({ profileProcessing }: midProfileProps) => {
         saveImage(img);
       };
       reader.onerror = () => {
-        toast.error("Invalid File");
+        toast.error("Invalid File.");
         removeImage();
       };
       reader.readAsDataURL(img);
     } else {
-      toast.error("Invalid File");
+      toast.error("Invalid File.");
       removeImage();
     }
   };
 
   const saveName: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    if (processing) return toast("Please wait");
-    if (_name.trim() === userData.name.trim()) return toast("No changes made");
+    if (processing) return toast("Please wait...");
+    if (_name.trim() === userData.name.trim()) return toast("No changes made.");
 
     setProcessing("name");
 
@@ -111,18 +111,18 @@ const EditNameImageBio = ({ profileProcessing }: midProfileProps) => {
     });
 
     if (response.error) {
-      toast.error(response.errorMessage || "Failed to update name");
+      toast.error(response.errorMessage || "Failed to update name.");
     } else {
       dispatch(setUserName(_name.trim()));
-      toast.success("Name Updated");
+      toast.success("Name Updated.");
     }
     setProcessing("");
   };
 
   const saveBio: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    if (processing) return toast("Please wait");
-    if (_bio.trim() === userData.bio.trim()) return toast("No changes made");
+    if (processing) return toast("Please wait...");
+    if (_bio.trim() === userData.bio.trim()) return toast("No changes made.");
 
     setProcessing("bio");
 
@@ -131,18 +131,18 @@ const EditNameImageBio = ({ profileProcessing }: midProfileProps) => {
     });
 
     if (response.error) {
-      toast.error(response.errorMessage || "Failed to update bio");
+      toast.error(response.errorMessage || "Failed to update bio.");
     } else {
       dispatch(setUserBio(_bio.trim()));
-      toast.success("Bio Updated");
+      toast.success("Bio Updated.");
     }
     setProcessing("");
   };
 
   const saveKeepBorrowHistoryPrivate = async (value: boolean) => {
-    if (processing) return toast("Please wait");
+    if (processing) return toast("Please wait...");
     if (value === userData.keepBorrowHistoryPrivate)
-      return toast("No changes made");
+      return toast("No changes made.");
 
     setProcessing("keepBorrowHistoryPrivate");
 
@@ -151,11 +151,11 @@ const EditNameImageBio = ({ profileProcessing }: midProfileProps) => {
     });
 
     if (response.error) {
-      toast.error(response.errorMessage || "Failed to borrow history privacy");
+      toast.error(response.errorMessage || "Failed to borrow history privacy.");
     } else {
       dispatch(setUserKeepBorrowHistoryPrivate(value));
       setKeepBorrowHistoryPrivate(value);
-      toast.success("Borrow history privacy updated");
+      toast.success("Borrow history privacy updated.");
     }
     setProcessing("");
   };

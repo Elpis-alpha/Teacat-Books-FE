@@ -90,7 +90,7 @@ const ReadThemeModal = () => {
       paddingPercentage,
     });
     dispatch(changeTheme());
-    toast.success("Theme Changed");
+    toast.success("Theme Changed.");
     exitWithAnimation();
   };
 

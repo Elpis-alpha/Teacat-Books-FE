@@ -24,7 +24,7 @@ const AuthorToManage = (props: AuthorToManageProps) => {
   const [processingState, setProcessingState] = props.processingState;
 
   const removeAuthor = async () => {
-    if (processingState.on) return toast("Please wait");
+    if (processingState.on) return toast("Please wait...");
 
     try {
       setProcessingState({ on: "removing", data: author._id });
@@ -35,14 +35,14 @@ const AuthorToManage = (props: AuthorToManageProps) => {
 
       if (response.error || !response.message) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to remove author status");
+        toast.error(response.errorMessage || "Failed to remove author status.");
       } else {
-        toast.success("Author status removed successfully");
+        toast.success("Author status removed successfully.");
         refetch();
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to remove author status");
+      toast.error("Failed to remove author status.");
     }
     setProcessingState({ on: "", data: "" });
   };

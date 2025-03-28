@@ -57,7 +57,7 @@ const ReviewToManage = (props: ReviewToManageProps) => {
   }, [review.createdAt]);
 
   const approveReview = async () => {
-    if (processingState.on) return toast("Please wait");
+    if (processingState.on) return toast("Please wait...");
 
     try {
       setProcessingState({ on: "approving", data: review._id });
@@ -69,20 +69,20 @@ const ReviewToManage = (props: ReviewToManageProps) => {
 
       if (response.error || !response.message) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to approve review");
+        toast.error(response.errorMessage || "Failed to approve review.");
       } else {
-        toast.success("Review approved successfully");
+        toast.success("Review approved successfully.");
         refetch();
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to approve review");
+      toast.error("Failed to approve review.");
     }
     setProcessingState({ on: "", data: "" });
   };
 
   const rejectReview = async () => {
-    if (processingState.on) return toast("Please wait");
+    if (processingState.on) return toast("Please wait...");
 
     try {
       setProcessingState({ on: "rejecting", data: review._id });
@@ -94,14 +94,14 @@ const ReviewToManage = (props: ReviewToManageProps) => {
 
       if (response.error || !response.message) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to reject review");
+        toast.error(response.errorMessage || "Failed to reject review.");
       } else {
-        toast.success("Review rejected successfully");
+        toast.success("Review rejected successfully.");
         refetch();
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to reject review");
+      toast.error("Failed to reject review.");
     }
     setProcessingState({ on: "", data: "" });
   };

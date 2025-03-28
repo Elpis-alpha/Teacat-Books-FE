@@ -92,7 +92,7 @@ export const copyText = async (text: string) => {
     normalCopy();
   }
 
-  toast.success("Copied to clipboard");
+  toast.success("Copied to clipboard.");
 };
 
 export const requestFullScreen = (exit?: boolean) => {

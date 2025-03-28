@@ -61,11 +61,11 @@ const BookTicket = (props: BookTicketProps) => {
   }, [ticket.createdAt, ticket.dateReviewed]);
 
   const cancelTicket = async () => {
-    if (viewer !== "author") return toast.error("You are not in author mode");
+    if (viewer !== "author") return toast.error("You are not in author mode.");
     if (ticket.status !== "pending")
-      return toast.error("Ticket is not pending");
+      return toast.error("Ticket is not pending.");
     if (ticket.author !== userData._id)
-      return toast.error("You are not the author of this ticket");
+      return toast.error("You are not the author of this ticket.");
 
     try {
       setProcessingState({ on: "canceling", data: ticket._id });
@@ -76,24 +76,24 @@ const BookTicket = (props: BookTicketProps) => {
 
       if (response.error || !response.message) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to cancel ticket");
+        toast.error(response.errorMessage || "Failed to cancel ticket.");
       } else {
-        toast.success("Ticket canceled successfully");
+        toast.success("Ticket canceled successfully.");
         refetch();
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to cancel ticket");
+      toast.error("Failed to cancel ticket.");
     }
     setProcessingState({ on: "", data: "" });
   };
 
   const approveTicket = async () => {
-    if (viewer !== "admin") return toast.error("You are not in admin mode");
+    if (viewer !== "admin") return toast.error("You are not in admin mode.");
     if (ticket.status !== "pending")
-      return toast.error("Ticket is not pending");
-    if (!userData.isAdmin) return toast.error("You are not an admin");
-    if (!reviewerFeedback) return toast.error("Feedback is required");
+      return toast.error("Ticket is not pending.");
+    if (!userData.isAdmin) return toast.error("You are not an admin.");
+    if (!reviewerFeedback) return toast.error("Feedback is required.");
 
     try {
       setProcessingState({ on: "accepting", data: ticket._id });
@@ -106,24 +106,24 @@ const BookTicket = (props: BookTicketProps) => {
 
       if (response.error || !response.message) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to approve ticket");
+        toast.error(response.errorMessage || "Failed to approve ticket.");
       } else {
-        toast.success("Ticket approved successfully");
+        toast.success("Ticket approved successfully.");
         refetch();
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to approve ticket");
+      toast.error("Failed to approve ticket.");
     }
     setProcessingState({ on: "", data: "" });
   };
 
   const rejectTicket = async () => {
-    if (viewer !== "admin") return toast.error("You are not in admin mode");
+    if (viewer !== "admin") return toast.error("You are not in admin mode.");
     if (ticket.status !== "pending")
-      return toast.error("Ticket is not pending");
-    if (!userData.isAdmin) return toast.error("You are not an admin");
-    if (!reviewerFeedback) return toast.error("Feedback is required");
+      return toast.error("Ticket is not pending.");
+    if (!userData.isAdmin) return toast.error("You are not an admin.");
+    if (!reviewerFeedback) return toast.error("Feedback is required.");
 
     try {
       setProcessingState({ on: "rejecting", data: ticket._id });
@@ -136,14 +136,14 @@ const BookTicket = (props: BookTicketProps) => {
 
       if (response.error || !response.message) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to reject ticket");
+        toast.error(response.errorMessage || "Failed to reject ticket.");
       } else {
-        toast.success("Ticket rejected successfully");
+        toast.success("Ticket rejected successfully.");
         refetch();
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to reject ticket");
+      toast.error("Failed to reject ticket.");
     }
     setProcessingState({ on: "", data: "" });
   };

@@ -21,7 +21,7 @@ const FileInput = (props: FileInputProps) => {
   const handleImageInput: FormEventHandler<HTMLInputElement> = (e) => {
     if (readonly) {
       e.preventDefault();
-      return toast("Please wait");
+      return toast("Please wait...");
     }
     const input = e.currentTarget;
     const img = input?.files?.[0];
@@ -31,7 +31,7 @@ const FileInput = (props: FileInputProps) => {
 
       reader.onload = function (e) {
         if (typeof e?.target?.result !== "string") {
-          toast.error("Invalid File");
+          toast.error("Invalid File.");
           removeImage();
           return;
         }
@@ -42,7 +42,7 @@ const FileInput = (props: FileInputProps) => {
       };
 
       reader.onerror = () => {
-        toast.error("Invalid File");
+        toast.error("Invalid File.");
         removeImage();
       };
 
@@ -56,7 +56,7 @@ const FileInput = (props: FileInputProps) => {
       setFileName(img.name);
       return;
     } else {
-      toast.error("Invalid File");
+      toast.error("Invalid File.");
       removeImage();
     }
   };
@@ -91,7 +91,10 @@ const FileInput = (props: FileInputProps) => {
           className="cursor-pointer w-full h-full absolute inset-0 opacity-0 z-30"
         />
         <p
-          className={"select-none line-clamp-1 " + (fileName ? "opacity-100" : "opacity-30")}
+          className={
+            "select-none line-clamp-1 " +
+            (fileName ? "opacity-100" : "opacity-30")
+          }
         >
           {fileName ?? placeholder}
         </p>

@@ -28,9 +28,9 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
   const connectGoogle = async () => {
     try {
       if (processing !== "") {
-        return toast.error("Please wait for the previous task to complete");
+        return toast.error("Please wait for the previous task to complete.");
       } else if (oauthRef.current.active) {
-        return toast.error("Please wait for the previous task to complete");
+        return toast.error("Please wait for the previous task to complete.");
       } else if (oauthRef.current.interval) {
         clearInterval(oauthRef.current.interval);
       }
@@ -66,16 +66,16 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
             !response.user ||
             _mail?.authType !== "google"
           ) {
-            toast.error(response.errorMessage ?? "Failed to link google");
+            toast.error(response.errorMessage ?? "Failed to link google.");
           } else {
             dispatch(setUserMail(_mail));
-            toast.success("Google link successful");
+            toast.success("Google link successful.");
           }
           setProcessing("");
         }
       }, 500);
     } catch (error) {
-      toast.error("Failed to link google");
+      toast.error("Failed to link google.");
       setProcessing("");
       console.error(error);
     }
@@ -84,9 +84,9 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
   const connectTwitter = async () => {
     try {
       if (processing !== "") {
-        return toast.error("Please wait for the previous task to complete");
+        return toast.error("Please wait for the previous task to complete.");
       } else if (oauthRef.current.active) {
-        return toast.error("Please wait for the previous task to complete");
+        return toast.error("Please wait for the previous task to complete.");
       } else if (oauthRef.current.interval) {
         clearInterval(oauthRef.current.interval);
       }
@@ -103,7 +103,7 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
           additionalFeatures: "resizable=yes,scrollbars=yes",
         }
       );
-      if (!handle) return toast.error("Please enable browser popup!");
+      if (!handle) return toast.error("Please enable browser popup!.");
 
       setProcessing("connecting-twitter");
 
@@ -118,16 +118,16 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
           const response = await getApiJson(routes.user.me);
           const _twitter = response?.user?.twitter;
           if (response.error || !response.user || _twitter?.active === false) {
-            toast.error(response.errorMessage ?? "Failed to link twitter");
+            toast.error(response.errorMessage ?? "Failed to link twitter.");
           } else {
             dispatch(setUserTwitter(_twitter));
-            toast.success("Twitter link successful");
+            toast.success("Twitter link successful.");
           }
           setProcessing("");
         }
       }, 500);
     } catch (error) {
-      toast.error("Failed to link twitter");
+      toast.error("Failed to link twitter.");
       setProcessing("");
       console.error(error);
     }
@@ -135,20 +135,20 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
   const disconnectTwitter = async () => {
     try {
       if (processing !== "") {
-        return toast.error("Please wait for the previous task to complete");
+        return toast.error("Please wait for the previous task to complete.");
       }
 
       setProcessing("disconnecting-twitter");
       const response = await postApiJson(routes.oauth.twitterDisconnect);
       if (response.error || !response.message) {
-        toast.error(response.errorMessage || "Failed to unlink twitter");
+        toast.error(response.errorMessage || "Failed to unlink twitter.");
       } else {
         dispatch(setUserTwitter({ active: false }));
-        toast.success("Twitter unlinked successfully");
+        toast.success("Twitter unlinked successfully.");
       }
       setProcessing("");
     } catch (error) {
-      toast.error("Failed to unlink twitter");
+      toast.error("Failed to unlink twitter.");
       setProcessing("");
       console.error(error);
     }
@@ -157,9 +157,9 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
   const connectDiscord = async () => {
     try {
       if (processing !== "") {
-        return toast.error("Please wait for the previous task to complete");
+        return toast.error("Please wait for the previous task to complete.");
       } else if (oauthRef.current.active) {
-        return toast.error("Please wait for the previous task to complete");
+        return toast.error("Please wait for the previous task to complete.");
       } else if (oauthRef.current.interval) {
         clearInterval(oauthRef.current.interval);
       }
@@ -176,7 +176,7 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
           additionalFeatures: "resizable=yes,scrollbars=yes",
         }
       );
-      if (!handle) return toast.error("Please enable browser popup!");
+      if (!handle) return toast.error("Please enable browser popup!.");
 
       setProcessing("connecting-discord");
 
@@ -191,16 +191,16 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
           const response = await getApiJson(routes.user.me);
           const _discord = response?.user?.discord;
           if (response.error || !response.user || _discord?.active === false) {
-            toast.error(response.errorMessage ?? "Failed to link discord");
+            toast.error(response.errorMessage ?? "Failed to link discord.");
           } else {
             dispatch(setUserDiscord(_discord));
-            toast.success("Discord link successful");
+            toast.success("Discord link successful.");
           }
           setProcessing("");
         }
       }, 500);
     } catch (error) {
-      toast.error("Failed to link discord");
+      toast.error("Failed to link discord.");
       setProcessing("");
       console.error(error);
     }
@@ -208,20 +208,20 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
   const disconnectDiscord = async () => {
     try {
       if (processing !== "") {
-        return toast.error("Please wait for the previous task to complete");
+        return toast.error("Please wait for the previous task to complete.");
       }
 
       setProcessing("disconnecting-discord");
       const response = await postApiJson(routes.oauth.discordDisconnect);
       if (response.error || !response.message) {
-        toast.error(response.errorMessage || "Failed to unlink discord");
+        toast.error(response.errorMessage || "Failed to unlink discord.");
       } else {
         dispatch(setUserDiscord({ active: false }));
-        toast.success("Discord unlinked successfully");
+        toast.success("Discord unlinked successfully.");
       }
       setProcessing("");
     } catch (error) {
-      toast.error("Failed to unlink discord");
+      toast.error("Failed to unlink discord.");
       setProcessing("");
       console.error(error);
     }
@@ -248,7 +248,9 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
               {mail.email}
             </a>
           ) : (
-            <p className="flex-1 text-right opacity-50 line-clamp-1">Not connected</p>
+            <p className="flex-1 text-right opacity-50 line-clamp-1">
+              Not connected
+            </p>
           )}
           {mail.authType !== "google" && (
             <button
@@ -281,7 +283,9 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
               @{twitter.username}
             </a>
           ) : (
-            <p className="flex-1 text-right opacity-50 line-clamp-1">Not connected</p>
+            <p className="flex-1 text-right opacity-50 line-clamp-1">
+              Not connected
+            </p>
           )}
           <button
             disabled={!!processing}
@@ -320,7 +324,9 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
               {discord.username}
             </a>
           ) : (
-            <p className="flex-1 text-right opacity-50 line-clamp-1">Not connected</p>
+            <p className="flex-1 text-right opacity-50 line-clamp-1">
+              Not connected
+            </p>
           )}
           <button
             disabled={!!processing}

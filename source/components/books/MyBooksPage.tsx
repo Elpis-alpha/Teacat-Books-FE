@@ -82,7 +82,7 @@ const MyBooksPage = () => {
 
   const fetchMyBooks = async (page: number, all: boolean) => {
     if (data.loading !== "none")
-      return toast.error("Please wait for the current request to finish");
+      return toast.error("Please wait for the current request to finish.");
 
     setData((p) => ({
       available: all ? "all" : "borrowed",

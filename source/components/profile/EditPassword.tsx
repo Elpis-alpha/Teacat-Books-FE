@@ -19,11 +19,11 @@ const EditPassword = ({ profileProcessing }: midProfileProps) => {
 
   const changePassword: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    if (processing) return toast("Please wait");
+    if (processing) return toast("Please wait...");
     if (newPassword.trim().length < 6)
-      return toast.error("New password too short");
+      return toast.error("New password too short.");
     if (oldPassword.trim() === newPassword.trim())
-      return toast.error("New password is the same as the old password");
+      return toast.error("New password is the same as the old password.");
     setProcessing("changing-password");
 
     const response = await postApiJson(routes.user.changePassword, {
@@ -32,11 +32,11 @@ const EditPassword = ({ profileProcessing }: midProfileProps) => {
     });
 
     if (response.error) {
-      toast.error(response.errorMessage || "Failed to update password");
+      toast.error(response.errorMessage || "Failed to update password.");
     } else {
       setOldPassword("");
       setNewPassword("");
-      toast.success("Password Updated");
+      toast.success("Password Updated.");
     }
 
     setProcessing("");

@@ -85,7 +85,7 @@ const ManageAuthorTickets = () => {
     ticketNumber?: number
   ) => {
     if (data.loading)
-      return toast.error("Please wait for the current request to finish");
+      return toast.error("Please wait for the current request to finish.");
 
     setData({
       available: false,
@@ -146,7 +146,7 @@ const ManageAuthorTickets = () => {
 
     const ticketNumber = parseInt(searchValue);
     if (isNaN(ticketNumber) || ticketNumber < 0)
-      return toast.error("Invalid ticket number");
+      return toast.error("Invalid ticket number.");
 
     setResetPagination(true);
     fetchTickets(0, showReviewed, ticketNumber).catch(() => {});

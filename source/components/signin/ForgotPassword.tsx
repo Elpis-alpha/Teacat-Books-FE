@@ -39,15 +39,15 @@ const ForgotPassword = () => {
       const otp = parseInt(_otp.trim());
 
       if (processing !== "") {
-        return toast.error("Please wait for the previous task to complete");
+        return toast.error("Please wait for the previous task to complete.");
       } else if (!isEmail(email)) {
-        return toast.error("Please provide a valid email");
+        return toast.error("Please provide a valid email.");
       }
 
       if (!atOTPStage) return await handleRequestOtp("sending-otp");
 
       if (isNaN(otp) || otp < 100_000 || otp > 999_999) {
-        return toast.error("Please provide a valid OTP");
+        return toast.error("Please provide a valid OTP.");
       }
 
       setProcessing("resetting-with-otp");
@@ -58,16 +58,16 @@ const ForgotPassword = () => {
       });
 
       if (response.error || !response.password) {
-        toast.error(response.errorMessage ?? "Failed to reset password");
+        toast.error(response.errorMessage ?? "Failed to reset password.");
         setProcessing("");
         return;
       }
 
       setNewPassword(response.password);
-      toast.success("Password reset successfully");
+      toast.success("Password reset successfully.");
       setProcessing("");
     } catch (error) {
-      toast.error("Failed to reset password");
+      toast.error("Failed to reset password.");
       console.error(error);
       setProcessing("");
     }
@@ -80,12 +80,12 @@ const ForgotPassword = () => {
       const email = _email.trim();
 
       if (processing !== "") {
-        return toast.error("Please wait for the previous task to complete");
+        return toast.error("Please wait for the previous task to complete.");
       } else if (!isEmail(email)) {
-        return toast.error("Please provide a valid email");
+        return toast.error("Please provide a valid email.");
       } else if (timeLeftToOTP > 0) {
         return toast.error(
-          `Wait for ${timeLeftToOTP} seconds before resending OTP`
+          `Wait for ${timeLeftToOTP} seconds before resending OTP.`
         );
       }
       setProcessing(_processing);
@@ -96,17 +96,17 @@ const ForgotPassword = () => {
       });
 
       if (response.error || !response.message) {
-        toast.error(response.errorMessage ?? "Failed to send OTP");
+        toast.error(response.errorMessage ?? "Failed to send OTP.");
         setProcessing("");
         return;
       }
 
       setProcessing("");
-      toast.success("OTP sent successfully");
+      toast.success("OTP sent successfully.");
       setAtOTPStage(true);
       setTimeLeftToOTP(30);
     } catch (error) {
-      toast.error("Failed to send OTP");
+      toast.error("Failed to send OTP.");
       setProcessing("");
       console.error(error);
     }

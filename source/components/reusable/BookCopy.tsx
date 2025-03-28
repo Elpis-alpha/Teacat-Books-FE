@@ -64,9 +64,9 @@ const BookCopy = (props: BookCopyProps) => {
   }, [copy.holdEndDate, copy.holdStartDate]);
 
   const borrowBook = async () => {
-    if (!available) return toast.error("Please sign in to borrow a book");
-    if (copy.holder) return toast.error("Book is already borrowed");
-    if (copy.cooldownReleaseDate) return toast.error("Book is on cooldown");
+    if (!available) return toast.error("Please sign in to borrow a book.");
+    if (copy.holder) return toast.error("Book is already borrowed.");
+    if (copy.cooldownReleaseDate) return toast.error("Book is on cooldown.");
 
     try {
       setProcessing({ on: "borrowing", data: copy._id });
@@ -78,15 +78,15 @@ const BookCopy = (props: BookCopyProps) => {
 
       if (response.error || !response.bookCopy) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to borrow book");
+        toast.error(response.errorMessage || "Failed to borrow book.");
       } else {
-        toast.success("Book Borrowed successfully");
+        toast.success("Book Borrowed successfully.");
         exit();
         router.push("/my-books");
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to borrow book");
+      toast.error("Failed to borrow book.");
     }
     setProcessing({ on: "", data: "" });
   };

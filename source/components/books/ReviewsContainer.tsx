@@ -91,7 +91,7 @@ const ReviewsContainer = ({
 
   const fetchReviews = async (page: number) => {
     if (data.loading)
-      return toast.error("Please wait for the current request to finish");
+      return toast.error("Please wait for the current request to finish.");
 
     setData({
       available: false,

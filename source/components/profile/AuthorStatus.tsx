@@ -21,17 +21,17 @@ const AuthorStatus = ({ profileProcessing }: midProfileProps) => {
   const [messageForReviewer, setMessageForReviewer] = useState("");
   const formHandler: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    if (processing) return toast.error("Please wait for the current process");
+    if (processing) return toast.error("Please wait for the current process.");
     if (status === "pending-approval" || status === "pending-removal")
-      return toast.error("Please wait for the admin to review your request");
+      return toast.error("Please wait for the admin to review your request.");
     if (status === "rejected")
-      return toast.error("Your previous author request has been rejected");
+      return toast.error("Your previous author request has been rejected.");
     if (!messageForReviewer.trim())
-      return toast.error("Please enter a message for the reviewer");
+      return toast.error("Please enter a message for the reviewer.");
     if (status === "in-active" && !wallet.trim())
-      return toast.error("Please enter your wallet address");
+      return toast.error("Please enter your wallet address.");
     if (status === "in-active" && !validateAddress(wallet.trim()))
-      return toast.error("Please enter a valid wallet address");
+      return toast.error("Please enter a valid wallet address.");
 
     try {
       setProcessing("creating-author-ticket");
@@ -43,10 +43,10 @@ const AuthorStatus = ({ profileProcessing }: midProfileProps) => {
 
       if (response.error || !response.author) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to create author ticket");
+        toast.error(response.errorMessage || "Failed to create author ticket.");
       } else {
         dispatch(setUserAuthor(response.author));
-        toast.success("Author ticket created successfully");
+        toast.success("Author ticket created successfully.");
 
         setShowForm(false);
         setWallet("");
@@ -54,19 +54,19 @@ const AuthorStatus = ({ profileProcessing }: midProfileProps) => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to create author ticket");
+      toast.error("Failed to create author ticket.");
     }
 
     setProcessing("");
   };
 
   const cancelAuthorTicket = async () => {
-    if (processing) return toast.error("Please wait for the current process");
-    if (status === "approved") return toast.error("You are already an author");
+    if (processing) return toast.error("Please wait for the current process.");
+    if (status === "approved") return toast.error("You are already an author.");
     if (status === "in-active")
-      return toast.error("You do not have an active author ticket");
+      return toast.error("You do not have an active author ticket.");
     if (status === "rejected")
-      return toast.error("Your previous author request has been rejected");
+      return toast.error("Your previous author request has been rejected.");
 
     try {
       setProcessing("canceling-author-ticket");
@@ -74,14 +74,14 @@ const AuthorStatus = ({ profileProcessing }: midProfileProps) => {
       const response = await postApiJson(routes.ticket.author.cancel);
       if (response.error || !response.author) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to cancel author ticket");
+        toast.error(response.errorMessage || "Failed to cancel author ticket.");
       } else {
         dispatch(setUserAuthor(response.author));
-        toast.success("Author ticket cancel successfully");
+        toast.success("Author ticket cancel successfully.");
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to cancel author ticket");
+      toast.error("Failed to cancel author ticket.");
     }
 
     setProcessing("");

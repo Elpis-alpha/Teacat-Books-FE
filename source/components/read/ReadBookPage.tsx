@@ -57,7 +57,7 @@ const ReadBookPage = (props: ReadBookPageProps) => {
       (c) => c.chapterNumber === chapterNumber
     );
     if (!isValid) {
-      toast.error("This chapter is out of bounds");
+      toast.error("This chapter is out of bounds.");
       return;
     }
 
@@ -72,7 +72,7 @@ const ReadBookPage = (props: ReadBookPageProps) => {
         !response.chapter ||
         typeof response.text !== "string"
       ) {
-        toast.error(response.errorMessage || "Failed to fetch chapter");
+        toast.error(response.errorMessage || "Failed to fetch chapter.");
         console.error(response);
       } else {
         setLastRead(chapterNumber);
@@ -85,7 +85,7 @@ const ReadBookPage = (props: ReadBookPageProps) => {
         scrollBackToTopOrLastPosition(chapterNumber);
       }
     } catch (err) {
-      toast.error("Failed to fetch chapter");
+      toast.error("Failed to fetch chapter.");
       console.error(err);
     }
     setFetching(null);
@@ -98,7 +98,7 @@ const ReadBookPage = (props: ReadBookPageProps) => {
       (c) => c.chapterNumber === chapterNumber
     );
     if (!isValid) {
-      toast.error("This chapter is out of bounds");
+      toast.error("This chapter is out of bounds.");
       return;
     }
 
@@ -115,7 +115,7 @@ const ReadBookPage = (props: ReadBookPageProps) => {
         !response.message ||
         typeof response.bookmark !== "boolean"
       ) {
-        toast.error(response.errorMessage || "Failed to bookmark");
+        toast.error(response.errorMessage || "Failed to bookmark.");
         console.error(response);
       } else {
         if (response.bookmark) {
@@ -128,7 +128,7 @@ const ReadBookPage = (props: ReadBookPageProps) => {
         }
       }
     } catch (err) {
-      toast.error("Failed to bookmark");
+      toast.error("Failed to bookmark.");
       console.error(err);
     }
     setFetching(null);

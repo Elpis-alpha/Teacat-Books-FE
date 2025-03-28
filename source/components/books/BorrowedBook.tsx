@@ -50,10 +50,10 @@ const BorrowedBook = (props: BorrowedBookProp) => {
   const returnBook = async () => {
     if (disabled) return;
     if (!holdEndDate) {
-      return toast.error("You can't return this book");
+      return toast.error("You can't return this book.");
     }
     if (new Date(holdEndDate) < new Date()) {
-      return toast.error("You can't return this book after the due date");
+      return toast.error("You can't return this book after the due date.");
     }
     setProcessing("returning");
 
@@ -64,17 +64,17 @@ const BorrowedBook = (props: BorrowedBookProp) => {
       });
       if (response.error || !response.bookCopy) {
         toast.error(
-          response.errorMessage || "An error occurred while returning the book"
+          response.errorMessage || "An error occurred while returning the book."
         );
         console.error(response);
         setProcessing("");
       } else {
-        toast.success("Book returned successfully");
+        toast.success("Book returned successfully.");
         setProcessing("");
         refetch();
       }
     } catch (error) {
-      toast.error("An error occurred while returning the book");
+      toast.error("An error occurred while returning the book.");
       console.error(error);
       setProcessing("");
     }

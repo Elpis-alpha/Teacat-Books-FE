@@ -135,7 +135,7 @@ const BrowseBooksHolder = ({
       searchValue: string | null
     ) => {
       if (data.loading) {
-        toast.error("Please wait for the current request to finish");
+        toast.error("Please wait for the current request to finish.");
         return;
       }
 

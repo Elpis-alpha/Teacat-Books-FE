@@ -70,7 +70,7 @@ const BookToManage = (props: BookToManageProps) => {
   }, [book.createdAt]);
 
   const _approveTicket = async (ticketID: string) => {
-    if (typeof ticketID !== "string") return toast.error("Invalid ticket ID");
+    if (typeof ticketID !== "string") return toast.error("Invalid ticket ID.");
     setAdminApproving(true);
     try {
       const response = await postApiJson(routes.ticket.admin.reviewBook, {
@@ -81,15 +81,15 @@ const BookToManage = (props: BookToManageProps) => {
 
       if (response.error || !response.message) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to approve ticket");
-        toast("Please approve the ticket manually");
+        toast.error(response.errorMessage || "Failed to approve ticket.");
+        toast("Please approve the ticket manually.");
       } else {
-        toast.success("Ticket approved successfully");
+        toast.success("Ticket approved successfully.");
         refetch();
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to approve ticket");
+      toast.error("Failed to approve ticket.");
     }
     setAdminApproving(false);
   };
@@ -99,8 +99,8 @@ const BookToManage = (props: BookToManageProps) => {
     const messageForReviewer =
       viewer === "admin" ? "Admin Update" : _messageForReviewer;
     if (!messageForReviewer)
-      return toast.error("Message for reviewer is required");
-    if (!text) return toast.error("New Text is required");
+      return toast.error("Message for reviewer is required.");
+    if (!text) return toast.error("New Text is required.");
 
     try {
       setProcessingState({ on: "ticketing", data: book._id });
@@ -115,9 +115,9 @@ const BookToManage = (props: BookToManageProps) => {
 
       if (response.error || !response.ticket || !response.ticket._id) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to create ticket");
+        toast.error(response.errorMessage || "Failed to create ticket.");
       } else {
-        toast.success("Ticket created successfully");
+        toast.success("Ticket created successfully.");
         if (viewer === "admin") await _approveTicket(response.ticket._id);
 
         if (type === "title") setNewTitle("");
@@ -127,7 +127,7 @@ const BookToManage = (props: BookToManageProps) => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to create ticket");
+      toast.error("Failed to create ticket.");
     }
     setProcessingState({ on: "", data: "" });
   };
@@ -138,8 +138,8 @@ const BookToManage = (props: BookToManageProps) => {
     const messageForReviewer =
       viewer === "admin" ? "Admin Update" : _messageForReviewer;
     if (!messageForReviewer)
-      return toast.error("Message for reviewer is required");
-    if (!image) return toast.error("Image is required");
+      return toast.error("Message for reviewer is required.");
+    if (!image) return toast.error("Image is required.");
 
     try {
       setProcessingState({ on: "ticketing", data: book._id });
@@ -154,9 +154,9 @@ const BookToManage = (props: BookToManageProps) => {
 
       if (response.error || !response.ticket || !response.ticket._id) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to create ticket");
+        toast.error(response.errorMessage || "Failed to create ticket.");
       } else {
-        toast.success("Ticket created successfully");
+        toast.success("Ticket created successfully.");
         if (viewer === "admin") await _approveTicket(response.ticket._id);
 
         if (type === "main") newMainImage.current = null;
@@ -166,7 +166,7 @@ const BookToManage = (props: BookToManageProps) => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to create ticket");
+      toast.error("Failed to create ticket.");
     }
     setProcessingState({ on: "", data: "" });
   };
@@ -175,8 +175,8 @@ const BookToManage = (props: BookToManageProps) => {
     const messageForReviewer =
       viewer === "admin" ? "Admin Update" : _messageForReviewer;
     if (!messageForReviewer)
-      return toast.error("Message for reviewer is required");
-    if (!newBookEpub.current) return toast.error("New Epub is required");
+      return toast.error("Message for reviewer is required.");
+    if (!newBookEpub.current) return toast.error("New Epub is required.");
 
     try {
       setProcessingState({ on: "ticketing", data: book._id });
@@ -190,9 +190,9 @@ const BookToManage = (props: BookToManageProps) => {
 
       if (response.error || !response.ticket || !response.ticket._id) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to create ticket");
+        toast.error(response.errorMessage || "Failed to create ticket.");
       } else {
-        toast.success("Ticket created successfully");
+        toast.success("Ticket created successfully.");
         if (viewer === "admin") await _approveTicket(response.ticket._id);
 
         newBookEpub.current = null;
@@ -201,7 +201,7 @@ const BookToManage = (props: BookToManageProps) => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to create ticket");
+      toast.error("Failed to create ticket.");
     }
 
     setProcessingState({ on: "", data: "" });
@@ -211,7 +211,7 @@ const BookToManage = (props: BookToManageProps) => {
     const messageForReviewer =
       viewer === "admin" ? "Admin Update" : _messageForReviewer;
     if (!messageForReviewer)
-      return toast.error("Message for reviewer is required");
+      return toast.error("Message for reviewer is required.");
 
     try {
       setProcessingState({ on: "ticketing", data: book._id });
@@ -224,9 +224,9 @@ const BookToManage = (props: BookToManageProps) => {
 
       if (response.error || !response.ticket || !response.ticket._id) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to create ticket");
+        toast.error(response.errorMessage || "Failed to create ticket.");
       } else {
-        toast.success("Ticket created successfully");
+        toast.success("Ticket created successfully.");
         if (viewer === "admin") await _approveTicket(response.ticket._id);
 
         setEditing("");
@@ -234,14 +234,14 @@ const BookToManage = (props: BookToManageProps) => {
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to create ticket");
+      toast.error("Failed to create ticket.");
     }
     setProcessingState({ on: "", data: "" });
   };
 
   const toggleFeatured = async () => {
-    if (processingState.on) return toast("Please wait");
-    if (viewer !== "admin") return toast.error("Only admin can feature books");
+    if (processingState.on) return toast("Please wait...");
+    if (viewer !== "admin") return toast.error("Only admin can feature books.");
 
     try {
       setEditing("featured");
@@ -254,14 +254,14 @@ const BookToManage = (props: BookToManageProps) => {
 
       if (response.error || !response.message) {
         console.error(response);
-        toast.error(response.errorMessage || "Failed to toggle featured");
+        toast.error(response.errorMessage || "Failed to toggle featured.");
       } else {
-        toast.success("Featured toggled successfully");
+        toast.success("Featured toggled successfully.");
         refetch();
       }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to toggle featured");
+      toast.error("Failed to toggle featured.");
     }
     setProcessingState({ on: "", data: "" });
     setEditing("");
@@ -398,7 +398,7 @@ const BookToManage = (props: BookToManageProps) => {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            if (processingState.on) return toast("Please wait");
+            if (processingState.on) return toast("Please wait...");
 
             if (editing === "title") updateMeta("title");
             if (editing === "description") updateMeta("description");

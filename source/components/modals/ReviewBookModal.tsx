@@ -76,19 +76,19 @@ const ReviewBookModal = () => {
     const reviewText = _reviewText.trim();
 
     if (stars < 1) {
-      toast.error("Please rate the book before submitting your review");
+      toast.error("Please rate the book before submitting your review.");
       return;
     } else if (stars > 5) {
-      toast.error("You can't rate a book more than 5 stars");
+      toast.error("You can't rate a book more than 5 stars.");
       return;
     } else if (!modal.active) {
-      toast.error("Modal is not active");
+      toast.error("Modal is not active.");
       return;
     } else if (modal.type !== "review-book") {
-      toast.error("Invalid modal type");
+      toast.error("Invalid modal type.");
       return;
     } else if (!modal.data) {
-      toast.error("Invalid Book");
+      toast.error("Invalid Book.");
       return;
     }
 
@@ -101,15 +101,15 @@ const ReviewBookModal = () => {
         reviewText: reviewText,
       });
       if (response.error || !response.review) {
-        toast.error(response.errorMessage || "Failed to review book");
+        toast.error(response.errorMessage || "Failed to review book.");
       } else {
-        toast.success("Book reviewed successfully");
+        toast.success("Book reviewed successfully.");
         dispatch(setHasReviewed(modal.data));
         exitWithAnimation();
       }
     } catch (e) {
       console.error(e);
-      toast.error("Failed to review book");
+      toast.error("Failed to review book.");
     }
 
     setProcessing({ on: "", data: "" });

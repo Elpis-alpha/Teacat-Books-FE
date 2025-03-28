@@ -79,7 +79,7 @@ const ManageAuthors = () => {
 
   const fetchAuthors = async (page: number, text: string | null = null) => {
     if (data.loading)
-      return toast.error("Please wait for the current request to finish");
+      return toast.error("Please wait for the current request to finish.");
 
     setData({
       available: false,
@@ -126,7 +126,7 @@ const ManageAuthors = () => {
   const handleSearch: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
 
-    if (!searchValue) return toast.error("Please enter a search text");
+    if (!searchValue) return toast.error("Please enter a search text.");
 
     const text = searchValue.trim() || null;
 
