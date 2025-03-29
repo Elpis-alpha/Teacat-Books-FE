@@ -92,47 +92,47 @@ export const parseFontFamily = (family: "Miller" | "Proxima") => {
   return "var(--font-proxima)";
 };
 
-export const setLastPosition = (chapterNumber: number) => {
-  if (chapterNumber <= 0 || typeof window === "undefined") return;
+// export const setLastPosition = (chapterNumber: number) => {
+//   if (chapterNumber <= 0 || typeof window === "undefined") return;
 
-  try {
-    const MAX_POSITIONS = 3;
+//   try {
+//     const MAX_POSITIONS = 3;
 
-    const storedPositions =
-      window.localStorage.getItem("read-positions") || "[]";
-    const allPositions: { chapter: number; position: number }[] =
-      JSON.parse(storedPositions) ?? [];
+//     const storedPositions =
+//       window.localStorage.getItem("read-positions") || "[]";
+//     const allPositions: { chapter: number; position: number }[] =
+//       JSON.parse(storedPositions) ?? [];
 
-    const position = window.scrollY;
+//     const position = window.scrollY;
 
-    const updatedPositions = [
-      { chapter: chapterNumber, position },
-      ...allPositions.filter((p) => p.chapter !== chapterNumber),
-    ].slice(0, MAX_POSITIONS);
+//     const updatedPositions = [
+//       { chapter: chapterNumber, position },
+//       ...allPositions.filter((p) => p.chapter !== chapterNumber),
+//     ].slice(0, MAX_POSITIONS);
 
-    window.localStorage.setItem(
-      "read-positions",
-      JSON.stringify(updatedPositions)
-    );
-  } catch (error) {
-    console.error("Error saving reading position:", error);
-  }
-};
+//     window.localStorage.setItem(
+//       "read-positions",
+//       JSON.stringify(updatedPositions)
+//     );
+//   } catch (error) {
+//     console.error("Error saving reading position:", error);
+//   }
+// };
 
-export const getLastPosition = (chapterNumber: number): number => {
-  if (chapterNumber <= 0 || typeof window === "undefined") return 0;
+// export const getLastPosition = (chapterNumber: number): number => {
+//   if (chapterNumber <= 0 || typeof window === "undefined") return 0;
 
-  try {
-    const storedPositions = window.localStorage.getItem("read-positions");
-    const allPositions: { chapter: number; position: number }[] = JSON.parse(
-      storedPositions || "[]"
-    );
+//   try {
+//     const storedPositions = window.localStorage.getItem("read-positions");
+//     const allPositions: { chapter: number; position: number }[] = JSON.parse(
+//       storedPositions || "[]"
+//     );
 
-    return (
-      allPositions.find((pos) => pos.chapter === chapterNumber)?.position || 0
-    );
-  } catch (error) {
-    console.error("Error getting reading position:", error);
-    return 0;
-  }
-};
+//     return (
+//       allPositions.find((pos) => pos.chapter === chapterNumber)?.position || 0
+//     );
+//   } catch (error) {
+//     console.error("Error getting reading position:", error);
+//     return 0;
+//   }
+// };

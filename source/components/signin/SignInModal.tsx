@@ -177,7 +177,7 @@ const SignInModal = () => {
           additionalFeatures: "resizable=yes,scrollbars=yes",
         }
       );
-      if (!handle) return toast.error("Please enable browser popup!.");
+      if (!handle) return toast.error("Please enable browser popup");
 
       dispatch(setUserLoading(true));
       setProcessing("signing-in-with-google");
@@ -236,7 +236,7 @@ const SignInModal = () => {
           additionalFeatures: "resizable=yes,scrollbars=yes",
         }
       );
-      if (!handle) return toast.error("Please enable browser popup!.");
+      if (!handle) return toast.error("Please enable browser popup");
 
       dispatch(setUserLoading(true));
       setProcessing("signing-in-with-twitter");
@@ -295,7 +295,7 @@ const SignInModal = () => {
           additionalFeatures: "resizable=yes,scrollbars=yes",
         }
       );
-      if (!handle) return toast.error("Please enable browser popup!.");
+      if (!handle) return toast.error("Please enable browser popup");
 
       dispatch(setUserLoading(true));
       setProcessing("signing-in-with-discord");

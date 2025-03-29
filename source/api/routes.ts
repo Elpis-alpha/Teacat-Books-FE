@@ -115,6 +115,7 @@ const routes = {
     one: (bookID: string) => `${BE}/book/one?bookID=${bookID}`,
     chapter: (bookID: string, chapterNumber: number) =>
       `${BE}/book/chapter?bookID=${bookID}&chapterNumber=${chapterNumber}`,
+    currentChapter: `${BE}/book/current-chapter`,
     bookmark: `${BE}/book/bookmark`,
     copies: (
       limit: number,

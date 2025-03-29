@@ -103,7 +103,7 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
           additionalFeatures: "resizable=yes,scrollbars=yes",
         }
       );
-      if (!handle) return toast.error("Please enable browser popup!.");
+      if (!handle) return toast.error("Please enable browser popup");
 
       setProcessing("connecting-twitter");
 
@@ -176,7 +176,7 @@ const EditSocials = ({ profileProcessing }: midProfileProps) => {
           additionalFeatures: "resizable=yes,scrollbars=yes",
         }
       );
-      if (!handle) return toast.error("Please enable browser popup!.");
+      if (!handle) return toast.error("Please enable browser popup!");
 
       setProcessing("connecting-discord");
 

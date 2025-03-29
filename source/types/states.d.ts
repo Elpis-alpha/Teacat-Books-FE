@@ -242,6 +242,22 @@ export interface ChapterInterface {
   title: string;
 }
 
+export type ChapterClientInterface =
+  | {
+      _id: string;
+      chapterNumber: number;
+      title: string;
+      bookmarked: boolean;
+      loading: boolean;
+    }
+    | {
+      _id: string;
+      chapterNumber: number;
+      title: string;
+      bookmarked: boolean;
+      text: string;
+    };
+
 export interface ReadingSessionInterface {
   _id: string;
   book: string;

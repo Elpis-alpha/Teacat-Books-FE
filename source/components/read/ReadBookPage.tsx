@@ -1,17 +1,23 @@
 "use client";
 import {
-  getLastPosition,
   getTheme,
   parseFontFamily,
   ThemeInterface,
 } from "@/source/helpers/read";
 import {
   BookInterface,
+  ChapterClientInterface,
   ChapterInterface,
   ReadingSessionInterface,
-  ReadInterface,
 } from "@/source/types/states";
-import { MouseEventHandler, useEffect, useMemo, useRef, useState } from "react";
+import {
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { ClipLoader } from "react-spinners";
 import ReadBook from "./ReadBook";
 import { useAppDispatch, useAppSelector } from "@/source/store/hooks";
@@ -22,13 +28,7 @@ import { getApiJson, postApiJson } from "@/source/api";
 import routes from "@/source/api/routes";
 import Hamburger from "hamburger-react";
 import ModalOverflow from "../modals/ModalOverflow";
-import {
-  FaBookmark,
-  FaChevronLeft,
-  FaChevronRight,
-  FaCog,
-  FaRegBookmark,
-} from "react-icons/fa";
+import { FaBookmark, FaCog, FaRegBookmark } from "react-icons/fa";
 import { setModal } from "@/source/store/slice/UIslice";
 
 interface ReadBookPageProps {
@@ -42,55 +42,148 @@ const ReadBookPage = (props: ReadBookPageProps) => {
   const dispatch = useAppDispatch();
   const [theme, setTheme] = useState(props.initialTheme);
 
-  const [chapter, setChapter] = useState<ReadInterface | null>(null);
-  const [fetching, setFetching] = useState<number | null>(null);
+  // const [chapter, setChapter] = useState<ReadInterface | null>(null);
+  // const [fetching, setFetching] = useState<number | null>(null);
+  const [activeChapter, setActiveChapter] = useState<number | null>(null);
   const [lastRead, setLastRead] = useState(props.readingSession.currentChapter);
+  const mainRef = useRef<HTMLDivElement>(null);
+
   const [bookmarks, setBookmarks] = useState(props.bookmarks);
   const [onlyBookmarked, setOnlyBookmarked] = useState(false);
+  const [bookmarking, setBookmarking] = useState(false);
 
-  const fetchChapter = async (chapterNumber: number) => {
-    if (chapterNumber <= 0) {
-      scrollBackToTopOrLastPosition(chapterNumber);
-      return setChapter(null);
-    }
-    const isValid = props.chapters.some(
-      (c) => c.chapterNumber === chapterNumber
-    );
-    if (!isValid) {
-      toast.error("This chapter is out of bounds.");
-      return;
-    }
+  const [chapters, setChapters] = useState<ChapterClientInterface[]>(
+    props.chapters.map((c) => ({
+      _id: c._id,
+      chapterNumber: c.chapterNumber,
+      title: c.title,
+      bookmarked: bookmarks.includes(c.chapterNumber),
+      loading: false,
+    }))
+  );
+  const chaptersRef = useRef(chapters);
 
-    try {
-      setFetching(chapterNumber);
+  const fetchChapter = useCallback(
+    async (chapterNumber: number, sendBack?: boolean) => {
+      if (chapterNumber <= 0) return;
 
-      const response = await getApiJson(
-        routes.book.chapter(props.book._id, chapterNumber)
+      const chapter = chaptersRef.current.find(
+        (c) => c.chapterNumber === chapterNumber
       );
-      if (
-        response.error ||
-        !response.chapter ||
-        typeof response.text !== "string"
-      ) {
-        toast.error(response.errorMessage || "Failed to fetch chapter.");
-        console.error(response);
-      } else {
-        setLastRead(chapterNumber);
-        setChapter({
-          _id: response.chapter._id,
-          chapterNumber: response.chapter.chapterNumber,
-          text: response.text,
-          title: response.chapter.title,
+      if (!chapter) return;
+
+      if ("loading" in chapter && chapter.loading) return;
+      if ("text" in chapter && chapter.text) return;
+
+      try {
+        setChapters((p) => {
+          const res = p.map((c) =>
+            c.chapterNumber === chapterNumber ? { ...c, loading: true } : c
+          );
+          chaptersRef.current = res;
+          return res;
         });
-        scrollBackToTopOrLastPosition(chapterNumber);
+        console.log(`Chapter ${chapterNumber} is fetching...`);
+
+        const response = await getApiJson(
+          routes.book.chapter(props.book._id, chapterNumber)
+        );
+        if (
+          response.error ||
+          !response.chapter ||
+          typeof response.text !== "string"
+        ) {
+          toast.error(response.errorMessage || "Failed to fetch chapter.");
+          console.error(response);
+          setChapters((p) => {
+            const res = p.map((c) =>
+              c.chapterNumber === chapterNumber ? { ...c, loading: false } : c
+            );
+            chaptersRef.current = res;
+            return res;
+          });
+        } else {
+          const prevScrollHeight = mainRef.current?.scrollHeight;
+          const prevY = window.scrollY;
+
+          setChapters((p) => {
+            const res = p.map((c) =>
+              c.chapterNumber === chapterNumber
+                ? {
+                    _id: c._id,
+                    chapterNumber: c.chapterNumber,
+                    title: c.title,
+                    text: response.text,
+                    bookmarked: c.bookmarked,
+                  }
+                : c
+            );
+            chaptersRef.current = res;
+            return res;
+          });
+
+          setTimeout(() => {
+            const newScrollHeight = mainRef.current?.scrollHeight;
+
+            if (mainRef.current && prevScrollHeight && newScrollHeight) {
+              const scrollDiff = newScrollHeight - prevScrollHeight;
+              mainRef.current.scrollTop += scrollDiff;
+
+              if (sendBack) {
+                const YDiff = window.scrollY - prevY;
+                // console.log("diff", {
+                //   chapterNumber,
+                //   scrollDiff,
+                //   scrollY: window.scrollY,
+                //   prevScrollHeight,
+                //   newScrollHeight,
+                //   YDiff,
+                // });
+
+                window.scrollTo({
+                  top: window.scrollY + scrollDiff - YDiff,
+                  left: 0,
+                  behavior: "instant",
+                });
+              }
+            }
+          }, 1);
+        }
+      } catch (err) {
+        toast.error("Failed to fetch chapter.");
+        console.error(err);
       }
-    } catch (err) {
-      toast.error("Failed to fetch chapter.");
-      console.error(err);
-    }
-    setFetching(null);
-    setOnlyBookmarked(false);
-  };
+      setOnlyBookmarked(false);
+    },
+    [props.book._id]
+  );
+
+  const makeChapterActive = useCallback(
+    async (chapterNumber: number) => {
+      if (chapterNumber <= 0) return;
+
+      const chapter = chaptersRef.current.find(
+        (c) => c.chapterNumber === chapterNumber
+      );
+      if (!chapter) return;
+
+      try {
+        const response = await postApiJson(routes.book.currentChapter, {
+          bookID: props.book._id,
+          chapterNumber,
+        });
+        if (response.error) {
+          console.error(response);
+        } else {
+          setLastRead(chapterNumber);
+          setActiveChapter(chapterNumber);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    [props.book._id]
+  );
 
   const bookmarkChapter = async (chapterNumber: number, mark: boolean) => {
     if (chapterNumber <= 0) return;
@@ -103,7 +196,7 @@ const ReadBookPage = (props: ReadBookPageProps) => {
     }
 
     try {
-      setFetching(Infinity);
+      setBookmarking(true);
 
       const response = await postApiJson(routes.book.bookmark, {
         bookID: props.book._id,
@@ -119,40 +212,52 @@ const ReadBookPage = (props: ReadBookPageProps) => {
         console.error(response);
       } else {
         if (response.bookmark) {
-          setBookmarks([
-            ...bookmarks.filter((b) => b !== chapterNumber),
-            chapterNumber,
-          ]);
+          setBookmarks((prev) => {
+            const newBookmarks = [...prev, chapterNumber];
+            return [...new Set(newBookmarks)];
+          });
+          setChapters((p) => {
+            const res = p.map((c) =>
+              c.chapterNumber === chapterNumber ? { ...c, bookmarked: true } : c
+            );
+
+            chaptersRef.current = res;
+            return res;
+          });
+          toast.success("Bookmarked.");
         } else {
-          setBookmarks([...bookmarks.filter((b) => b !== chapterNumber)]);
+          setBookmarks((prev) => prev.filter((b) => b !== chapterNumber));
+          setChapters((p) => {
+            const res = p.map((c) =>
+              c.chapterNumber === chapterNumber
+                ? { ...c, bookmarked: false }
+                : c
+            );
+            chaptersRef.current = res;
+            return res;
+          });
+          toast.success("Removed bookmark.");
         }
       }
     } catch (err) {
       toast.error("Failed to bookmark.");
       console.error(err);
     }
-    setFetching(null);
+    setBookmarking(false);
   };
 
-  const scrollBackToTopOrLastPosition = async (chapterNumber: number) => {
+  const scrollToChapter = (chapterNumber: number) => {
     if (typeof window === "undefined") return;
 
-    scrollChapterListTo(chapterNumber);
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    if (chapterNumber === 0 || getLastPosition(chapterNumber) === 0) {
-      window.scroll({
-        top: 0,
-        behavior: "smooth",
+    const chapterID = "my-chapter-" + chapterNumber;
+    const chapter = document.getElementById(chapterID);
+    if (chapter) {
+      chapter.scrollIntoView({
+        behavior: "instant",
+        block: "start",
+        // inline: "start",
       });
-      return;
     }
-
-    const lastPosition = getLastPosition(chapterNumber);
-    window.scroll({
-      top: lastPosition,
-      behavior: "smooth",
-    });
   };
 
   const scrollChapterListTo = (chapterNumber: number) => {
@@ -201,6 +306,8 @@ const ReadBookPage = (props: ReadBookPageProps) => {
       return navIsOpenRef.current;
     });
 
+    scrollChapterListTo(activeChapter || 0);
+
     gsap
       .to(navRef.current, {
         left: navState ? "101vw" : "0vw",
@@ -212,48 +319,32 @@ const ReadBookPage = (props: ReadBookPageProps) => {
       });
   };
 
-  const prevChapter = useMemo(() => {
-    return props.chapters.find(
-      (x) =>
-        chapter?.chapterNumber && x.chapterNumber === chapter.chapterNumber - 1
-    )?.chapterNumber;
-  }, [chapter?.chapterNumber, props.chapters]);
-  const nextChapter = useMemo(() => {
-    return props.chapters.find(
-      (x) =>
-        chapter?.chapterNumber && x.chapterNumber === chapter.chapterNumber + 1
-    )?.chapterNumber;
-  }, [chapter?.chapterNumber, props.chapters]);
   const isBookmarked = useMemo(() => {
-    return chapter?.chapterNumber
-      ? bookmarks.includes(chapter.chapterNumber)
-      : false;
-  }, [chapter?.chapterNumber, bookmarks]);
+    return activeChapter ? bookmarks.includes(activeChapter) : false;
+  }, [activeChapter, bookmarks]);
 
   return (
     <>
-      {chapter && (
-        <div className="py-4 px-3 sm:px-4 flex items-center gap-2 sm:gap-4 bg-main-bg text-xl sm:text-2xl">
-          <button
-            disabled={typeof fetching === "number"}
-            className="flex items-center justify-center"
-            onClick={() => toggleNav("open")}
-          >
-            <Hamburger toggled={navIsOpen} size={24} distance="sm" rounded />
-          </button>
-          <button
-            disabled={typeof fetching === "number"}
-            onClick={() => fetchChapter(0)}
-            className="flex-1 line-clamp-1 text-lg text-left"
-          >
-            {props.book.title}
-          </button>
-          <div className="flex items-center sm:gap-1">
+      <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-3 sm:px-4 flex items-center gap-2 sm:gap-4 bg-main-bg text-xl sm:text-2xl">
+        <button
+          className="flex items-center justify-center"
+          onClick={() => toggleNav("open")}
+        >
+          <Hamburger toggled={navIsOpen} size={24} distance="sm" rounded />
+        </button>
+        <button
+          onClick={() => scrollToChapter(0)}
+          className="flex-1 line-clamp-1 text-lg text-left"
+        >
+          {props.book.title}
+        </button>
+        <div className="flex items-center sm:gap-1">
+          {activeChapter && (
             <button
-              disabled={typeof fetching === "number"}
+              disabled={bookmarking}
               className="flex items-center justify-center sm:w-12 sm:h-12 w-10 h-10 hover:text-blue-300"
               onClick={() => {
-                bookmarkChapter(chapter.chapterNumber, !isBookmarked);
+                bookmarkChapter(activeChapter, !isBookmarked);
               }}
             >
               {isBookmarked ? (
@@ -262,50 +353,25 @@ const ReadBookPage = (props: ReadBookPageProps) => {
                 <FaRegBookmark />
               )}
             </button>
-            <button
-              disabled={typeof fetching === "number"}
-              className="flex items-center justify-center sm:w-12 sm:h-12 w-10 h-10 hover:text-blue-300"
-              onClick={() => {
-                dispatch(
-                  setModal({
-                    active: true,
-                    type: "set-theme",
-                  })
-                );
-              }}
-            >
-              <FaCog />
-            </button>
-            {prevChapter && (
-              <button
-                disabled={typeof fetching === "number"}
-                className="flex items-center justify-center sm:w-12 sm:h-12 w-10 h-10 hover:text-blue-300"
-                onClick={() => fetchChapter(prevChapter)}
-              >
-                {fetching !== prevChapter ? (
-                  <FaChevronLeft />
-                ) : (
-                  <ClipLoader color="#ffffff" size={20} />
-                )}
-              </button>
-            )}
-            {nextChapter && (
-              <button
-                disabled={typeof fetching === "number"}
-                className="flex items-center justify-center sm:w-12 sm:h-12 w-10 h-10 hover:text-blue-300"
-                onClick={() => fetchChapter(nextChapter)}
-              >
-                {fetching !== nextChapter ? (
-                  <FaChevronRight />
-                ) : (
-                  <ClipLoader color="#ffffff" size={20} />
-                )}
-              </button>
-            )}
-          </div>
+          )}
+          <button
+            className="flex items-center justify-center sm:w-12 sm:h-12 w-10 h-10 hover:text-blue-300"
+            onClick={() => {
+              dispatch(
+                setModal({
+                  active: true,
+                  type: "set-theme",
+                })
+              );
+            }}
+          >
+            <FaCog />
+          </button>
         </div>
-      )}
+      </nav>
+      <div className="w-full h-[80px]"></div>
       <main
+        ref={mainRef}
         className={
           "flex-1 w-full font-miller flex base-theme-transition overflow-auto py-4 " +
           (theme.textAlignment === "center"
@@ -331,16 +397,13 @@ const ReadBookPage = (props: ReadBookPageProps) => {
         >
           <ReadBook
             lastRead={lastRead}
-            prevChapter={prevChapter}
-            nextChapter={nextChapter}
-            toggleNav={toggleNav}
-            chapter={chapter}
-            fetching={fetching}
-            fetchChapter={fetchChapter}
             book={props.book}
-            chapters={props.chapters}
+            color={theme.textColor}
+            chapters={chapters}
             readingSession={props.readingSession}
-            bookmarks={props.bookmarks}
+            scrollToChapter={scrollToChapter}
+            fetchChapter={fetchChapter}
+            makeChapterActive={makeChapterActive}
           />
         </div>
         <div
@@ -352,16 +415,13 @@ const ReadBookPage = (props: ReadBookPageProps) => {
         >
           <ReadBook
             lastRead={lastRead}
-            prevChapter={prevChapter}
-            nextChapter={nextChapter}
-            toggleNav={toggleNav}
-            chapter={chapter}
-            fetching={fetching}
-            fetchChapter={fetchChapter}
             book={props.book}
-            chapters={props.chapters}
+            chapters={chapters}
+            color={theme.textColor}
             readingSession={props.readingSession}
-            bookmarks={props.bookmarks}
+            scrollToChapter={scrollToChapter}
+            fetchChapter={fetchChapter}
+            makeChapterActive={makeChapterActive}
           />
         </div>
       </main>
@@ -385,8 +445,9 @@ const ReadBookPage = (props: ReadBookPageProps) => {
             />
           </div>
           <button
+            id=""
             onClick={async () => {
-              await fetchChapter(0);
+              scrollToChapter(0);
               toggleNav("close");
             }}
             className="px-8 text-left hover:bg-white/20 py-5"
@@ -395,7 +456,6 @@ const ReadBookPage = (props: ReadBookPageProps) => {
           </button>
           <div className="flex gap-2 w-full px-8 my-4">
             <button
-              disabled={typeof fetching === "number"}
               onClick={() => {
                 setOnlyBookmarked(false);
               }}
@@ -408,7 +468,6 @@ const ReadBookPage = (props: ReadBookPageProps) => {
               All
             </button>
             <button
-              disabled={typeof fetching === "number"}
               onClick={() => {
                 setOnlyBookmarked(true);
               }}
@@ -431,26 +490,18 @@ const ReadBookPage = (props: ReadBookPageProps) => {
                 <button
                   id={cc.chapterNumber + "-chapter_to_scroll"}
                   key={cc._id}
-                  disabled={typeof fetching === "number"}
                   onClick={async () => {
-                    await fetchChapter(cc.chapterNumber);
+                    scrollToChapter(cc.chapterNumber);
                     toggleNav("close");
                   }}
                   className={
                     "p-1 hover:bg-white/20 flex items-center gap-2 px-8 py-5 text-left " +
-                    (cc.chapterNumber === chapter?.chapterNumber
-                      ? "bg-white/10"
-                      : "")
+                    (cc.chapterNumber === activeChapter ? "bg-white/10" : "")
                   }
                 >
                   <span className="line-clamp-1">
                     {cc.chapterNumber}: {cc.title}
                   </span>
-                  {fetching === cc.chapterNumber && (
-                    <span className="flex items-center">
-                      <ClipLoader color="white" size={16} />
-                    </span>
-                  )}
                 </button>
               ))}
             {props.chapters.filter(

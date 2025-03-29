@@ -2,26 +2,21 @@ import { BookInterface, ReadingSessionInterface } from "@/source/types/states";
 import SafeImage from "../reusable/SafeImage";
 import { setModal } from "@/source/store/slice/UIslice";
 import { useAppDispatch } from "@/source/store/hooks";
-import { ClipLoader } from "react-spinners";
 
 const LandingBook = ({
   book,
   lastRead,
-  fetching,
-  fetchChapter,
-  toggleNav,
+  scrollToChapter,
 }: {
   book: BookInterface;
   readingSession: ReadingSessionInterface;
-  fetching: number | null;
   lastRead: number;
-  fetchChapter: (chapterNumber: number) => Promise<void>;
-  toggleNav: (action?: "open" | "close") => void;
+  scrollToChapter: (chapterNumber: number) => void;
 }) => {
   const dispatch = useAppDispatch();
 
   return (
-    <div className="">
+    <div data-chapter="0" id="my-chapter-0">
       <SafeImage
         src={makeImageSmaller(book.mainImage)}
         alt={book.title}
@@ -32,28 +27,14 @@ const LandingBook = ({
         <p className="whitespace-pre-wrap">{book.description}</p>
         <div className="flex gap-3 flex-wrap text-white justify-epub">
           <button
-            disabled={typeof fetching === "number"}
-            onClick={async () => {
-              await fetchChapter(lastRead);
-            }}
+            onClick={() => scrollToChapter(lastRead)}
             className={
               "bg-highlight hover:bg-highlight-dark py-1.5 2xl:py-2.5 px-5 2xl:px-7 rounded-md 2xl:rounded-xl flex items-center justify-center gap-1.5"
             }
           >
             Continue Reading ({lastRead})
-            {fetching === lastRead && <ClipLoader color="#ffffff" size={16} />}
           </button>
           <button
-            disabled={typeof fetching === "number"}
-            onClick={() => toggleNav("open")}
-            className={
-              "bg-amber-800 hover:bg-amber-950 py-1.5 2xl:py-2.5 px-5 2xl:px-7 rounded-md 2xl:rounded-xl "
-            }
-          >
-            View Chapters
-          </button>
-          <button
-            disabled={typeof fetching === "number"}
             onClick={() => {
               dispatch(
                 setModal({

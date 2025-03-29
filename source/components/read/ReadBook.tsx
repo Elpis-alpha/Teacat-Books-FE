@@ -1,95 +1,160 @@
 import {
   BookInterface,
-  ChapterInterface,
+  ChapterClientInterface,
   ReadingSessionInterface,
-  ReadInterface,
 } from "@/source/types/states";
 import LandingBook from "./LandingBook";
-import { useEffect } from "react";
-import { getLastPosition, setLastPosition } from "@/source/helpers/read";
 import { ClipLoader } from "react-spinners";
+import { useEffect, useRef } from "react";
 
 interface ReadBookPageProps {
   book: BookInterface;
-  prevChapter: number | undefined;
-  nextChapter: number | undefined;
   lastRead: number;
-  fetching: number | null;
-  chapters: ChapterInterface[];
+  color: string;
+  chapters: ChapterClientInterface[];
   readingSession: ReadingSessionInterface;
-  bookmarks: number[];
-  chapter: ReadInterface | null;
-  fetchChapter: (chapterNumber: number) => Promise<void>;
-  toggleNav: (action?: "open" | "close") => void;
+  scrollToChapter: (chapterNumber: number) => void;
+  fetchChapter: (chapterNumber: number, sendBack?: boolean) => Promise<void>;
+  makeChapterActive: (chapterNumber: number) => Promise<void>;
 }
 const ReadBook = (props: ReadBookPageProps) => {
-  const { chapter, fetching, nextChapter, prevChapter } = props;
+  const chaptersContainer = useRef<HTMLDivElement>(null);
+  const fetchChapter = props.fetchChapter;
+  const makeChapterActive = props.makeChapterActive;
 
   useEffect(() => {
-    if (!chapter?.chapterNumber) return;
-    if (typeof chapter?.chapterNumber !== "number") return;
-    if (isNaN(chapter?.chapterNumber)) return;
+    if (!chaptersContainer.current) return;
+    console.log("Setting up Intersection Observer...");
+    let current = 0;
+    let current2 = 0;
 
-    const interval = setInterval(() => {
-      const currentPosition = window.scrollY;
-      const storedPosition = getLastPosition(chapter.chapterNumber);
+    const handleChapterInView = (_chapterNumber: string | undefined) => {
+      if (!_chapterNumber) return;
+      const chapterNumber = parseInt(_chapterNumber);
+      if (isNaN(chapterNumber)) return;
 
-      if (currentPosition !== storedPosition) {
-        setLastPosition(chapter.chapterNumber);
-      }
-    }, 5000);
+      fetchChapter(chapterNumber, chapterNumber < current)
+        .then(async () => {
+          await fetchChapter(chapterNumber - 1, true);
 
-    return () => clearInterval(interval);
-  }, [chapter?.chapterNumber]);
+          await fetchChapter(chapterNumber + 1);
+          await fetchChapter(chapterNumber + 2);
+          if (chapterNumber > 1) {
+            await fetchChapter(chapterNumber + 3);
+            await fetchChapter(chapterNumber + 4);
+            await fetchChapter(chapterNumber + 5);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching chapter:", error);
+        });
 
-  if (!chapter)
-    return (
+      current = chapterNumber;
+    };
+
+    const handleActiveChapterInView = (_chapterNumber: string | undefined) => {
+      if (!_chapterNumber) return;
+      const chapterNumber = parseInt(_chapterNumber);
+      if (isNaN(chapterNumber)) return;
+      if (chapterNumber <= 1) return;
+      if (chapterNumber === current2) return;
+
+      current2 = chapterNumber;
+      makeChapterActive(chapterNumber).catch((error) => {
+        console.error("Error making chapter active:", error);
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const chapterNumber = (entry?.target as HTMLElement)?.dataset
+              ?.chapter;
+            handleChapterInView(chapterNumber);
+          }
+        });
+      },
+      { threshold: 0, rootMargin: "-30px 0px -30px 0px" }
+    );
+    const activeObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const chapterNumber = (entry?.target as HTMLElement)?.dataset
+              ?.chapter;
+            handleActiveChapterInView(chapterNumber);
+          }
+        });
+      },
+      { threshold: 0, rootMargin: "-30px 0px -30px 0px" }
+    );
+
+    const chapters = chaptersContainer.current.children;
+    for (let i = 0; i < chapters.length; i++) {
+      const chapterElement = chapters[i];
+      observer.observe(chapterElement);
+      activeObserver.observe(chapterElement);
+    }
+
+    return () => {
+      console.log("Cleaning up Intersection Observer...");
+      observer.disconnect();
+      activeObserver.disconnect();
+    };
+  }, [fetchChapter, makeChapterActive]);
+
+  return (
+    <div
+      ref={chaptersContainer}
+      className="w-full select-none max-w-[1800px] mx-auto"
+    >
       <LandingBook
         lastRead={props.lastRead}
         book={props.book}
         readingSession={props.readingSession}
-        fetching={fetching}
-        fetchChapter={props.fetchChapter}
-        toggleNav={props.toggleNav}
+        scrollToChapter={props.scrollToChapter}
       />
-    );
+      {props.chapters.map((chap) => (
+        <div
+          key={"my-chapter-" + chap.chapterNumber}
+          id={"my-chapter-" + chap.chapterNumber}
+          data-chapter={chap.chapterNumber}
+          className="w-full py-28"
+        >
+          <h3 className="font-bold text-2xl">
+            {chap.chapterNumber}. {chap.title}
+          </h3>
 
-  return (
-    <div className="w-full select-none">
-      <h3 className="font-bold text-2xl">{chapter.title}</h3>
-      <div className=" whitespace-pre-wrap">
-        <div dangerouslySetInnerHTML={{ __html: chapter.text }}></div>
-      </div>
-      <div className="flex items-center gap-2 sm:gap-3 mx-auto mt-5 text-xs smm:text-base sm:text-xl">
-        {prevChapter && (
-          <button
-            disabled={typeof fetching === "number"}
-            className="py-2 px-3 sm:px-7 rounded-md sm:rounded-xl bg-highlight hover:bg-highlight-dark text-white w-full flex items-center justify-center gap-1.5"
-            onClick={() => props.fetchChapter(prevChapter)}
-          >
-            <span className="line-clamp-1">Previous Chapter</span>
-            {fetching === prevChapter && (
-              <span className="flex items-center">
-                <ClipLoader color="#ffffff" size={16} />
-              </span>
-            )}
-          </button>
-        )}
-        {nextChapter && (
-          <button
-            disabled={typeof fetching === "number"}
-            className="py-2 px-3 sm:px-7 rounded-md sm:rounded-xl bg-highlight hover:bg-highlight-dark text-white w-full flex items-center justify-center gap-1.5"
-            onClick={() => props.fetchChapter(nextChapter)}
-          >
-            Next Chapter
-            {fetching === nextChapter && (
-              <span className="flex items-center">
-                <ClipLoader color="#ffffff" size={16} />
-              </span>
-            )}
-          </button>
-        )}
-      </div>
+          {"loading" in chap && chap.loading ? (
+            <div className="w-full mt-5 min-h-[70vh]">
+              <ClipLoader color={props.color} size={20} />
+            </div>
+          ) : "loading" in chap && !chap.loading ? (
+            <div className="mt-5 justify-epub flex min-h-[70vh] items-start">
+              <button
+                onClick={() => props.scrollToChapter(chap.chapterNumber)}
+                className="bg-highlight hover:bg-highlight-dark py-1 px-4 rounded-md 2xl:rounded-xl "
+              >
+                Fetch Chapter
+              </button>
+            </div>
+          ) : "text" in chap ? (
+            <div className=" whitespace-pre-wrap mt-5">
+              <div dangerouslySetInnerHTML={{ __html: chap.text }}></div>
+            </div>
+          ) : (
+            <div className="mt-5 justify-epub flex min-h-[70vh] items-start">
+              <button
+                onClick={() => props.scrollToChapter(chap.chapterNumber)}
+                className="bg-highlight hover:bg-highlight-dark py-1 px-4 rounded-md 2xl:rounded-xl "
+              >
+                Fetch Chapter (ERROR)
+              </button>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 };
