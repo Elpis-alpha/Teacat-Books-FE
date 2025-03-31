@@ -16,13 +16,13 @@ const LandingBook = ({
   const dispatch = useAppDispatch();
 
   return (
-    <div data-chapter="0" id="my-chapter-0">
+    <div data-chapter="0" className="">
       <SafeImage
         src={makeImageSmaller(book.mainImage)}
         alt={book.title}
         className="w-[200px] sm:w-[250px] epub-special-image"
       />
-      <div className="flex-1 text-lg 2xl:text-2xl flex flex-col gap-4 2xl:gap-5 py-10">
+      <div className="text-lg 2xl:text-2xl flex flex-col gap-4 2xl:gap-5 py-10">
         <h2 className="font-bold text-5xl 2xl:text-7xl">{book.title}</h2>
         <p className="whitespace-pre-wrap">{book.description}</p>
         <div className="flex gap-3 flex-wrap text-white justify-epub">

@@ -8,12 +8,14 @@ import {
   BookInterface,
   ChapterClientInterface,
   ChapterInterface,
+  PreChapterInterface,
   ReadingSessionInterface,
 } from "@/source/types/states";
 import {
   MouseEventHandler,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -30,6 +32,8 @@ import Hamburger from "hamburger-react";
 import ModalOverflow from "../modals/ModalOverflow";
 import { FaBookmark, FaCog, FaRegBookmark } from "react-icons/fa";
 import { setModal } from "@/source/store/slice/UIslice";
+import { FaEllipsisVertical } from "react-icons/fa6";
+import Link from "next/link";
 
 interface ReadBookPageProps {
   initialTheme: ThemeInterface;
@@ -37,34 +41,67 @@ interface ReadBookPageProps {
   chapters: ChapterInterface[];
   readingSession: ReadingSessionInterface;
   bookmarks: number[];
+  preChapters: PreChapterInterface[];
 }
 const ReadBookPage = (props: ReadBookPageProps) => {
   const dispatch = useAppDispatch();
+  const scrollToTopRef = useRef<HTMLDivElement>(null);
   const [theme, setTheme] = useState(props.initialTheme);
 
   // const [chapter, setChapter] = useState<ReadInterface | null>(null);
   // const [fetching, setFetching] = useState<number | null>(null);
-  const [activeChapter, setActiveChapter] = useState<number | null>(null);
+  const [activeChapter, setActiveChapter] = useState(0);
   const [lastRead, setLastRead] = useState(props.readingSession.currentChapter);
+  const [revealDropDown, setRevealDropDown] = useState(false);
   const mainRef = useRef<HTMLDivElement>(null);
+
+  const activeChapterTitle = useMemo(() => {
+    if (activeChapter === 0) return "Book Cover";
+    if (activeChapter === -1) return "Book End";
+    if (!activeChapter) return null;
+
+    const chapter = props.chapters.find(
+      (c) => c.chapterNumber === activeChapter
+    );
+    if (!chapter) return null;
+    return chapter.chapterNumber + ". " + chapter.title;
+  }, [activeChapter, props.chapters]);
 
   const [bookmarks, setBookmarks] = useState(props.bookmarks);
   const [onlyBookmarked, setOnlyBookmarked] = useState(false);
   const [bookmarking, setBookmarking] = useState(false);
 
   const [chapters, setChapters] = useState<ChapterClientInterface[]>(
-    props.chapters.map((c) => ({
-      _id: c._id,
-      chapterNumber: c.chapterNumber,
-      title: c.title,
-      bookmarked: bookmarks.includes(c.chapterNumber),
-      loading: false,
-    }))
+    props.chapters.map((c) => {
+      const preChapter =
+        c.chapterNumber > 10
+          ? null
+          : props.preChapters.find((p) => p.chapterNumber === c.chapterNumber);
+
+      if (preChapter) {
+        return {
+          _id: preChapter._id,
+          chapterNumber: c.chapterNumber,
+          title: c.title,
+          text: preChapter.text,
+          bookmarked: bookmarks.includes(c.chapterNumber),
+        };
+      }
+
+      return {
+        _id: c._id,
+        chapterNumber: c.chapterNumber,
+        title: c.title,
+        bookmarked: bookmarks.includes(c.chapterNumber),
+        loading: false,
+      };
+    })
   );
   const chaptersRef = useRef(chapters);
 
   const fetchChapter = useCallback(
     async (chapterNumber: number, sendBack?: boolean) => {
+      if (chapterNumber === 0) setActiveChapter(0);
       if (chapterNumber <= 0) return;
 
       const chapter = chaptersRef.current.find(
@@ -160,6 +197,7 @@ const ReadBookPage = (props: ReadBookPageProps) => {
 
   const makeChapterActive = useCallback(
     async (chapterNumber: number) => {
+      if (chapterNumber === 0) setActiveChapter(0);
       if (chapterNumber <= 0) return;
 
       const chapter = chaptersRef.current.find(
@@ -249,10 +287,20 @@ const ReadBookPage = (props: ReadBookPageProps) => {
   const scrollToChapter = (chapterNumber: number) => {
     if (typeof window === "undefined") return;
 
-    const chapterID = "my-chapter-" + chapterNumber;
+    const chapterID = "my-chapter1-" + chapterNumber;
     const chapter = document.getElementById(chapterID);
     if (chapter) {
       chapter.scrollIntoView({
+        behavior: "instant",
+        block: "start",
+        // inline: "start",
+      });
+    }
+
+    const chapterID2 = "my-chapter2-" + chapterNumber;
+    const chapter2 = document.getElementById(chapterID2);
+    if (chapter2) {
+      chapter2.scrollIntoView({
         behavior: "instant",
         block: "start",
         // inline: "start",
@@ -283,6 +331,15 @@ const ReadBookPage = (props: ReadBookPageProps) => {
       setTheme(getTheme());
     }
   }, [changeTheme]);
+
+  // Scroll Restoration
+  useLayoutEffect(() => {
+    if (typeof window === "undefined") return;
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+    window.scrollTo(0, 0);
+  }, []);  
 
   // NAV CODE
   const isChanging = useRef(false);
@@ -332,14 +389,40 @@ const ReadBookPage = (props: ReadBookPageProps) => {
         >
           <Hamburger toggled={navIsOpen} size={24} distance="sm" rounded />
         </button>
-        <button
-          onClick={() => scrollToChapter(0)}
-          className="flex-1 line-clamp-1 text-lg text-left"
-        >
-          {props.book.title}
-        </button>
+        <div className="flex-1">
+          <button
+            onClick={() => {
+              if (scrollToTopRef.current) {
+                scrollToTopRef.current.scrollIntoView({
+                  behavior: "instant",
+                  block: "start",
+                  inline: "start",
+                });
+              }
+            }}
+            className="flex-1 line-clamp-1 text-lg text-left"
+          >
+            {props.book.title}
+          </button>
+          {activeChapterTitle && (
+            <button
+              onClick={() => {
+                if (scrollToTopRef.current) {
+                  scrollToTopRef.current.scrollIntoView({
+                    behavior: "instant",
+                    block: "start",
+                    inline: "start",
+                  });
+                }
+              }}
+              className=" line-clamp-1 text-xs text-left"
+            >
+              {activeChapterTitle}
+            </button>
+          )}
+        </div>
         <div className="flex items-center sm:gap-1">
-          {activeChapter && (
+          {activeChapter > 0 && (
             <button
               disabled={bookmarking}
               className="flex items-center justify-center sm:w-12 sm:h-12 w-10 h-10 hover:text-blue-300"
@@ -367,13 +450,58 @@ const ReadBookPage = (props: ReadBookPageProps) => {
           >
             <FaCog />
           </button>
+          <button
+            className="flex items-center justify-center w-10 h-10 hover:bg-white/30 bg-white/5 rounded-full text-lg sm:text-xl"
+            onClick={() => setRevealDropDown((p) => !p)}
+          >
+            <FaEllipsisVertical />
+          </button>
         </div>
+        {revealDropDown && (
+          <div className="absolute right-4 top-16 bg-white/10 backdrop-blur-sm rounded-lg shadow-md min-w-[200px] overflow-hidden">
+            <button
+              className="flex items-center gap-2 text-lg hover:bg-white/20 px-6 py-4 w-full"
+              onClick={() => {
+                setRevealDropDown(false);
+                toggleNav("open");
+              }}
+            >
+              <span>Chapters</span>
+            </button>
+            <button
+              className="flex items-center gap-2 text-lg hover:bg-white/20 p-2 px-6 py-4 w-full"
+              onClick={() => {
+                setRevealDropDown(false);
+                if (scrollToTopRef.current) {
+                  scrollToTopRef.current.scrollIntoView({
+                    behavior: "instant",
+                    block: "start",
+                    inline: "start",
+                  });
+                }
+              }}
+            >
+              <span>Go to top</span>
+            </button>
+            <Link
+              href="/my-books"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-lg hover:bg-white/20 p-2 px-6 py-4 w-full"
+              onClick={() => {
+                setRevealDropDown(false);
+              }}
+            >
+              <span>Back to Library</span>
+            </Link>
+          </div>
+        )}
       </nav>
-      <div className="w-full h-[80px]"></div>
+      <div ref={scrollToTopRef} className="w-full h-[80px]"></div>
       <main
         ref={mainRef}
         className={
-          "flex-1 w-full font-miller flex base-theme-transition overflow-auto py-4 " +
+          "flex-1 w-full font-miller flex base-theme-transition overflow-auto py-4 px-5 sm:px-20 " +
           (theme.textAlignment === "center"
             ? "epub-img-center"
             : theme.textAlignment === "right"
@@ -381,7 +509,6 @@ const ReadBookPage = (props: ReadBookPageProps) => {
             : "epub-img-left")
         }
         style={{
-          backgroundColor: theme.backgroundColor,
           color: theme.textColor,
           fontFamily: parseFontFamily(theme.fontFamily),
           lineHeight: theme.lineHeight,
@@ -389,8 +516,9 @@ const ReadBookPage = (props: ReadBookPageProps) => {
         }}
       >
         <div
-          className="hidden sm:flex flex-1 flex-col items-center justify-center w-full mid-theme-transition"
+          className="hidden sm:flex flex-1 flex-col items-center justify-center w-full max-w-[1400px] mx-auto mid-theme-transition"
           style={{
+            backgroundColor: theme.backgroundColor,
             padding: 40 * (theme.paddingPercentage / 100),
             fontSize: 20 * (theme.fontPercentage / 100),
           }}
@@ -404,11 +532,13 @@ const ReadBookPage = (props: ReadBookPageProps) => {
             scrollToChapter={scrollToChapter}
             fetchChapter={fetchChapter}
             makeChapterActive={makeChapterActive}
+            special="1"
           />
         </div>
         <div
-          className="flex sm:hidden flex-1 flex-col items-center justify-center w-full"
+          className="flex sm:hidden flex-1 flex-col items-center justify-center w-full max-w-[1400px] mx-auto mid-theme-transition"
           style={{
+            backgroundColor: theme.backgroundColor,
             padding: 24 * (theme.paddingPercentage / 100),
             fontSize: 16 * (theme.fontPercentage / 100),
           }}
@@ -416,12 +546,13 @@ const ReadBookPage = (props: ReadBookPageProps) => {
           <ReadBook
             lastRead={lastRead}
             book={props.book}
-            chapters={chapters}
             color={theme.textColor}
+            chapters={chapters}
             readingSession={props.readingSession}
             scrollToChapter={scrollToChapter}
             fetchChapter={fetchChapter}
             makeChapterActive={makeChapterActive}
+            special="2"
           />
         </div>
       </main>
@@ -447,7 +578,13 @@ const ReadBookPage = (props: ReadBookPageProps) => {
           <button
             id=""
             onClick={async () => {
-              scrollToChapter(0);
+              if (scrollToTopRef.current) {
+                scrollToTopRef.current.scrollIntoView({
+                  behavior: "instant",
+                  block: "start",
+                  inline: "start",
+                });
+              }
               toggleNav("close");
             }}
             className="px-8 text-left hover:bg-white/20 py-5"
@@ -526,7 +663,7 @@ export const PreReadBookPage = ({ theme }: { theme: ThemeInterface }) => {
     <main
       className="flex-1 w-full flex items-center justify-center p-5"
       style={{
-        backgroundColor: theme.backgroundColor,
+        // backgroundColor: theme.backgroundColor,
         color: theme.textColor,
       }}
     >

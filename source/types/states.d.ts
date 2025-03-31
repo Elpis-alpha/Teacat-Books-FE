@@ -242,6 +242,13 @@ export interface ChapterInterface {
   title: string;
 }
 
+export interface PreChapterInterface {
+  _id: string;
+  chapterNumber: number;
+  title: string;
+  text: string;
+}
+
 export type ChapterClientInterface =
   | {
       _id: string;

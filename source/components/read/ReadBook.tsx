@@ -16,6 +16,7 @@ interface ReadBookPageProps {
   scrollToChapter: (chapterNumber: number) => void;
   fetchChapter: (chapterNumber: number, sendBack?: boolean) => Promise<void>;
   makeChapterActive: (chapterNumber: number) => Promise<void>;
+  special: "1" | "2";
 }
 const ReadBook = (props: ReadBookPageProps) => {
   const chaptersContainer = useRef<HTMLDivElement>(null);
@@ -56,7 +57,7 @@ const ReadBook = (props: ReadBookPageProps) => {
       if (!_chapterNumber) return;
       const chapterNumber = parseInt(_chapterNumber);
       if (isNaN(chapterNumber)) return;
-      if (chapterNumber <= 1) return;
+      if (chapterNumber < 0) return;
       if (chapterNumber === current2) return;
 
       current2 = chapterNumber;
@@ -105,10 +106,7 @@ const ReadBook = (props: ReadBookPageProps) => {
   }, [fetchChapter, makeChapterActive]);
 
   return (
-    <div
-      ref={chaptersContainer}
-      className="w-full select-none max-w-[1800px] mx-auto"
-    >
+    <div ref={chaptersContainer} className="w-full select-none">
       <LandingBook
         lastRead={props.lastRead}
         book={props.book}
@@ -117,8 +115,8 @@ const ReadBook = (props: ReadBookPageProps) => {
       />
       {props.chapters.map((chap) => (
         <div
-          key={"my-chapter-" + chap.chapterNumber}
-          id={"my-chapter-" + chap.chapterNumber}
+          key={"my-chapter" + props.special + "-" + chap.chapterNumber}
+          id={"my-chapter" + props.special + "-" + chap.chapterNumber}
           data-chapter={chap.chapterNumber}
           className="w-full py-28"
         >

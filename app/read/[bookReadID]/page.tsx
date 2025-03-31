@@ -36,7 +36,8 @@ export default async function Home({
     !response.book ||
     !response.chapters ||
     !response.readingSession ||
-    !response.bookmarks
+    !response.bookmarks ||
+    !response.preChapters
   ) {
     console.error(response);
     return (
@@ -56,6 +57,7 @@ export default async function Home({
         chapters={response.chapters}
         readingSession={response.readingSession}
         bookmarks={response.bookmarks}
+        preChapters={response.preChapters}
       />
     </ClientRender>
   );
