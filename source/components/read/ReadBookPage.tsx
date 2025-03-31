@@ -34,6 +34,7 @@ import { FaBookmark, FaCog, FaRegBookmark } from "react-icons/fa";
 import { setModal } from "@/source/store/slice/UIslice";
 import { FaEllipsisVertical } from "react-icons/fa6";
 import Link from "next/link";
+import { requestFullScreen } from "@/source/helpers";
 
 interface ReadBookPageProps {
   initialTheme: ThemeInterface;
@@ -476,6 +477,15 @@ const ReadBookPage = (props: ReadBookPageProps) => {
               }}
             >
               <span>Go to top</span>
+            </button>
+            <button
+              className="flex items-center gap-2 text-lg hover:bg-white/10 p-2 px-6 py-4 w-full"
+              onClick={() => {
+                requestFullScreen();
+                setRevealDropDown(false);
+              }}
+            >
+              <span>Full Screen</span>
             </button>
             <Link
               href="/my-books"

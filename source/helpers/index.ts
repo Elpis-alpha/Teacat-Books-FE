@@ -96,42 +96,26 @@ export const copyText = async (text: string) => {
 };
 
 export const requestFullScreen = (exit?: boolean) => {
-  if (exit) {
-    if (document.fullscreenElement !== null) {
-      document.exitFullscreen();
-    }
-    return false;
+  if (exit || document.fullscreenElement) {
+    // If the exit parameter is true or if the document is already in fullscreen mode, exit fullscreen
+    document
+      .exitFullscreen?.()
+      .catch((err) => console.error("Error exiting fullscreen:", err));
+    return;
   }
 
   const element = document.documentElement;
-
   const requestMethod =
     element.requestFullscreen ||
-    // @ts-expect-error: is a method
-    element.requestFullScreen ||
-    // @ts-expect-error: is a method
-    element.webkitRequestFullScreen ||
-    // @ts-expect-error: is a method
-    element.mozRequestFullScreen ||
-    // @ts-expect-error: is a method
-    element.msRequestFullscreen;
+    ("webkitRequestFullscreen" in element && element.webkitRequestFullscreen) ||
+    ("mozRequestFullScreen" in element && element.mozRequestFullScreen) ||
+    ("msRequestFullscreen" in element && element.msRequestFullscreen);
 
   if (requestMethod) {
-    requestMethod.call(element);
-
-    // @ts-expect-error: is valid
-  } else if (typeof window.ActiveXObject !== "undefined") {
-    // IE work
-
-    // @ts-expect-error: is valid
-    const wscript = new ActiveXObject("WScript.Shell");
-
-    if (wscript !== null) {
-      wscript.SendKeys("{F11}");
-    }
+    requestMethod
+      .call(element)
+      .catch((err: any) => console.error("Error requesting fullscreen:", err));
   }
-
-  // document.exitFullscreen()  Use this to exit
 };
 
 export const scrollThrough = (vertical: number, horisontal = 0) => {
