@@ -339,7 +339,7 @@ const ReadBookPage = (props: ReadBookPageProps) => {
       window.history.scrollRestoration = "manual";
     }
     window.scrollTo(0, 0);
-  }, []);  
+  }, []);
 
   // NAV CODE
   const isChanging = useRef(false);
@@ -407,13 +407,7 @@ const ReadBookPage = (props: ReadBookPageProps) => {
           {activeChapterTitle && (
             <button
               onClick={() => {
-                if (scrollToTopRef.current) {
-                  scrollToTopRef.current.scrollIntoView({
-                    behavior: "instant",
-                    block: "start",
-                    inline: "start",
-                  });
-                }
+                scrollToChapter(activeChapter);
               }}
               className=" line-clamp-1 text-xs text-left"
             >
@@ -458,9 +452,9 @@ const ReadBookPage = (props: ReadBookPageProps) => {
           </button>
         </div>
         {revealDropDown && (
-          <div className="absolute right-4 top-16 bg-white/10 backdrop-blur-sm rounded-lg shadow-md min-w-[200px] overflow-hidden">
+          <div className="absolute right-4 top-16 bg-main-bg/80 text-white backdrop-blur-sm rounded-lg shadow-md min-w-[200px] overflow-hidden">
             <button
-              className="flex items-center gap-2 text-lg hover:bg-white/20 px-6 py-4 w-full"
+              className="flex items-center gap-2 text-lg hover:bg-white/10 px-6 py-4 w-full"
               onClick={() => {
                 setRevealDropDown(false);
                 toggleNav("open");
@@ -469,7 +463,7 @@ const ReadBookPage = (props: ReadBookPageProps) => {
               <span>Chapters</span>
             </button>
             <button
-              className="flex items-center gap-2 text-lg hover:bg-white/20 p-2 px-6 py-4 w-full"
+              className="flex items-center gap-2 text-lg hover:bg-white/10 p-2 px-6 py-4 w-full"
               onClick={() => {
                 setRevealDropDown(false);
                 if (scrollToTopRef.current) {
@@ -487,7 +481,7 @@ const ReadBookPage = (props: ReadBookPageProps) => {
               href="/my-books"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-lg hover:bg-white/20 p-2 px-6 py-4 w-full"
+              className="flex items-center gap-2 text-lg hover:bg-white/10 p-2 px-6 py-4 w-full"
               onClick={() => {
                 setRevealDropDown(false);
               }}
