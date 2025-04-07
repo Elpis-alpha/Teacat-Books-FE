@@ -48,7 +48,7 @@ const ManageBooks = ({ viewer }: { viewer: "author" | "admin" }) => {
           routes.book.all(
             limit,
             0,
-            "createdAt:asc",
+            "createdAt:desc",
             null,
             viewer === "admin" ? null : userID,
             null,

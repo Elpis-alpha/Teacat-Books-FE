@@ -54,5 +54,6 @@ export type fetchBooksType = (
   page: number,
   sort: BookSortType,
   filter: BookFilterType,
-  searchValue: string | null
+  searchValue: string | null,
+  slugs: string[]
 ) => Promise<void>;

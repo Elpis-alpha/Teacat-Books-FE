@@ -1,13 +1,13 @@
 "use client";
 import SideBar from "./SideBar";
 import PaginatedItems from "../reusable/PaginatedItems";
-import { FormEventHandler } from "react";
+import { Dispatch, FormEventHandler, SetStateAction } from "react";
 import {
   BookFilterType,
   BookSortType,
   BrowseBooksData,
 } from "@/source/types/misc";
-import { SimpleUser } from "@/source/types/states";
+import { SimpleUser, TagType } from "@/source/types/states";
 import BookSearchItem, { BookSearchItemSkeleton } from "./BookSearchItem";
 
 interface BrowseBookProps {
@@ -26,7 +26,10 @@ interface BrowseBookProps {
   resetSearch: () => void;
   fetchViaSort: (sort: BookSortType) => void;
   fetchViaFilter: (filter: BookFilterType) => void;
+  tags: TagType[];
+  setTags: Dispatch<SetStateAction<TagType[]>>;
   searchValueState: [string, React.Dispatch<React.SetStateAction<string>>];
+  fetchViaTags: (tags: TagType[]) => void;
 }
 
 const BrowseBooks = (props: BrowseBookProps) => {
@@ -61,6 +64,9 @@ const BrowseBooks = (props: BrowseBookProps) => {
               disabled={disabled}
               fetchViaFilter={fetchViaFilter}
               fetchViaSort={fetchViaSort}
+              tags={props.tags}
+              setTags={props.setTags}
+              fetchViaTags={props.fetchViaTags}
             />
           </div>
           <div className="flex-1 flex flex-col gap-8">

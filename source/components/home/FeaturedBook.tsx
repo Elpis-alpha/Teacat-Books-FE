@@ -51,6 +51,18 @@ const FeaturedBook = ({
             By {authorName}
           </Link>
         </p>
+        {book.tags && book.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 sm:gap-2 text-xs sm:text-sm mb-2">
+            {book.tags?.map?.((tag) => (
+              <div
+                key={book._id + tag.slug}
+                className="sm:px-2 px-1.5 sm:py-1 py-0.5 bg-white/20 rounded-md"
+              >
+                {tag.title}
+              </div>
+            ))}
+          </div>
+        )}
         <div className="text-base xl:text-lg line-clamp-4">
           {book.description}
         </div>
@@ -122,6 +134,11 @@ export const FeaturedBookSkeleton = ({ className }: { className: string }) => {
         <p className="my-2.5 text-xl xl:text-lg text-balance italic skeleton rounded-md">
           By Author
         </p>
+        <div className="flex flex-wrap gap-1 sm:gap-2 text-xs sm:text-sm mb-2">
+          <div className="sm:px-2 px-1.5 sm:py-1 py-0.5 skeleton rounded-md">Tag1</div>
+          <div className="sm:px-2 px-1.5 sm:py-1 py-0.5 skeleton rounded-md">Tag2</div>
+          <div className="sm:px-2 px-1.5 sm:py-1 py-0.5 skeleton rounded-md">Tag3</div>
+        </div>
         <div className="text-base xl:text-lg line-clamp-4 skeleton rounded-md">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea
           voluptatibus a quod eveniet, suscipit quam voluptas expedita

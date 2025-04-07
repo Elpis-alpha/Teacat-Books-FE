@@ -671,7 +671,7 @@ export const PreReadBookPage = ({ theme }: { theme: ThemeInterface }) => {
         color: theme.textColor,
       }}
     >
-      <ClipLoader color={theme.textColor} size={36} />
+      <ClipLoader color="#ffffff" size={36} />
     </main>
   );
 };

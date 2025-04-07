@@ -67,6 +67,7 @@ const routes = {
       updateImage: `${BE}/ticket/book/create-update-image-ticket`,
       updateBook: `${BE}/ticket/book/create-update-text-ticket`,
       updateMeta: `${BE}/ticket/book/create-update-meta-ticket`,
+      updateTags: `${BE}/ticket/book/create-update-tags-ticket`,
       deleteBook: `${BE}/ticket/book/create-delete-book-ticket`,
       get: (
         limit: number,
@@ -104,13 +105,14 @@ const routes = {
       status: null | "new-books" | "completed-books" | "ongoing-books",
       author: string | null,
       text: string | null,
-      featured: "true" | null
+      featured: "true" | null,
+      slugs?: string[]
     ) =>
       `${BE}/book/all${generateLSSB(limit, skip, sort)}${
         status ? `&status=${status}` : ""
       }${author ? `&author=${author}` : ""}${text ? `&text=${text}` : ""}${
         featured ? `&featured=${featured}` : ""
-      }`,
+      }${slugs && slugs.length > 0 ? `&slugs=${slugs.join(" -||- ")}` : ""}`,
     meta: (bookID: string) => `${BE}/book/meta?bookID=${bookID}`,
     one: (bookID: string) => `${BE}/book/one?bookID=${bookID}`,
     chapter: (bookID: string, chapterNumber: number) =>
@@ -159,6 +161,11 @@ const routes = {
 
   helio: {
     check: `${BE}/helio/check-payment`,
+  },
+
+  tag: {
+    one: (q: string) => `${BE}/tag/one?q=${q}`,
+    search: (q: string) => `${BE}/tag/search?q=${q}`,
   },
 };
 

@@ -124,6 +124,18 @@ const BookPage = ({
                   ${book.price.toFixed(2)}
                 </div>
               </div>
+              {book.tags && book.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {book.tags?.map?.((tag) => (
+                    <div
+                      key={book._id + tag.slug}
+                      className="px-2 py-1 bg-white/30 rounded-md"
+                    >
+                      {tag.title}
+                    </div>
+                  ))}
+                </div>
+              )}
               <p className="whitespace-pre-wrap">{book.description}</p>
               <div className="flex gap-3 flex-wrap">
                 {(myData.bought || myData.borrowed) && !bookReturned && (

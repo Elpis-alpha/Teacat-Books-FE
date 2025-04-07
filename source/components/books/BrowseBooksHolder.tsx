@@ -1,5 +1,5 @@
 "use client";
-import { SimpleUser } from "@/source/types/states";
+import { SimpleUser, TagType } from "@/source/types/states";
 import { NormalPage } from "../reusable/SimplePages";
 import BrowseBooks from "./BrowseBooks";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -132,7 +132,8 @@ const BrowseBooksHolder = ({
       page: number,
       sort: BookSortType,
       filter: BookFilterType,
-      searchValue: string | null
+      searchValue: string | null,
+      slugs
     ) => {
       if (data.loading) {
         toast.error("Please wait for the current request to finish.");
@@ -156,7 +157,8 @@ const BrowseBooksHolder = ({
             filter.type === "author" ? null : filter.type,
             filter.type === "author" ? filter.authorID : null,
             searchValue,
-            null
+            null,
+            slugs
           )
         );
         if (response.error || !response.books) {
@@ -217,14 +219,26 @@ const BrowseBooksHolder = ({
 
     if (searchValue.trim().length === 0) {
       setResetPagination(true);
-      fetchBooks(0, sort, filter, null).catch(() => {});
+      fetchBooks(
+        0,
+        sort,
+        filter,
+        null,
+        tags.map((x) => x.slug)
+      ).catch(() => {});
       return;
     }
 
     const text = searchValue.trim() || null;
 
     setResetPagination(true);
-    fetchBooks(0, sort, filter, text).catch(() => {});
+    fetchBooks(
+      0,
+      sort,
+      filter,
+      text,
+      tags.map((x) => x.slug)
+    ).catch(() => {});
   };
 
   // ASIDE CODE
@@ -252,6 +266,8 @@ const BrowseBooksHolder = ({
       });
   };
 
+  const [tags, setTags] = useState<TagType[]>([]);
+
   return (
     <>
       <NormalPage useStart usePhysicalNavBar>
@@ -268,27 +284,56 @@ const BrowseBooksHolder = ({
           resetPagination={resetPagination}
           searchValueState={[searchValue, setSearchValue]}
           handleSearch={handleSearch}
+          tags={tags}
+          setTags={setTags}
+          fetchViaTags={(tags) => {
+            toggleAside();
+            setTags(tags);
+            setResetPagination(true);
+            fetchBooks(
+              0,
+              sort,
+              filter,
+              searchValue.trim() || null,
+              tags.map((x) => x.slug)
+            ).catch(() => {});
+          }}
           fetchViaPagination={(x) => {
-            fetchBooks(x, sort, filter, searchValue.trim() || null);
+            fetchBooks(
+              x,
+              sort,
+              filter,
+              searchValue.trim() || null,
+              tags.map((x) => x.slug)
+            );
           }}
           fetchViaFilter={(filter) => {
             setFilter(filter);
             setResetPagination(true);
-            fetchBooks(0, sort, filter, searchValue.trim() || null).catch(
-              () => {}
-            );
+            fetchBooks(
+              0,
+              sort,
+              filter,
+              searchValue.trim() || null,
+              tags.map((x) => x.slug)
+            ).catch(() => {});
           }}
           fetchViaSort={(sort) => {
             setSort(sort);
             setResetPagination(true);
-            fetchBooks(0, sort, filter, searchValue.trim() || null).catch(
-              () => {}
-            );
+            fetchBooks(
+              0,
+              sort,
+              filter,
+              searchValue.trim() || null,
+              tags.map((x) => x.slug)
+            ).catch(() => {});
           }}
           resetSearch={() => {
             setResetPagination(true);
             setSearchValue("");
-            fetchBooks(0, sort, filter, null).catch(() => {});
+            setTags([]);
+            fetchBooks(0, sort, filter, null, []).catch(() => {});
           }}
         />
       </NormalPage>
@@ -307,23 +352,45 @@ const BrowseBooksHolder = ({
           <SideBar
             sort={sort}
             filter={filter}
+            tags={tags}
+            setTags={setTags}
             author={author.current}
             disabled={data.loading}
+            fetchViaTags={(tags) => {
+              toggleAside();
+              setTags(tags);
+              setResetPagination(true);
+              fetchBooks(
+                0,
+                sort,
+                filter,
+                searchValue.trim() || null,
+                tags.map((x) => x.slug)
+              ).catch(() => {});
+            }}
             fetchViaFilter={(filter) => {
               toggleAside();
               setFilter(filter);
               setResetPagination(true);
-              fetchBooks(0, sort, filter, searchValue.trim() || null).catch(
-                () => {}
-              );
+              fetchBooks(
+                0,
+                sort,
+                filter,
+                searchValue.trim() || null,
+                tags.map((x) => x.slug)
+              ).catch(() => {});
             }}
             fetchViaSort={(sort) => {
               toggleAside();
               setSort(sort);
               setResetPagination(true);
-              fetchBooks(0, sort, filter, searchValue.trim() || null).catch(
-                () => {}
-              );
+              fetchBooks(
+                0,
+                sort,
+                filter,
+                searchValue.trim() || null,
+                tags.map((x) => x.slug)
+              ).catch(() => {});
             }}
           />
           <button

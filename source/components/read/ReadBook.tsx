@@ -113,46 +113,59 @@ const ReadBook = (props: ReadBookPageProps) => {
         readingSession={props.readingSession}
         scrollToChapter={props.scrollToChapter}
       />
-      {props.chapters.map((chap) => (
-        <div
-          key={"my-chapter" + props.special + "-" + chap.chapterNumber}
-          id={"my-chapter" + props.special + "-" + chap.chapterNumber}
-          data-chapter={chap.chapterNumber}
-          className="w-full py-28"
-        >
-          <h3 className="font-bold text-2xl">
-            {chap.chapterNumber}. {chap.title}
-          </h3>
+      {props.chapters.map((chap) => {
+        function escapeRegExp(string: string) {
+          return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        }
 
-          {"loading" in chap && chap.loading ? (
-            <div className="w-full mt-5 min-h-[70vh]">
-              <ClipLoader color={props.color} size={20} />
-            </div>
-          ) : "loading" in chap && !chap.loading ? (
-            <div className="mt-5 justify-epub flex min-h-[70vh] items-start">
-              <button
-                onClick={() => props.scrollToChapter(chap.chapterNumber)}
-                className="bg-highlight hover:bg-highlight-dark py-1 px-4 rounded-md 2xl:rounded-xl "
-              >
-                Fetch Chapter
-              </button>
-            </div>
-          ) : "text" in chap ? (
-            <div className=" whitespace-pre-wrap mt-5">
-              <div dangerouslySetInnerHTML={{ __html: chap.text }}></div>
-            </div>
-          ) : (
-            <div className="mt-5 justify-epub flex min-h-[70vh] items-start">
-              <button
-                onClick={() => props.scrollToChapter(chap.chapterNumber)}
-                className="bg-highlight hover:bg-highlight-dark py-1 px-4 rounded-md 2xl:rounded-xl "
-              >
-                Fetch Chapter (ERROR)
-              </button>
-            </div>
-          )}
-        </div>
-      ))}
+        const title =
+          chap.title.toLowerCase() === "untitled" ? "New Chapter" : chap.title;
+        const preContent = "text" in chap ? chap.text : "";
+        const titleRegex = new RegExp(
+          `^${escapeRegExp(title)}[\\s\\r\\n]*`,
+          "i"
+        );
+        const content = preContent.replace(titleRegex, "").trim();
+
+        return (
+          <div
+            key={"my-chapter" + props.special + "-" + chap.chapterNumber}
+            id={"my-chapter" + props.special + "-" + chap.chapterNumber}
+            data-chapter={chap.chapterNumber}
+            className="w-full py-28"
+          >
+            <h3 className="font-bold text-2xl">{title}</h3>
+
+            {"loading" in chap && chap.loading ? (
+              <div className="w-full mt-5 min-h-[70vh]">
+                <ClipLoader color={props.color} size={20} />
+              </div>
+            ) : "loading" in chap && !chap.loading ? (
+              <div className="mt-5 justify-epub flex min-h-[70vh] items-start">
+                <button
+                  onClick={() => props.scrollToChapter(chap.chapterNumber)}
+                  className="bg-highlight hover:bg-highlight-dark py-1 px-4 rounded-md 2xl:rounded-xl "
+                >
+                  Fetch Chapter
+                </button>
+              </div>
+            ) : "text" in chap ? (
+              <div className=" whitespace-pre-wrap mt-5">
+                <div dangerouslySetInnerHTML={{ __html: content }}></div>
+              </div>
+            ) : (
+              <div className="mt-5 justify-epub flex min-h-[70vh] items-start">
+                <button
+                  onClick={() => props.scrollToChapter(chap.chapterNumber)}
+                  className="bg-highlight hover:bg-highlight-dark py-1 px-4 rounded-md 2xl:rounded-xl "
+                >
+                  Fetch Chapter (ERROR)
+                </button>
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 };

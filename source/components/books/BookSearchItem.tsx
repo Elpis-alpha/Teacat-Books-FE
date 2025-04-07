@@ -43,6 +43,18 @@ const BookSearchItem = ({
             ({book.numberOfReviews} review{book.numberOfReviews !== 1 && "s"})
           </small>
         </div>
+        {book.tags && book.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 sm:gap-2 text-xs sm:text-sm mb-1.5 mt-0.5">
+            {book.tags?.map?.((tag) => (
+              <div
+                key={book._id + tag.slug}
+                className="sm:px-2 px-1.5 sm:py-1 py-0.5 bg-white/20 rounded-md"
+              >
+                {tag.title}
+              </div>
+            ))}
+          </div>
+        )}
         <p className="text-sm sm:text-base line-clamp-4 smm:line-clamp-5 sm:line-clamp-3">
           {book.description}
         </p>
@@ -116,6 +128,11 @@ export const BookSearchItemSkeleton = () => {
           <span className="text-xs line-clamp-1 flex-1">
             <span className="rounded-lg skeleton">({0} reviews)</span>
           </span>
+        </div>
+        <div className="flex flex-wrap gap-1 sm:gap-2 text-xs sm:text-sm mb-1.5 mt-0.5">
+          <div className="sm:px-2 px-1.5 sm:py-1 py-0.5 skeleton rounded-md">Tag1</div>
+          <div className="sm:px-2 px-1.5 sm:py-1 py-0.5 skeleton rounded-md">Tag2</div>
+          <div className="sm:px-2 px-1.5 sm:py-1 py-0.5 skeleton rounded-md">Tag3</div>
         </div>
         <p className="text-sm sm:text-base line-clamp-4 smm:line-clamp-5 sm:line-clamp-3 skeleton rounded-lg">
           Lorem, ipsum dolor sit amet consectetur adipisicing elit. Asperiores

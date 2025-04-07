@@ -1,6 +1,11 @@
+import { getApiJson } from "@/source/api";
+import routes from "@/source/api/routes";
 import { BookFilterType, BookSortType } from "@/source/types/misc";
-import { SimpleUser } from "@/source/types/states";
+import { SimpleUser, TagType } from "@/source/types/states";
+import toast from "react-hot-toast";
 import { FaCircleDown, FaCircleUp } from "react-icons/fa6";
+import { Dispatch, SetStateAction } from "react";
+import MultiTextInputV2 from "../reusable/MultiTextInputV2";
 
 interface SideBarProps {
   disabled: boolean;
@@ -9,13 +14,57 @@ interface SideBarProps {
   author: SimpleUser | null;
   fetchViaFilter: (filter: BookFilterType) => void;
   fetchViaSort: (sort: BookSortType) => void;
+  fetchViaTags: (tags: TagType[]) => void;
+
+  tags: TagType[];
+  setTags: Dispatch<SetStateAction<TagType[]>>;
 }
 const SideBar = (props: SideBarProps) => {
   const { disabled, filter, sort, author } = props;
 
   return (
     <div className="block w-full h-full font-bold text-lg sm:text-xl max-slg:py-10 max-slg:px-8 overflow-auto">
-      <h3 className="text-2xl mb-4">Filters</h3>
+      <h3 className="text-2xl mb-4">Tag</h3>
+      <div className="">
+        <MultiTextInputV2
+          value={props.tags.map((x) => ({ id: x.slug, text: x.title }))}
+          onChange={(val) => {
+            props.setTags(val.map((x) => ({ slug: x.id, title: x.text })));
+            props.fetchViaTags(val.map((x) => ({ slug: x.id, title: x.text })));
+          }}
+          readonly={disabled}
+          getValue={async (q) => {
+            if (!q || q.trim().length < 1) return null;
+            const res = await getApiJson(routes.tag.one(q));
+
+            const id = res?.tag?.slug;
+            const text = res?.tag?.title;
+
+            if (typeof id !== "string" || typeof text !== "string") {
+              toast.error("Failed to add.");
+              return null;
+            }
+            return { id, text };
+          }}
+          searchValue={async (q) => {
+            if (!q || q.trim().length < 1) return null;
+            const res = await getApiJson(routes.tag.search(q));
+
+            const tags = res?.tags;
+
+            if (typeof tags !== "object" || !Array.isArray(tags)) {
+              return null;
+            }
+            return tags.map((x) => ({
+              id: x.slug || "untitled",
+              text: x.title || "Untitled",
+            }));
+          }}
+          placeholder="Tag"
+          smallerPaddings
+        />
+      </div>
+      <h3 className="text-2xl mb-4 mt-8">Filters</h3>
       <div className="flex flex-col gap-3 items-start ">
         <button
           disabled={disabled}

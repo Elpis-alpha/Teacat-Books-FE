@@ -160,11 +160,15 @@ const BookTicket = (props: BookTicketProps) => {
             : "Cover Image Update"
           : ticketType === "update-text"
           ? "Book Update"
+          : ticketType === "delete-book"
+          ? "Delete Book"
+          : ticketType === "update-tags"
+          ? "Update Tags"
           : ticketType === "update-meta"
           ? ticket?.updateMeta?.textType === "title"
             ? "Title Update"
             : "Description Update"
-          : "Delete Book"}
+          : "Unknown ticket type"}
         <span
           className="inline-block mr-2 font-normal text-sm py-0.5 px-3 rounded-lg uppercase"
           style={{
@@ -278,6 +282,38 @@ const BookTicket = (props: BookTicketProps) => {
                 >
                   <FaFileDownload />
                 </a>
+              </div>
+            </div>
+          ) : ticketType === "update-tags" ? (
+            <div className="flex gap-2 flex-col">
+              <div className="px-5 py-3.5 bg-white/20 rounded-xl flex items-center gap-3">
+                {ticket.updateTags?.oldTags.map((tag) => (
+                  <div
+                    key={tag.slug + "new"}
+                    className="flex items-center bg-white text-black rounded-xl px-4 py-2.5 shadow-2xl"
+                  >
+                    <span>{tag.title}</span>
+                  </div>
+                ))}
+                {ticket.updateTags?.oldTags.length === 0 && (
+                  <p className="">No tags</p>
+                )}
+              </div>
+              <div className="px-2.5">
+                <DownTrans className="w-[17px]" />
+              </div>
+              <div className="px-5 py-3.5 bg-white/20 rounded-xl flex items-center gap-3">
+                {ticket.updateTags?.newTags.map((tag) => (
+                  <div
+                    key={tag.slug + "new"}
+                    className="flex items-center bg-white text-black rounded-xl px-4 py-2.5 shadow-2xl"
+                  >
+                    <span>{tag.title}</span>
+                  </div>
+                ))}
+                {ticket.updateTags?.newTags.length === 0 && (
+                  <p className="">No tags</p>
+                )}
               </div>
             </div>
           ) : ticketType === "new-book" ? (

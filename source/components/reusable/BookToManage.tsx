@@ -6,10 +6,11 @@ import { useMemo, useRef, useState } from "react";
 import { FaFileDownload } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { ClipLoader } from "react-spinners";
-import { postApiFormData, postApiJson } from "@/source/api";
+import { getApiJson, postApiFormData, postApiJson } from "@/source/api";
 import routes from "@/source/api/routes";
 import TextInput from "./TextInput";
 import FileInput from "./FileInput";
+import MultiTextInput from "./MultiTextInput";
 
 type BookToManageProps = {
   book: BookInterface;
@@ -36,11 +37,13 @@ const BookToManage = (props: BookToManageProps) => {
     | "epub"
     | "remove"
     | "featured"
+    | "tags"
   >("");
   const [adminApproving, setAdminApproving] = useState(false); // for admin [viewer], approves immediately the ticket is created
 
   const [newTitle, setNewTitle] = useState("");
   const [newDescription, setNewDescription] = useState("");
+  const [newTags, setNewTags] = useState(book.tags || []);
   const newBookEpub = useRef<File | null>(null);
   const newMainImage = useRef<File | null>(null);
   const newCoverImage = useRef<File | null>(null);
@@ -122,6 +125,40 @@ const BookToManage = (props: BookToManageProps) => {
 
         if (type === "title") setNewTitle("");
         else setNewDescription("");
+        setEditing("");
+        setMessageForReviewer("");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to create ticket.");
+    }
+    setProcessingState({ on: "", data: "" });
+  };
+
+  const updateTags = async () => {
+    const messageForReviewer =
+      viewer === "admin" ? "Admin Update" : _messageForReviewer;
+    if (!messageForReviewer)
+      return toast.error("Message for reviewer is required.");
+
+    try {
+      setProcessingState({ on: "ticketing", data: book._id });
+
+      const response = await postApiJson(routes.ticket.book.updateTags, {
+        messageForReviewer: messageForReviewer,
+        bookID: book._id,
+        newTags: newTags,
+        automaticMode: viewer === "admin" ? "true" : null,
+      });
+
+      if (response.error || !response.ticket || !response.ticket._id) {
+        console.error(response);
+        toast.error(response.errorMessage || "Failed to create ticket.");
+      } else {
+        toast.success("Ticket created successfully.");
+        if (viewer === "admin") await _approveTicket(response.ticket._id);
+
+        // setNewTags();
         setEditing("");
         setMessageForReviewer("");
       }
@@ -331,6 +368,17 @@ const BookToManage = (props: BookToManageProps) => {
         </button>
         <button
           disabled={!!processingState.on}
+          onClick={() => setEditing((p) => (p === "tags" ? "" : "tags"))}
+          className={`py-1.5 px-5 rounded-lg hover:opacity-50 ${
+            editing === "tags"
+              ? "bg-white text-black"
+              : "bg-highlight text-white"
+          }`}
+        >
+          {editing === "tags" ? "Cancel" : "Edit Tags"}
+        </button>
+        <button
+          disabled={!!processingState.on}
           onClick={() =>
             setEditing((p) => (p === "mainImage" ? "" : "mainImage"))
           }
@@ -406,6 +454,7 @@ const BookToManage = (props: BookToManageProps) => {
             if (editing === "coverImage") updateImageTicket("cover");
             if (editing === "epub") updateEpubTicket();
             if (editing === "remove") deleteBookTicket();
+            if (editing === "tags") updateTags()
           }}
           className="flex flex-col items-center justify-center gap-4 w-full"
         >
@@ -427,6 +476,45 @@ const BookToManage = (props: BookToManageProps) => {
               isTextArea
               placeholder="New Description"
               rows={5}
+            />
+          )}
+          {editing === "tags" && (
+            <MultiTextInput
+              label="New Tags"
+              value={newTags.map((x) => ({ id: x.slug, text: x.title }))}
+              onChange={(val) =>
+                setNewTags(val.map((x) => ({ slug: x.id, title: x.text })))
+              }
+              readonly={!!processingState.on}
+              getValue={async (q) => {
+                if (!q || q.trim().length < 1) return null;
+                const res = await getApiJson(routes.tag.one(q));
+
+                const id = res?.tag?.slug;
+                const text = res?.tag?.title;
+
+                if (typeof id !== "string" || typeof text !== "string") {
+                  toast.error("Failed to add.");
+                  return null;
+                }
+                return { id, text };
+              }}
+              searchValue={async (q) => {
+                if (!q || q.trim().length < 1) return null;
+                const res = await getApiJson(routes.tag.search(q));
+
+                const tags = res?.tags;
+
+                if (typeof tags !== "object" || !Array.isArray(tags)) {
+                  return null;
+                }
+                return tags.map((x) => ({
+                  id: x.slug || "untitled",
+                  text: x.title || "Untitled",
+                }));
+              }}
+              placeholder="New Tag"
+              empty="No Tags"
             />
           )}
           {editing === "mainImage" && (

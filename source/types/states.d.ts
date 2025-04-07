@@ -47,7 +47,8 @@ export interface BookTicketInterface {
     | "update-image"
     | "update-meta"
     | "update-text"
-    | "delete-book";
+    | "delete-book"
+    | "update-tags";
 
   author: string | { _id: string; name: string; avatar: string };
 
@@ -73,6 +74,10 @@ export interface BookTicketInterface {
   updateText?: {
     oldEpubURL: string;
     newEpubURL: string;
+  };
+  updateTags?: {
+    oldTags: TagType[];
+    newTags: TagType[];
   };
 
   createdAt: string;
@@ -114,6 +119,7 @@ export interface BookInterface {
   author: string | { _id: string; name: string; avatar: string };
   title: string;
   description: string;
+  tags?: TagType[];
   price: number;
   mediaIDLength: number;
 
@@ -257,7 +263,7 @@ export type ChapterClientInterface =
       bookmarked: boolean;
       loading: boolean;
     }
-    | {
+  | {
       _id: string;
       chapterNumber: number;
       title: string;
@@ -276,4 +282,9 @@ export interface ReadingSessionInterface {
 
   createdAt: string;
   updatedAt: string;
+}
+
+export interface TagType {
+  title: string;
+  slug: string;
 }
