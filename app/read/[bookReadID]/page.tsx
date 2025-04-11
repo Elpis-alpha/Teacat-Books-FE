@@ -39,7 +39,19 @@ export default async function Home({
     !response.bookmarks ||
     !response.preChapters
   ) {
-    console.error(response);
+    if (
+      typeof response.errorMessage === "string" &&
+      response.errorMessage.startsWith("You are not authenticated")
+    ) {
+      return (
+        <ErrorPage
+          message="You are not authenticated"
+          returnLink="/signin"
+          returnText="Go to Sign-In"
+        />
+      );
+    }
+
     return (
       <ErrorPage
         message={response.errorMessage || "Book not found"}

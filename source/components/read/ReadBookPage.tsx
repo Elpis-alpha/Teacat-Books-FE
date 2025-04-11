@@ -206,6 +206,11 @@ const ReadBookPage = (props: ReadBookPageProps) => {
       );
       if (!chapter) return;
 
+      if (chapterNumber <= 1) {
+        setActiveChapter(chapterNumber);
+        return;
+      }
+
       try {
         const response = await postApiJson(routes.book.currentChapter, {
           bookID: props.book._id,

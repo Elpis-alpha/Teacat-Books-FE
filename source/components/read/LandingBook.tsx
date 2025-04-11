@@ -16,7 +16,9 @@ const LandingBook = ({
   const dispatch = useAppDispatch();
 
   return (
-    <div data-chapter="0" className="">
+    <div data-chapter="0" className="flex flex-col items-center justify-center" style={{
+      minHeight: "calc(100vh - 100px)",
+    }}>
       <SafeImage
         src={makeImageSmaller(book.mainImage)}
         alt={book.title}
