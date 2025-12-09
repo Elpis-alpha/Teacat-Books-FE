@@ -1,8 +1,15 @@
 FROM node:20-buster AS base
 
 FROM base AS deps
-RUN apt-get update && apt-get install -y libc6 make python3 g++ \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN sed -i 's|http://deb.debian.org|http://archive.debian.org|g' /etc/apt/sources.list && \
+    sed -i '/security.debian.org/d' /etc/apt/sources.list && \
+    sed -i '/buster-updates/d' /etc/apt/sources.list
+
+RUN apt-get update && \
+    apt-get install -y libc6 make python3 g++ && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /usr/src/app
 
 RUN --mount=type=bind,source=package.json,target=package.json \
