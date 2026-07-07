@@ -7,16 +7,19 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "git add . && git commit -m",
-    "postdeploy": "git push"
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
+    "@opennextjs/cloudflare": "^1.20.1",
     "@reduxjs/toolkit": "^2.6.1",
-    "@solana/web3.js": "^1.98.0",
+    "@solana/web3.js": "^1.98.4",
     "date-fns": "^4.1.0",
     "gsap": "^3.12.7",
     "hamburger-react": "^2.5.2",
-    "next": "15.2.8",
+    "next": "^15.5.20",
     "nextjs-toploader": "^3.7.15",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -25,7 +28,7 @@
     "react-paginate": "^8.3.0",
     "react-redux": "^9.2.0",
     "react-spinners": "^0.15.0",
-    "swiper": "^11.2.5",
+    "swiper": "^14.0.1",
     "universal-cookie": "^7.2.2",
     "validator": "^13.12.0"
   },
@@ -41,6 +44,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.107.0"
   }
 }

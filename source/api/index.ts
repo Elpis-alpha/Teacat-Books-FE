@@ -10,7 +10,10 @@ const protect = async (vip: APIFunctionType) => {
   try {
     validated = await vip();
   } catch {
-    validated = { error: "failed-to-connect", errorMessage: "Server / Network issues" };
+    validated = {
+      error: "failed-to-connect",
+      errorMessage: "Server / Network issues",
+    };
   }
   return validated;
 };
@@ -28,13 +31,13 @@ export const getApiJson = async (url: string, token?: string) =>
       },
     });
     const responseJson = await response.json();
-    return responseJson;
+    return responseJson as ReturnType<APIFunctionType>;
   });
 
 export const postApiJson = async (
   url: string,
   data: ReqBodyType = {},
-  token?: string
+  token?: string,
 ) =>
   await protect(async () => {
     // check token
@@ -49,13 +52,13 @@ export const postApiJson = async (
       body: JSON.stringify(data),
     });
     const responseJson = await response.json();
-    return responseJson;
+    return responseJson as ReturnType<APIFunctionType>;
   });
 
 export const patchApiJson = async (
   url: string,
   data: ReqBodyType = {},
-  token?: string
+  token?: string,
 ) =>
   await protect(async () => {
     // check token
@@ -70,13 +73,13 @@ export const patchApiJson = async (
       body: JSON.stringify(data),
     });
     const responseJson = await response.json();
-    return responseJson;
+    return responseJson as ReturnType<APIFunctionType>;
   });
 
 export const putApiJson = async (
   url: string,
   data: ReqBodyType = {},
-  token?: string
+  token?: string,
 ) =>
   await protect(async () => {
     // check token
@@ -91,13 +94,13 @@ export const putApiJson = async (
       body: JSON.stringify(data),
     });
     const responseJson = await response.json();
-    return responseJson;
+    return responseJson as ReturnType<APIFunctionType>;
   });
 
 export const deleteApiJson = async (
   url: string,
   data: ReqBodyType = {},
-  token?: string
+  token?: string,
 ) =>
   await protect(async () => {
     // check token
@@ -112,13 +115,13 @@ export const deleteApiJson = async (
       body: JSON.stringify(data),
     });
     const responseJson = await response.json();
-    return responseJson;
+    return responseJson as ReturnType<APIFunctionType>;
   });
 
 export const postApiFormData = async (
   url: string,
   data: ReqDataBodyType = {},
-  token?: string
+  token?: string,
 ) =>
   await protect(async () => {
     // check token
@@ -137,13 +140,13 @@ export const postApiFormData = async (
       body: formData,
     });
     const responseJson = await response.json();
-    return responseJson;
+    return responseJson as ReturnType<APIFunctionType>;
   });
 
 export const patchApiFormData = async (
   url: string,
   data: ReqDataBodyType = {},
-  token?: string
+  token?: string,
 ) =>
   await protect(async () => {
     // check token
@@ -161,13 +164,13 @@ export const patchApiFormData = async (
       body: formData,
     });
     const responseJson = await response.json();
-    return responseJson;
+    return responseJson as ReturnType<APIFunctionType>;
   });
 
 export const putApiFormData = async (
   url: string,
   data: ReqDataBodyType = {},
-  token?: string
+  token?: string,
 ) =>
   await protect(async () => {
     // check token
@@ -185,5 +188,5 @@ export const putApiFormData = async (
       body: formData,
     });
     const responseJson = await response.json();
-    return responseJson;
+    return responseJson as ReturnType<APIFunctionType>;
   });
